@@ -28,18 +28,34 @@ enum Category: String, CaseIterable, Codable, Identifiable {
     var symbol: String {
         switch self {
         case .food: return "fork.knife"
-        case .coffee: return "cup.and.saucer.fill"
+        case .coffee: return "cup.and.heat.waves.fill"
         case .transport: return "scooter"
-        case .sport: return "dumbbell.fill"
-        case .skinCare: return "drop.fill"
-        case .phone: return "iphone"
+        case .sport: return "figure.run"
+        case .skinCare: return "sparkles"
+        case .phone: return "iphone.gen3"
         case .shopping: return "bag.fill"
         case .health: return "cross.case.fill"
-        case .fun: return "star.fill"
+        case .fun: return "gamecontroller.fill"
         case .bills: return "doc.text.fill"
         case .engagement: return "heart.fill"
-        case .other: return "ellipsis"
+        case .other: return "square.grid.2x2.fill"
         }
+    }
+
+    /// A more specific symbol for a bill, guessed from its name (e.g. "Electricity" → bolt).
+    static func billSymbol(for name: String) -> String? {
+        let n = name.lowercased()
+        let table: [(keys: [String], symbol: String)] = [
+            (["electric", "power"], "bolt.fill"),
+            (["wifi", "wi-fi", "internet"], "wifi"),
+            (["water"], "drop.fill"),
+            (["bank", "loan"], "building.columns.fill"),
+            (["waste", "trash", "garbage"], "trash.fill"),
+            (["credit", "card"], "creditcard.fill"),
+            (["phone", "mobile"], "phone.fill"),
+            (["rent", "house", "home"], "house.fill"),
+        ]
+        return table.first { entry in entry.keys.contains { n.contains($0) } }?.symbol
     }
 
     var color: Color {

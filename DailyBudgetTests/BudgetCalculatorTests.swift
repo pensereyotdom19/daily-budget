@@ -101,6 +101,16 @@ final class BudgetCalculatorTests: XCTestCase {
         XCTAssertEqual(BudgetCalculator.billPaymentDate(month: "2026-12", now: now, calendar: cal), day(2026, 12, 1, 12))
     }
 
+    func testBillSymbolsMatchSeededBillNames() {
+        XCTAssertEqual(Category.billSymbol(for: "Electricity"), "bolt.fill")
+        XCTAssertEqual(Category.billSymbol(for: "Wifi"), "wifi")
+        XCTAssertEqual(Category.billSymbol(for: "Water"), "drop.fill")
+        XCTAssertEqual(Category.billSymbol(for: "Bank"), "building.columns.fill")
+        XCTAssertEqual(Category.billSymbol(for: "Waste management"), "trash.fill")
+        XCTAssertEqual(Category.billSymbol(for: "Credit card"), "creditcard.fill")
+        XCTAssertNil(Category.billSymbol(for: "Something else"))
+    }
+
     func testMonthRangeCrossesYear() {
         XCTAssertEqual(MonthKey.range(start: "2026-11", count: 6),
                        ["2026-11", "2026-12", "2027-01", "2027-02", "2027-03", "2027-04"])

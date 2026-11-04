@@ -13,8 +13,14 @@ struct TodayView: View {
     private var settings: BudgetSettings? { settingsList.first }
     private var calc: BudgetCalculator { BudgetCalculator(expenses: expenses, settings: settings) }
 
+    /// Today's expenses, without bill payments (those live in History and the month screens).
     private var todaysExpenses: [Expense] {
-        expenses.filter { Calendar.current.isDateInToday($0.date) }
+        expenses.filter { Calendar.current.isDateInToday($0.date) && $0.billID == nil }
+    }
+
+    private var billsPaidTodayCents: Int {
+        expenses.filter { Calendar.current.isDateInToday($0.date) && $0.billID != nil }
+            .reduce(0) { $0 + $1.amountCents }
     }
 
     /// The nearest unpaid bill from this month onward, biggest first within the same month.
@@ -86,6 +92,23 @@ struct TodayView: View {
                         .foregroundStyle(.white.opacity(0.85))
                 }
                 .padding(.horizontal, 4).padding(.top, 4)
+
+                if billsPaidTodayCents > 0 {
+                    NavigationLink(value: MonthRoute(monthKey: MonthKey.key(for: .now), category: .bills)) {
+                        HStack(spacing: 10) {
+                            Image(systemName: Category.bills.symbol).foregroundStyle(Category.bills.color)
+                            Text("Bills paid today \(Money.format(billsPaidTodayCents, alwaysShowCents: true))")
+                            Spacer()
+                            Image(systemName: "chevron.right").font(.caption2.weight(.bold))
+                        }
+                        .font(.footnote.weight(.semibold))
+                        .foregroundStyle(Theme.secondary)
+                        .padding(.horizontal, 14).frame(height: 40)
+                        .glassCard(radius: 20)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityHint("Shows this month's bills")
+                }
 
                 if todaysExpenses.isEmpty {
                     Text("Nothing yet today. Tap + to add an expense.")
@@ -209,7 +232,7 @@ struct ExpenseRow: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            CategoryIcon(category: expense.category)
+            CategoryIcon(category: expense.category, size: 40, symbol: expense.iconSymbol)
             VStack(alignment: .leading, spacing: 1) {
                 Text(expense.note.isEmpty ? expense.category.title : expense.note)
                     .font(.subheadline.weight(.semibold))

@@ -69,19 +69,37 @@ extension View {
     func glassCard(radius: CGFloat = 24) -> some View { modifier(GlassCard(radius: radius)) }
 }
 
-/// Small rounded square with a category's icon.
+/// Glossy rounded square in the category's color with a dark symbol (same style as the + button).
 struct CategoryIcon: View {
     let category: Category
     var size: CGFloat = 38
+    /// Overrides the category symbol, e.g. a bolt for an electricity bill.
+    var symbol: String? = nil
 
     var body: some View {
-        Image(systemName: category.symbol)
-            .font(.system(size: size * 0.45, weight: .semibold))
-            .foregroundStyle(category.color)
+        let shape = RoundedRectangle(cornerRadius: size * 0.3, style: .continuous)
+        Image(systemName: symbol ?? category.symbol)
+            .font(.system(size: size * 0.44, weight: .bold))
+            .foregroundStyle(Theme.base.opacity(0.85))
             .frame(width: size, height: size)
-            .background(category.color.opacity(0.22), in: RoundedRectangle(cornerRadius: size * 0.34, style: .continuous))
-            .overlay(RoundedRectangle(cornerRadius: size * 0.34, style: .continuous)
-                .strokeBorder(category.color.opacity(0.5), lineWidth: 1))
+            .background(
+                shape.fill(LinearGradient(colors: [category.color, category.color.opacity(0.62)],
+                                          startPoint: .topLeading, endPoint: .bottomTrailing))
+            )
+            .overlay(
+                shape.strokeBorder(LinearGradient(colors: [Color.white.opacity(0.6), Color.white.opacity(0.05)],
+                                                  startPoint: .top, endPoint: .bottom), lineWidth: 1)
+            )
+            .shadow(color: category.color.opacity(0.35), radius: size * 0.2, y: size * 0.06)
+            .accessibilityHidden(true)
+    }
+}
+
+extension Expense {
+    /// Icon for this expense: a bill-specific symbol for bill payments, else the category's.
+    var iconSymbol: String {
+        if category == .bills, let s = Category.billSymbol(for: note) { return s }
+        return category.symbol
     }
 }
 
