@@ -315,6 +315,7 @@ KM = {
     "Total money for the plan": "លុយសរុបសម្រាប់ផែនការ",
     "Engagement (set aside)": "ភ្ជាប់ពាក្យ (ទុកដាច់ដោយឡែក)",
     "Total": "សរុប",
+    "General": "ទូទៅ",
 
     # Daily habits
     "%@ spent on everyday things. %lld of %lld days on budget.": "ចាយប្រចាំថ្ងៃ %1$@។ %2$lld ក្នុងចំណោម %3$lld ថ្ងៃក្នុងថវិកា។",

@@ -16,12 +16,6 @@ struct RemindersCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            HStack(spacing: 8) {
-                Image(systemName: "bell.fill").foregroundStyle(Theme.warn)
-                Text("Reminders").font(.subheadline.weight(.semibold))
-            }
-            .padding(.bottom, 8)
-
             row(symbol: "moon.stars.fill", color: Color(hex: 0xB6A4FF), title: "Log my spending",
                 detail: "Every evening. Skipped if you already added something.",
                 isOn: $eveningOn, minutes: $eveningMinutes)

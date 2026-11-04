@@ -14,7 +14,7 @@ struct SettingsView: View {
                 VStack(alignment: .leading, spacing: 14) {
                     ScreenHeader(caption: "Daily Budget", title: "Settings")
 
-                    section("Language")
+                    section("General")
                     languageCard
 
                     section("Reminders")
@@ -89,32 +89,44 @@ struct SettingsView: View {
         Text(title).font(.title3.weight(.bold)).padding(.horizontal, 4).padding(.top, 6)
     }
 
+    /// One row with the current language; tapping it opens a short menu.
     private var languageCard: some View {
-        VStack(spacing: 0) {
-            ForEach(AppLanguage.allCases) { lang in
-                let selected = language == lang.rawValue
-                Button {
-                    guard !selected else { return }
-                    AppLanguage.set(lang)
-                    WidgetCenter.shared.reloadAllTimelines()
-                    language = lang.rawValue  // redraws the app in the new language
-                } label: {
-                    HStack {
-                        Text(verbatim: lang.nativeName).font(.subheadline.weight(.semibold))
-                        Spacer()
-                        Image(systemName: selected ? "checkmark.circle.fill" : "circle")
-                            .font(.system(size: 20))
-                            .foregroundStyle(selected ? Theme.mint : .white.opacity(0.4))
-                    }
-                    .padding(.vertical, 12)
-                    .contentShape(Rectangle())
+        let current = AppLanguage(rawValue: language) ?? .system
+        return Menu {
+            Picker("Language", selection: Binding(get: { current }, set: choose)) {
+                ForEach(AppLanguage.allCases) { lang in
+                    Text(verbatim: lang.nativeName).tag(lang)
                 }
-                .buttonStyle(.pressable)
-                .accessibilityAddTraits(selected ? .isSelected : [])
-                if lang != AppLanguage.allCases.last { Divider().overlay(Color.white.opacity(0.14)) }
             }
+        } label: {
+            HStack(spacing: 12) {
+                Image(systemName: "globe")
+                    .font(.system(size: 15, weight: .bold))
+                    .foregroundStyle(Theme.sky)
+                    .frame(width: 32, height: 32)
+                    .background(Theme.sky.opacity(0.16), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                Text("Language").font(.subheadline.weight(.semibold))
+                Spacer(minLength: 8)
+                Text(verbatim: current.nativeName)
+                    .font(.subheadline)
+                    .foregroundStyle(Theme.secondary)
+                Image(systemName: "chevron.up.chevron.down")
+                    .font(.caption.weight(.bold))
+                    .foregroundStyle(Theme.secondary)
+            }
+            .padding(.horizontal, 16).padding(.vertical, 12)
+            .contentShape(Rectangle())
+            .glassCard(radius: 22)
         }
-        .padding(.horizontal, 16).padding(.vertical, 2)
-        .glassCard(radius: 22)
+        .buttonStyle(.pressable)
+        .accessibilityLabel(Text("Language"))
+        .accessibilityValue(Text(verbatim: current.nativeName))
+    }
+
+    private func choose(_ lang: AppLanguage) {
+        guard lang.rawValue != language else { return }
+        AppLanguage.set(lang)
+        WidgetCenter.shared.reloadAllTimelines()
+        language = lang.rawValue  // redraws the app in the new language
     }
 }

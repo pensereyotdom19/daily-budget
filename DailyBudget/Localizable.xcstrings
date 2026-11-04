@@ -1418,6 +1418,16 @@
         }
       }
     },
+    "General": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ទូទៅ"
+          }
+        }
+      }
+    },
     "Goes straight to emergency savings": {
       "localizations": {
         "km": {
