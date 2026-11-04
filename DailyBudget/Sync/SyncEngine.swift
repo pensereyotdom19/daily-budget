@@ -136,7 +136,8 @@ struct SyncEngine {
     }
 
     /// Copies server records into the phone's database. Unless `force`, a record that was changed
-    /// on this phone since the last sync is left alone: it will be uploaded next time.
+    /// or deleted on this phone since the last sync is left alone: it will be uploaded next time.
+    /// (A record can be deleted while a sync is running, after its upload step has passed.)
     private func apply(_ changes: ChangesDTO, force: Bool, state: inout SyncState, report: inout Report) {
         if let remote = changes.settings {
             let local = (try? context.fetch(FetchDescriptor<BudgetSettings>()))?.first
@@ -159,6 +160,8 @@ struct SyncEngine {
         for remote in changes.bills {
             let local = localBills[remote.id]
             if let local, !force, state.bills[remote.id] != Fingerprint.of(local) { continue }
+            // Deleted on this phone but the server hasn't heard yet: don't bring it back.
+            if local == nil, !force, state.bills[remote.id] != nil, remote.deleted != true { continue }
             if remote.deleted == true {
                 if let local { context.delete(local); report.downloaded += 1 }
                 state.bills[remote.id] = nil
@@ -184,6 +187,8 @@ struct SyncEngine {
         for remote in changes.expenses {
             let local = localExpenses[remote.id]
             if let local, !force, state.expenses[remote.id] != Fingerprint.of(local) { continue }
+            // Deleted on this phone but the server hasn't heard yet: don't bring it back.
+            if local == nil, !force, state.expenses[remote.id] != nil, remote.deleted != true { continue }
             if remote.deleted == true {
                 if let local { context.delete(local); report.downloaded += 1 }
                 state.expenses[remote.id] = nil

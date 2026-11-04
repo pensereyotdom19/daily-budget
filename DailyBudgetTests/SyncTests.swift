@@ -161,6 +161,48 @@ final class SyncTests: XCTestCase {
         XCTAssertEqual(Set(server.liveExpenses.map(\.note)), ["Bank", "Old coffee", "New coffee"])
     }
 
+    func testAnExpenseDeletedOnThePhoneIsNotBroughtBackByTheDownload() async throws {
+        let context = try makeContainer().mainContext
+        let coffee = Expense(amountCents: 125, category: .coffee, note: "Coffee", date: date("2026-11-04T01:00:00Z"))
+        context.insert(coffee)
+        try context.save()
+        var state = SyncState()
+        _ = try await engine(context).run(state: &state)
+
+        // The server has a newer copy (as if the upload landed during this sync) and the phone deleted it,
+        // but the delete hasn't reached the server yet.
+        let id = coffee.id
+        server.change { $0.expenses[id]!.dto.amountCents = 150 }
+        context.delete(coffee)
+        try context.save()
+        server.refuseDeletes = true
+        _ = try await engine(context).run(state: &state)
+        XCTAssertTrue(try context.fetch(FetchDescriptor<Expense>()).isEmpty)
+        XCTAssertEqual(SyncEngine.pendingCount(context: context, state: state), 1)  // delete still waiting
+
+        server.refuseDeletes = false
+        _ = try await engine(context).run(state: &state)
+        XCTAssertTrue(try context.fetch(FetchDescriptor<Expense>()).isEmpty)
+        XCTAssertTrue(server.liveExpenses.isEmpty)
+        XCTAssertEqual(SyncEngine.pendingCount(context: context, state: state), 0)
+    }
+
+    func testABillDeletedOnThePhoneIsNotBroughtBackByTheDownload() async throws {
+        let context = try makeContainer().mainContext
+        Seed.insertIfNeeded(into: context)
+        var state = SyncState()
+        _ = try await engine(context).run(state: &state)
+
+        let water = try context.fetch(FetchDescriptor<Bill>()).first { $0.name == "Water" }!
+        let id = water.id
+        server.change { $0.bills[id]!.dto.amountCents = 600 }
+        context.delete(water)
+        try context.save()
+        server.refuseDeletes = true
+        _ = try await engine(context).run(state: &state)
+        XCTAssertNil(try context.fetch(FetchDescriptor<Bill>()).first { $0.id == id })
+    }
+
     func testAnExpiredSignInStopsTheSync() async throws {
         let context = try makeContainer().mainContext
         var state = SyncState()
@@ -205,6 +247,8 @@ final class FakeServer {
     var bills: [UUID: Stored<BillDTO>] = [:]
     var expenses: [UUID: Stored<ExpenseDTO>] = [:]
     var requests: [String] = []
+    /// Makes DELETE fail with 409, to leave a delete waiting on the phone.
+    var refuseDeletes = false
 
     var liveBills: [BillDTO] { bills.values.map(\.dto).filter { $0.deleted != true } }
     var liveExpenses: [ExpenseDTO] { expenses.values.map(\.dto).filter { $0.deleted != true } }
@@ -267,6 +311,9 @@ final class FakeServer {
             e.id = id!; e.note = e.note.trimmingCharacters(in: .whitespaces); e.deleted = false
             tick += 1; expenses[id!] = Stored(dto: e, updated: tick)
             return (200, try! APIDate.encoder.encode(e))
+
+        case ("DELETE", _) where refuseDeletes:
+            return (409, Data(#"{"detail":"Try again later"}"#.utf8))
 
         case ("DELETE", "bills"):
             guard bills[id!] != nil else { return (404, Data()) }

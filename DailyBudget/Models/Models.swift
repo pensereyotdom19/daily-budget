@@ -22,6 +22,9 @@ final class Expense {
         self.date = date
     }
 
+    /// The server refuses longer notes, so the app stops typing there too.
+    static let maxNoteLength = 200
+
     var category: Category {
         get { Category(rawValue: categoryRaw) ?? .other }
         set { categoryRaw = newValue.rawValue }

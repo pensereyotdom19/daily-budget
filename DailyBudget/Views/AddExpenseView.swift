@@ -161,6 +161,9 @@ struct AddExpenseView: View {
             HStack(spacing: 12) {
                 Text("Note").frame(width: 52, alignment: .leading)
                 TextField("e.g. Iced coffee", text: $note)
+                    .onChange(of: note) { _, new in
+                        if new.count > Expense.maxNoteLength { note = String(new.prefix(Expense.maxNoteLength)) }
+                    }
             }
             .frame(height: 50)
             Divider().overlay(Color.white.opacity(0.16))
@@ -186,7 +189,7 @@ struct AddExpenseView: View {
 
     private func save() {
         guard let cents = amountCents else { return }
-        let trimmed = note.trimmingCharacters(in: .whitespaces)
+        let trimmed = String(note.trimmingCharacters(in: .whitespaces).prefix(Expense.maxNoteLength))
         if let e = editing {
             e.amountCents = cents
             e.category = category
