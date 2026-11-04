@@ -9,6 +9,9 @@ struct TodayView: View {
     @Query private var settingsList: [BudgetSettings]
     @Query(sort: \Bill.sortOrder) private var bills: [Bill]
     @State private var editing: Expense?
+    @State private var justAdded: Expense?
+    @State private var addedCount = 0
+    @State private var toastTask: Task<Void, Never>?
 
     private var settings: BudgetSettings? { settingsList.first }
     private var calc: BudgetCalculator { BudgetCalculator(expenses: expenses, settings: settings) }
@@ -21,6 +24,12 @@ struct TodayView: View {
     private var billsPaidTodayCents: Int {
         expenses.filter { Calendar.current.isDateInToday($0.date) && $0.billID != nil }
             .reduce(0) { $0 + $1.amountCents }
+    }
+
+    /// One-tap buttons for what you log most often.
+    private var quickItems: [QuickAdd.Item] {
+        QuickAdd.suggestions(from: expenses.filter { $0.billID == nil }
+            .map { QuickAdd.Past(category: $0.category, note: $0.note, cents: $0.amountCents, date: $0.date) })
     }
 
     /// The nearest unpaid bill from this month onward, biggest first within the same month.
@@ -84,6 +93,8 @@ struct TodayView: View {
                     }
                 }
 
+                if !quickItems.isEmpty { quickAddRow }
+
                 HStack(alignment: .firstTextBaseline) {
                     Text("Today's spending").font(.title3.weight(.bold))
                     Spacer()
@@ -142,6 +153,10 @@ struct TodayView: View {
             .padding(.bottom, 110)
         }
         .scrollIndicators(.hidden)
+        .overlay(alignment: .bottom) {
+            if let e = justAdded { addedToast(e) }
+        }
+        .sensoryFeedback(.success, trigger: addedCount)
         .background(GlowBackground())
         .toolbar(.hidden, for: .navigationBar)
         .navigationDestination(for: MonthRoute.self) { route in
@@ -155,6 +170,66 @@ struct TodayView: View {
                 .presentationBackground(Theme.base)
         }
         }
+    }
+
+    private var quickAddRow: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 6) {
+                Text("QUICK ADD").font(.caption.weight(.semibold)).foregroundStyle(Theme.secondary)
+                Text("Tap to add it now").font(.caption).foregroundStyle(Theme.secondary.opacity(0.7))
+            }
+            .padding(.leading, 4)
+            ScrollView(.horizontal) {
+                HStack(spacing: 8) {
+                    ForEach(quickItems) { item in
+                        Button { quickAdd(item) } label: { QuickAddChip(item: item) }
+                            .buttonStyle(.pressable)
+                            .accessibilityLabel("Add \(item.title), \(Money.format(item.cents, alwaysShowCents: true))")
+                    }
+                }
+            }
+            .scrollIndicators(.hidden)
+            .scrollClipDisabled()
+        }
+        .padding(.top, 2)
+    }
+
+    private func addedToast(_ e: Expense) -> some View {
+        HStack(spacing: 10) {
+            Image(systemName: "checkmark.circle.fill").foregroundStyle(Theme.mint)
+            Text("Added \(e.note.isEmpty ? e.category.title : e.note) \(Money.format(e.amountCents, alwaysShowCents: true))")
+                .lineLimit(1)
+            Spacer(minLength: 6)
+            Button("Undo") { undo(e) }
+                .font(.subheadline.weight(.bold))
+                .foregroundStyle(Theme.mint)
+        }
+        .font(.subheadline.weight(.semibold))
+        .padding(.horizontal, 16).frame(height: 50)
+        .glassCard(radius: 25)
+        .padding(.horizontal, 18)
+        .padding(.bottom, 96)
+        .transition(.move(edge: .bottom).combined(with: .opacity))
+    }
+
+    private func quickAdd(_ item: QuickAdd.Item) {
+        let e = Expense(amountCents: item.cents, category: item.category, note: item.note, date: .now)
+        context.insert(e)
+        try? context.save()
+        addedCount += 1
+        withAnimation(.snappy) { justAdded = e }
+        toastTask?.cancel()
+        toastTask = Task {
+            try? await Task.sleep(for: .seconds(4))
+            guard !Task.isCancelled else { return }
+            withAnimation(.snappy) { justAdded = nil }
+        }
+    }
+
+    private func undo(_ e: Expense) {
+        toastTask?.cancel()
+        withAnimation(.snappy) { justAdded = nil }
+        BillPayments.delete(e, in: context)
     }
 
     private func ringCard(_ today: BudgetCalculator.DaySummary) -> some View {
@@ -215,6 +290,25 @@ struct TodayView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(14)
         .glassCard(radius: 22)
+    }
+}
+
+/// A small glass button: category icon, name and price.
+struct QuickAddChip: View {
+    let item: QuickAdd.Item
+
+    var body: some View {
+        HStack(spacing: 8) {
+            CategoryIcon(category: item.category, size: 28)
+            VStack(alignment: .leading, spacing: 0) {
+                Text(item.title).font(.footnote.weight(.semibold)).lineLimit(1)
+                Text(Money.format(item.cents, alwaysShowCents: true))
+                    .font(Theme.rounded(13, .semibold)).foregroundStyle(Theme.secondary)
+            }
+        }
+        .padding(.leading, 9).padding(.trailing, 14)
+        .frame(height: 48)
+        .glassCard(radius: 24)
     }
 }
 

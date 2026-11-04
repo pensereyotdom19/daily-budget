@@ -23,6 +23,7 @@ enum AppTab: String, CaseIterable {
 
 struct RootView: View {
     @Environment(\.modelContext) private var context
+    @Environment(\.scenePhase) private var scenePhase
     /// Opens on Today. For screenshots during development, launch with `-startTab history` (or plan).
     @State private var tab: AppTab = AppTab(rawValue: UserDefaults.standard.string(forKey: "startTab") ?? "") ?? .today
     @State private var showingAdd = false
@@ -55,6 +56,11 @@ struct RootView: View {
         .onAppear {
             Seed.insertIfNeeded(into: context)
             BillPayments.sync(in: context)
+            AppRefresh.run(context: context)
+        }
+        .onChange(of: scenePhase) { _, phase in
+            // Opening or leaving the app updates the widget and reschedules reminders.
+            if phase != .inactive { AppRefresh.run(context: context) }
         }
     }
 

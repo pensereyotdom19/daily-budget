@@ -58,6 +58,7 @@ struct PlanView: View {
                 totalCard
                 thisMonthBills
                 monthByMonth
+                RemindersCard()
 
                 Text("Engagement \(Money.format(engagement)) is set aside on day 1 and kept out of daily spending.")
                     .font(.footnote)

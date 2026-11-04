@@ -31,6 +31,7 @@ struct AddExpenseView: View {
                 VStack(spacing: 16) {
                     header
                     amountSection
+                    if editing == nil && !quickItems.isEmpty { quickFill }
                     categoryGrid
                     detailsCard
                     saveButton
@@ -95,6 +96,35 @@ struct AddExpenseView: View {
             }
         }
         .padding(.vertical, 4)
+    }
+
+    private var quickItems: [QuickAdd.Item] {
+        QuickAdd.suggestions(from: expenses.filter { $0.billID == nil }
+            .map { QuickAdd.Past(category: $0.category, note: $0.note, cents: $0.amountCents, date: $0.date) })
+    }
+
+    /// Tapping one fills in the form, so you can still change the amount before saving.
+    private var quickFill: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("OFTEN").font(.caption.weight(.semibold)).foregroundStyle(Theme.secondary).padding(.leading, 4)
+            ScrollView(.horizontal) {
+                HStack(spacing: 8) {
+                    ForEach(quickItems) { item in
+                        Button {
+                            withAnimation(.snappy) {
+                                amountText = String(format: "%.2f", Double(item.cents) / 100)
+                                category = item.category
+                                note = item.note
+                            }
+                        } label: { QuickAddChip(item: item) }
+                        .buttonStyle(.pressable)
+                        .accessibilityLabel("Fill in \(item.title), \(Money.format(item.cents, alwaysShowCents: true))")
+                    }
+                }
+            }
+            .scrollIndicators(.hidden)
+            .scrollClipDisabled()
+        }
     }
 
     private var categoryGrid: some View {

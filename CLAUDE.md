@@ -8,3 +8,4 @@ Personal iPhone budget app, used by one person on one phone. No backend, no acco
 - Plan data (seeded on first launch, editable in app): $4,700 total, Nov 2026–Apr 2027. Monthly bills: Bank $200, Electricity $100, Wifi $18, Waste $5. Water $5 in Nov and Feb. Credit card $700 once in Dec. Engagement $1,500 set aside. Living money $92/month.
 - Rules: today's limit = living money left this month ÷ days left (rollover); Bills and Engagement categories don't count as living; month leftover goes to emergency savings.
 - Design reference: https://claude.ai/artifact/Lk8Nh7N1s9pdU5EHPQkdeb · Build plan: https://claude.ai/artifact/1YqRdhWzEcXRioubV5Na7V
+- Home-screen widget (`DailyBudgetWidget/`) shares `Logic/BudgetCalculator.swift`, `Logic/MonthKey.swift` and `Shared/` with the app; the app writes a `WidgetSnapshot` to App Group `group.com.pensereyotdom19.dailybudget` (see `Models/AppRefresh.swift`), which also reschedules reminders.
