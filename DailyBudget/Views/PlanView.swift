@@ -376,12 +376,19 @@ struct SettingsEditor: View {
 }
 
 enum CSVExport {
+    /// A note starting with = + - @ (or a tab) would run as a formula in Excel or Sheets,
+    /// e.g. =HYPERLINK(...). A leading apostrophe makes the spreadsheet show it as plain text.
+    static func safeCell(_ text: String) -> String {
+        guard let first = text.first, "=+-@\t\r".contains(first) else { return text }
+        return "'" + text
+    }
+
     static func make(expenses: [Expense]) -> String {
         let f = ISO8601DateFormatter()
         f.formatOptions = [.withFullDate, .withTime, .withColonSeparatorInTime]
         var lines = ["date,category,amount,note"]
         for e in expenses {
-            let note = e.note.replacingOccurrences(of: "\"", with: "\"\"")
+            let note = safeCell(e.note).replacingOccurrences(of: "\"", with: "\"\"")
             lines.append("\(f.string(from: e.date)),\(e.category.title),\(String(format: "%.2f", Double(e.amountCents) / 100)),\"\(note)\"")
         }
         return lines.joined(separator: "\n")

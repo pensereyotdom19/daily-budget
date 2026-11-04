@@ -1,0 +1,6 @@
+# The app has no third-party libraries; this keeps the GitHub Actions used by the tests up to date.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule: { interval: monthly }

@@ -134,6 +134,16 @@ final class MoreFeaturesTests: XCTestCase {
         XCTAssertEqual(Money.formatRiel(12_500), "៛12,500")
     }
 
+    // MARK: Export
+
+    func testExportedNotesCannotRunAsSpreadsheetFormulas() {
+        XCTAssertEqual(CSVExport.safeCell("=HYPERLINK(\"http://x\")"), "'=HYPERLINK(\"http://x\")")
+        XCTAssertEqual(CSVExport.safeCell("@SUM(A1)"), "'@SUM(A1)")
+        XCTAssertEqual(CSVExport.safeCell("-5 refund"), "'-5 refund")
+        XCTAssertEqual(CSVExport.safeCell("Iced coffee"), "Iced coffee")
+        XCTAssertEqual(CSVExport.safeCell(""), "")
+    }
+
     // MARK: Widget
 
     func testWidgetIncludesExtraLivingMoney() {
