@@ -25,6 +25,7 @@ targets:
         GENERATE_INFOPLIST_FILE: YES
         TARGETED_DEVICE_FAMILY: "1"
         CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_TEAM: 7K4A6SZT3P
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
   DailyBudgetTests:
     type: bundle.unit-test
