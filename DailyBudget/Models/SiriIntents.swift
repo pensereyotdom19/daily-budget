@@ -6,9 +6,18 @@ enum CategoryOption: String, AppEnum {
     case food, coffee, transport, sport, skinCare, phone, shopping, health, fun, other
 
     static let typeDisplayRepresentation: TypeDisplayRepresentation = "Category"
+    /// Synonyms let Siri understand everyday words: "Add lunch", "Log Grab", "Add a top-up".
     static let caseDisplayRepresentations: [CategoryOption: DisplayRepresentation] = [
-        .food: "Food", .coffee: "Coffee", .transport: "Transport", .sport: "Sport", .skinCare: "Skin care",
-        .phone: "Phone", .shopping: "Shopping", .health: "Health", .fun: "Fun", .other: "Other",
+        .food: DisplayRepresentation(title: "Food", synonyms: ["lunch", "dinner", "breakfast", "meal", "snack", "rice", "noodles"]),
+        .coffee: DisplayRepresentation(title: "Coffee", synonyms: ["a coffee", "latte", "iced coffee", "tea", "drink"]),
+        .transport: DisplayRepresentation(title: "Transport", synonyms: ["Grab", "taxi", "tuk tuk", "PassApp", "bus", "fuel", "petrol", "gas"]),
+        .sport: DisplayRepresentation(title: "Sport", synonyms: ["gym", "football", "badminton"]),
+        .skinCare: DisplayRepresentation(title: "Skin care", synonyms: ["skincare", "cosmetics", "makeup"]),
+        .phone: DisplayRepresentation(title: "Phone", synonyms: ["top-up", "top up", "phone top-up", "data", "phone card"]),
+        .shopping: DisplayRepresentation(title: "Shopping", synonyms: ["clothes", "shoes", "groceries"]),
+        .health: DisplayRepresentation(title: "Health", synonyms: ["medicine", "pharmacy", "doctor"]),
+        .fun: DisplayRepresentation(title: "Fun", synonyms: ["movie", "cinema", "game", "games", "karaoke"]),
+        .other: DisplayRepresentation(title: "Other", synonyms: ["something", "something else"]),
     ]
 }
 
@@ -67,15 +76,34 @@ struct OpenAddExpenseIntent: AppIntent {
     }
 }
 
+/// Siri only understands the exact phrases listed here (with any category word in place of the
+/// category), so there are several ways to say each one. Every phrase must name the app.
 struct DailyBudgetShortcuts: AppShortcutsProvider {
     static var appShortcuts: [AppShortcut] {
         AppShortcut(intent: AddExpenseIntent(),
                     phrases: ["Add \(\.$category) in \(.applicationName)",
+                              "Add \(\.$category) to \(.applicationName)",
+                              "Add \(\.$category) on \(.applicationName)",
                               "Log \(\.$category) in \(.applicationName)",
-                              "Add an expense in \(.applicationName)"],
+                              "Log \(\.$category) to \(.applicationName)",
+                              "Log \(\.$category) on \(.applicationName)",
+                              "\(.applicationName) add \(\.$category)",
+                              "\(.applicationName) log \(\.$category)",
+                              "I bought \(\.$category) in \(.applicationName)",
+                              "Spent on \(\.$category) in \(.applicationName)",
+                              "Add an expense in \(.applicationName)",
+                              "Add an expense to \(.applicationName)",
+                              "Add expense in \(.applicationName)",
+                              "Add expense to \(.applicationName)",
+                              "Log an expense in \(.applicationName)",
+                              "Log expense in \(.applicationName)",
+                              "\(.applicationName) add expense"],
                     shortTitle: "Add expense", systemImageName: "plus.circle.fill")
         AppShortcut(intent: OpenAddExpenseIntent(),
-                    phrases: ["New expense in \(.applicationName)", "Open \(.applicationName) to add an expense"],
+                    phrases: ["New expense in \(.applicationName)",
+                              "New \(.applicationName) expense",
+                              "Open \(.applicationName) to add an expense",
+                              "Open the add screen in \(.applicationName)"],
                     shortTitle: "New expense", systemImageName: "square.and.pencil")
     }
 }

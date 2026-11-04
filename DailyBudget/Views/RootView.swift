@@ -68,6 +68,8 @@ struct RootView: View {
             QuickAddImporter.run(in: context)
             if QuickAddImporter.takeOpenAddRequest() { showingAdd = true }
             lock.sceneChanged(to: .active)
+            // Re-registers the Siri phrases (and their category words) every launch.
+            DailyBudgetShortcuts.updateAppShortcutParameters()
             AppRefresh.run(context: context)
             sync.attach(context)
             sync.appBecameActive()

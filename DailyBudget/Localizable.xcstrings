@@ -1448,6 +1448,9 @@
         }
       }
     },
+    "Grab": {
+      "shouldTranslate": false
+    },
     "Health": {
       "localizations": {
         "km": {
@@ -2360,6 +2363,9 @@
           }
         }
       }
+    },
+    "PassApp": {
+      "shouldTranslate": false
     },
     "Password": {
       "localizations": {
@@ -3561,6 +3567,9 @@
         }
       }
     },
+    "a coffee": {
+      "shouldTranslate": false
+    },
     "at %@ per $1": {
       "localizations": {
         "km": {
@@ -3570,6 +3579,36 @@
           }
         }
       }
+    },
+    "badminton": {
+      "shouldTranslate": false
+    },
+    "breakfast": {
+      "shouldTranslate": false
+    },
+    "bus": {
+      "shouldTranslate": false
+    },
+    "cinema": {
+      "shouldTranslate": false
+    },
+    "clothes": {
+      "shouldTranslate": false
+    },
+    "cosmetics": {
+      "shouldTranslate": false
+    },
+    "data": {
+      "shouldTranslate": false
+    },
+    "dinner": {
+      "shouldTranslate": false
+    },
+    "doctor": {
+      "shouldTranslate": false
+    },
+    "drink": {
+      "shouldTranslate": false
     },
     "e.g. Gift from mom": {
       "localizations": {
@@ -3611,6 +3650,36 @@
         }
       }
     },
+    "football": {
+      "shouldTranslate": false
+    },
+    "fuel": {
+      "shouldTranslate": false
+    },
+    "game": {
+      "shouldTranslate": false
+    },
+    "games": {
+      "shouldTranslate": false
+    },
+    "gas": {
+      "shouldTranslate": false
+    },
+    "groceries": {
+      "shouldTranslate": false
+    },
+    "gym": {
+      "shouldTranslate": false
+    },
+    "iced coffee": {
+      "shouldTranslate": false
+    },
+    "karaoke": {
+      "shouldTranslate": false
+    },
+    "latte": {
+      "shouldTranslate": false
+    },
     "living %@": {
       "localizations": {
         "km": {
@@ -3620,6 +3689,24 @@
           }
         }
       }
+    },
+    "lunch": {
+      "shouldTranslate": false
+    },
+    "makeup": {
+      "shouldTranslate": false
+    },
+    "meal": {
+      "shouldTranslate": false
+    },
+    "medicine": {
+      "shouldTranslate": false
+    },
+    "movie": {
+      "shouldTranslate": false
+    },
+    "noodles": {
+      "shouldTranslate": false
     },
     "of %@": {
       "localizations": {
@@ -3660,6 +3747,51 @@
           }
         }
       }
+    },
+    "petrol": {
+      "shouldTranslate": false
+    },
+    "pharmacy": {
+      "shouldTranslate": false
+    },
+    "phone card": {
+      "shouldTranslate": false
+    },
+    "phone top-up": {
+      "shouldTranslate": false
+    },
+    "rice": {
+      "shouldTranslate": false
+    },
+    "shoes": {
+      "shouldTranslate": false
+    },
+    "skincare": {
+      "shouldTranslate": false
+    },
+    "snack": {
+      "shouldTranslate": false
+    },
+    "something": {
+      "shouldTranslate": false
+    },
+    "something else": {
+      "shouldTranslate": false
+    },
+    "taxi": {
+      "shouldTranslate": false
+    },
+    "tea": {
+      "shouldTranslate": false
+    },
+    "top up": {
+      "shouldTranslate": false
+    },
+    "top-up": {
+      "shouldTranslate": false
+    },
+    "tuk tuk": {
+      "shouldTranslate": false
     },
     "· %lld": {
       "shouldTranslate": false
