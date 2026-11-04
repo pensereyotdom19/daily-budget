@@ -25,7 +25,7 @@ A private iPhone app for a 6-month budget (Nov 2026 – Apr 2027, $4,700). It sh
 ## Install on your iPhone
 
 1. Xcode → Settings → Accounts → sign in with your Apple ID.
-2. Select the DailyBudget target → Signing & Capabilities → Team = your Apple ID. If the bundle ID is taken, change `com.personal.dailybudget` to something unique.
+2. Select the DailyBudget target → Signing & Capabilities → Team = your Apple ID. If the bundle ID is taken, change `com.pensereyotdom19.dailybudget` to something unique.
 3. iPhone: Settings → Privacy & Security → Developer Mode → On, then restart.
 4. Connect the iPhone by cable, pick it as the run target, press Run.
 5. iPhone: Settings → General → VPN & Device Management → trust your developer profile.
