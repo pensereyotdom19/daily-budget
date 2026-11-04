@@ -30,7 +30,7 @@ struct TodayView: View {
 
     var body: some View {
         let today = calc.summary(on: .now)
-        let streak = calc.streak(endingOn: .now, since: settings?.planStartDate ?? .now)
+        let streak = calc.streak(endingOn: .now, since: settings?.streakStartDate ?? .now)
 
         ScrollView {
             VStack(spacing: 14) {

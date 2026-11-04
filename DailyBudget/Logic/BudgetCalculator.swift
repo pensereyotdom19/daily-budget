@@ -102,6 +102,13 @@ struct BudgetCalculator {
         return count
     }
 
+    /// The streak counts from the later of the plan start and the first time the app was opened,
+    /// so days before you started using the app don't count as "on budget".
+    static func streakStart(planStart: Date, firstOpened: Date?) -> Date {
+        guard let firstOpened else { return planStart }
+        return max(planStart, firstOpened)
+    }
+
     /// Sum of leftover living money from plan months that have fully ended before `today`.
     func emergencySavingsCents(planMonths: [String], today: Date) -> Int {
         let currentKey = MonthKey.key(for: today, calendar: calendar)

@@ -63,6 +63,8 @@ final class BudgetSettings {
     var totalCents: Int = 470_000
     var livingMonthlyCents: Int = 9_200
     var engagementCents: Int = 150_000
+    /// When the app was first opened. The on-budget streak never counts days before this.
+    var firstOpenedAt: Date? = nil
 
     init() {}
 }

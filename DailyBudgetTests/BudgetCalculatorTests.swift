@@ -49,6 +49,16 @@ final class BudgetCalculatorTests: XCTestCase {
         XCTAssertEqual(c.streak(endingOn: day(2026, 11, 4), since: day(2026, 11, 1, 0)), 2)
     }
 
+    func testStreakCountsOnlyFromFirstUse() {
+        let start = BudgetCalculator.streakStart(planStart: day(2026, 11, 1, 0), firstOpened: day(2026, 11, 4, 15))
+        XCTAssertEqual(calc([]).streak(endingOn: day(2026, 11, 4), since: start), 1)
+        XCTAssertEqual(calc([]).streak(endingOn: day(2026, 11, 6), since: start), 3)
+        // Opened before the plan starts: the plan start wins.
+        XCTAssertEqual(BudgetCalculator.streakStart(planStart: day(2026, 11, 1, 0), firstOpened: day(2026, 10, 20)),
+                       day(2026, 11, 1, 0))
+        XCTAssertEqual(BudgetCalculator.streakStart(planStart: day(2026, 11, 1, 0), firstOpened: nil), day(2026, 11, 1, 0))
+    }
+
     func testLeftoverOfFinishedMonthGoesToSavings() {
         let c = calc([.init(date: day(2026, 11, 10), cents: 1_000, countsAsLiving: true)])
         let months = MonthKey.range(start: "2026-11", count: 6)

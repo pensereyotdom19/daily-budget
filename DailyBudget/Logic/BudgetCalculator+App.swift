@@ -13,4 +13,6 @@ extension BudgetCalculator {
 extension BudgetSettings {
     var planMonths: [String] { MonthKey.range(start: startMonth, count: monthCount) }
     var planStartDate: Date { MonthKey.firstDay(of: startMonth) ?? .now }
+    /// First day the streak may count: the later of plan start and first app use.
+    var streakStartDate: Date { BudgetCalculator.streakStart(planStart: planStartDate, firstOpened: firstOpenedAt) }
 }

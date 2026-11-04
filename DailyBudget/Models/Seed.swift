@@ -4,10 +4,17 @@ import SwiftData
 /// Pre-fills the app with the 6-month plan (Nov 2026 – Apr 2027) the first time it opens.
 enum Seed {
     static func insertIfNeeded(into context: ModelContext) {
-        let existing = (try? context.fetchCount(FetchDescriptor<BudgetSettings>())) ?? 0
-        guard existing == 0 else { return }
+        if let existing = try? context.fetch(FetchDescriptor<BudgetSettings>()).first {
+            // Installs from before firstOpenedAt existed start their streak today.
+            if existing.firstOpenedAt == nil {
+                existing.firstOpenedAt = .now
+                try? context.save()
+            }
+            return
+        }
 
         let settings = BudgetSettings()
+        settings.firstOpenedAt = .now
         context.insert(settings)
 
         let months = MonthKey.range(start: settings.startMonth, count: settings.monthCount)
