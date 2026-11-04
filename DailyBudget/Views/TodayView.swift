@@ -8,6 +8,7 @@ struct TodayView: View {
     @Query(sort: \Expense.date, order: .reverse) private var expenses: [Expense]
     @Query private var settingsList: [BudgetSettings]
     @Query(sort: \Bill.sortOrder) private var bills: [Bill]
+    @State private var editing: Expense?
 
     private var settings: BudgetSettings? { settingsList.first }
     private var calc: BudgetCalculator { BudgetCalculator(expenses: expenses, settings: settings) }
@@ -32,6 +33,7 @@ struct TodayView: View {
         let today = calc.summary(on: .now)
         let streak = calc.streak(endingOn: .now, since: settings?.streakStartDate ?? .now)
 
+        NavigationStack {
         ScrollView {
             VStack(spacing: 14) {
                 HStack(alignment: .bottom) {
@@ -46,20 +48,33 @@ struct TodayView: View {
                     }
                 }
 
-                ringCard(today)
+                NavigationLink(value: Calendar.current.startOfDay(for: .now)) {
+                    ringCard(today)
+                }
+                .buttonStyle(.plain)
+                .accessibilityHint("Shows today's expenses")
 
                 HStack(spacing: 12) {
-                    statCard(title: "\(MonthKey.title(of: MonthKey.key(for: .now)).uppercased()) LEFT",
-                             value: Money.format(calc.monthLeftCents(inMonthOf: .now), alwaysShowCents: true),
-                             note: "of \(Money.format(settings?.livingMonthlyCents ?? 0)) living money",
-                             noteColor: Theme.secondary)
+                    NavigationLink(value: MonthRoute(monthKey: MonthKey.key(for: .now))) {
+                        statCard(title: "\(MonthKey.title(of: MonthKey.key(for: .now)).uppercased()) LEFT",
+                                 value: Money.format(calc.monthLeftCents(inMonthOf: .now), alwaysShowCents: true),
+                                 note: "of \(Money.format(settings?.livingMonthlyCents ?? 0)) living money",
+                                 noteColor: Theme.secondary)
+                    }
+                    .buttonStyle(.plain)
                     if let next = nextBill {
-                        statCard(title: "NEXT BILL",
-                                 value: Money.format(next.bill.amountCents),
-                                 note: "\(next.bill.name) · \(MonthKey.title(of: next.month))",
-                                 noteColor: Theme.warn)
+                        NavigationLink(value: MonthRoute(monthKey: next.month)) {
+                            statCard(title: "NEXT BILL",
+                                     value: Money.format(next.bill.amountCents),
+                                     note: "\(next.bill.name) · \(MonthKey.title(of: next.month))",
+                                     noteColor: Theme.warn)
+                        }
+                        .buttonStyle(.plain)
                     } else {
-                        statCard(title: "NEXT BILL", value: "None", note: "All bills paid", noteColor: Theme.secondary)
+                        NavigationLink(value: MonthRoute(monthKey: MonthKey.key(for: .now))) {
+                            statCard(title: "NEXT BILL", value: "None", note: "All bills paid", noteColor: Theme.secondary)
+                        }
+                        .buttonStyle(.plain)
                     }
                 }
 
@@ -82,10 +97,12 @@ struct TodayView: View {
                 } else {
                     VStack(spacing: 0) {
                         ForEach(todaysExpenses) { e in
-                            ExpenseRow(expense: e)
+                            Button { editing = e } label: { ExpenseRow(expense: e) }
+                                .buttonStyle(.plain)
                                 .contextMenu {
+                                    Button("Edit", systemImage: "pencil") { editing = e }
                                     Button("Delete", systemImage: "trash", role: .destructive) {
-                                        context.delete(e)
+                                        BillPayments.delete(e, in: context)
                                     }
                                 }
                             if e.id != todaysExpenses.last?.id { Divider().overlay(Color.white.opacity(0.14)) }
@@ -93,7 +110,7 @@ struct TodayView: View {
                     }
                     .padding(.horizontal, 14).padding(.vertical, 4)
                     .glassCard()
-                    Text("Press and hold an expense to delete it.")
+                    Text("Tap an expense to edit it. Press and hold to delete.")
                         .font(.caption).foregroundStyle(Theme.secondary)
                 }
             }
@@ -102,6 +119,19 @@ struct TodayView: View {
             .padding(.bottom, 110)
         }
         .scrollIndicators(.hidden)
+        .background(GlowBackground())
+        .toolbar(.hidden, for: .navigationBar)
+        .navigationDestination(for: MonthRoute.self) { route in
+            MonthDetailView(route: route)
+        }
+        .navigationDestination(for: Date.self) { day in
+            DayDetailView(day: day)
+        }
+        .sheet(item: $editing) { e in
+            AddExpenseView(editing: e)
+                .presentationBackground(Theme.base)
+        }
+        }
     }
 
     private func ringCard(_ today: BudgetCalculator.DaySummary) -> some View {
@@ -150,7 +180,12 @@ struct TodayView: View {
 
     private func statCard(title: String, value: String, note: String, noteColor: Color) -> some View {
         VStack(alignment: .leading, spacing: 3) {
-            Text(title).font(.caption.weight(.semibold)).foregroundStyle(Theme.secondary)
+            HStack {
+                Text(title).font(.caption.weight(.semibold)).foregroundStyle(Theme.secondary)
+                Spacer(minLength: 4)
+                Image(systemName: "chevron.right")
+                    .font(.caption2.weight(.bold)).foregroundStyle(Theme.secondary)
+            }
             Text(value).font(Theme.rounded(24))
             Text(note).font(.caption).foregroundStyle(noteColor).lineLimit(1)
         }

@@ -49,7 +49,10 @@ struct RootView: View {
                 .presentationDetents([.large])
                 .presentationBackground(Theme.base)
         }
-        .onAppear { Seed.insertIfNeeded(into: context) }
+        .onAppear {
+            Seed.insertIfNeeded(into: context)
+            BillPayments.sync(in: context)
+        }
     }
 }
 

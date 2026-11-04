@@ -93,6 +93,14 @@ final class BudgetCalculatorTests: XCTestCase {
         XCTAssertEqual(BudgetCalculator.plannedCents(month: "2026-12", livingMonthlyCents: 9_200, bills: bills), 99_200)
     }
 
+    func testBillPaymentDateLandsInTheBillsMonth() {
+        let now = day(2026, 11, 4, 15)
+        // Ticked in its own month: dated now.
+        XCTAssertEqual(BudgetCalculator.billPaymentDate(month: "2026-11", now: now, calendar: cal), now)
+        // Ticked for another month: noon on the 1st of that month.
+        XCTAssertEqual(BudgetCalculator.billPaymentDate(month: "2026-12", now: now, calendar: cal), day(2026, 12, 1, 12))
+    }
+
     func testMonthRangeCrossesYear() {
         XCTAssertEqual(MonthKey.range(start: "2026-11", count: 6),
                        ["2026-11", "2026-12", "2027-01", "2027-02", "2027-03", "2027-04"])

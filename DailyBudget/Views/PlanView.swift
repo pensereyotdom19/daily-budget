@@ -2,6 +2,7 @@ import SwiftUI
 import SwiftData
 
 struct PlanView: View {
+    @Environment(\.modelContext) private var context
     @Query(sort: \Bill.sortOrder) private var bills: [Bill]
     @Query private var settingsList: [BudgetSettings]
     @Query(sort: \Expense.date) private var expenses: [Expense]
@@ -33,6 +34,7 @@ struct PlanView: View {
     }
 
     var body: some View {
+        NavigationStack {
         ScrollView {
             VStack(spacing: 14) {
                 HStack(alignment: .bottom) {
@@ -70,11 +72,17 @@ struct PlanView: View {
             .padding(.bottom, 110)
         }
         .scrollIndicators(.hidden)
+        .background(GlowBackground())
+        .toolbar(.hidden, for: .navigationBar)
+        .navigationDestination(for: MonthRoute.self) { route in
+            MonthDetailView(route: route)
+        }
         .sheet(item: $editingBill) { bill in
             AmountEditor(title: bill.name, cents: bill.amountCents) { bill.amountCents = $0 }
         }
         .sheet(isPresented: $editingSettings) {
             if let s = settings { SettingsEditor(settings: s) }
+        }
         }
     }
 
@@ -145,7 +153,7 @@ struct PlanView: View {
                     let paid = bill.isPaid(in: currentMonth)
                     HStack(spacing: 12) {
                         Button {
-                            withAnimation(.snappy) { bill.togglePaid(in: currentMonth) }
+                            withAnimation(.snappy) { BillPayments.toggle(bill: bill, month: currentMonth, in: context) }
                         } label: {
                             Image(systemName: paid ? "checkmark.circle.fill" : "circle")
                                 .font(.system(size: 22))
@@ -173,7 +181,10 @@ struct PlanView: View {
     }
 
     private var monthByMonth: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        let spent = Dictionary(uniqueKeysWithValues:
+            BudgetCalculator(expenses: expenses, settings: settings)
+                .monthlySpending(months: months).map { ($0.monthKey, $0.totalCents) })
+        return VStack(alignment: .leading, spacing: 8) {
             Text("Month by month").font(.title3.weight(.bold)).padding(.horizontal, 4)
             VStack(spacing: 0) {
                 ForEach(months, id: \.self) { month in
@@ -181,6 +192,8 @@ struct PlanView: View {
                     let living = settings?.livingMonthlyCents ?? 0
                     let sum = due.reduce(living) { $0 + $1.amountCents }
                     let isBig = due.contains { $0.dueMonths.count == 1 }
+                    let spentHere = spent[month] ?? 0
+                    NavigationLink(value: MonthRoute(monthKey: month)) {
                     HStack {
                         VStack(alignment: .leading, spacing: 2) {
                             HStack(spacing: 6) {
@@ -193,12 +206,23 @@ struct PlanView: View {
                             }
                             Text(breakdown(due: due, living: living))
                                 .font(.caption).foregroundStyle(Theme.secondary).lineLimit(2)
+                            if month <= currentMonth {
+                                Text("Spent \(Money.format(spentHere, alwaysShowCents: true))")
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundStyle(spentHere > sum ? Theme.warn : Theme.mint)
+                            }
                         }
                         Spacer()
                         Text(Money.format(sum)).font(Theme.rounded(16))
                             .foregroundStyle(isBig ? Theme.warn : .white)
+                        Image(systemName: "chevron.right")
+                            .font(.caption2.weight(.bold)).foregroundStyle(Theme.secondary)
                     }
                     .padding(.vertical, 9)
+                    .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityHint("Opens \(MonthKey.title(of: month))")
                     if month != months.last { Divider().overlay(Color.white.opacity(0.14)) }
                 }
             }

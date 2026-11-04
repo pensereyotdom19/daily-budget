@@ -63,6 +63,9 @@ struct HistoryView: View {
             .navigationDestination(for: Date.self) { day in
                 DayDetailView(day: day)
             }
+            .navigationDestination(for: MonthRoute.self) { route in
+                MonthDetailView(route: route)
+            }
         }
     }
 
@@ -118,18 +121,18 @@ struct HistoryView: View {
             }
             HStack(alignment: .bottom, spacing: 6) {
                 ForEach(data) { m in
-                    let isFuture = m.monthKey > current
-                    Button {
-                        withAnimation(.snappy) { monthKey = m.monthKey }
-                    } label: {
+                    NavigationLink(value: MonthRoute(monthKey: m.monthKey)) {
                         MonthBar(spending: m, plannedCents: planned(m.monthKey), maxCents: maxValue,
-                                 isSelected: m.monthKey == monthKey, isFuture: isFuture)
+                                 isSelected: m.monthKey == monthKey, isFuture: m.monthKey > current)
                     }
                     .buttonStyle(.plain)
-                    .disabled(isFuture)
+                    .accessibilityHint("Opens this month")
                 }
             }
             .frame(height: 150)
+            Text("Tap a month to see its bills and expenses")
+                .font(.caption2).foregroundStyle(Theme.secondary)
+                .frame(maxWidth: .infinity)
             HStack(spacing: 12) {
                 legendItem("Everyday", selected.livingCents, Theme.mint)
                 legendItem("Bills", selected.billsCents, Category.bills.color)
@@ -174,6 +177,18 @@ struct HistoryView: View {
                 Spacer()
                 Text(Money.format(total, alwaysShowCents: true)).font(Theme.rounded(26))
             }
+            NavigationLink(value: MonthRoute(monthKey: monthKey)) {
+                HStack {
+                    Text("Open \(MonthKey.title(of: monthKey)) details")
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                }
+                .font(.footnote.weight(.semibold))
+                .padding(.horizontal, 12).frame(height: 36)
+                .background(Color.white.opacity(0.08), in: Capsule())
+                .contentShape(Capsule())
+            }
+            .buttonStyle(.plain)
             if categoryTotals.isEmpty {
                 Text("No expenses this month yet.").font(.footnote).foregroundStyle(Theme.secondary)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -181,21 +196,29 @@ struct HistoryView: View {
             ForEach(categoryTotals) { item in
                 let cat = item.category
                 let cents = item.cents
-                HStack(spacing: 10) {
-                    Text(cat.title).font(.footnote).foregroundStyle(.white.opacity(0.85))
-                        .frame(width: 82, alignment: .leading)
-                    GeometryReader { geo in
-                        ZStack(alignment: .leading) {
-                            Capsule().fill(Color.white.opacity(0.12))
-                            Capsule().fill(cat.color)
-                                .frame(width: max(6, geo.size.width * CGFloat(cents) / CGFloat(maxValue)))
+                NavigationLink(value: MonthRoute(monthKey: monthKey, category: cat)) {
+                    HStack(spacing: 10) {
+                        Text(cat.title).font(.footnote).foregroundStyle(.white.opacity(0.85))
+                            .frame(width: 82, alignment: .leading)
+                        GeometryReader { geo in
+                            ZStack(alignment: .leading) {
+                                Capsule().fill(Color.white.opacity(0.12))
+                                Capsule().fill(cat.color)
+                                    .frame(width: max(6, geo.size.width * CGFloat(cents) / CGFloat(maxValue)))
+                            }
                         }
+                        .frame(height: 10)
+                        Text(Money.format(cents, alwaysShowCents: true)).font(Theme.rounded(13))
+                            .frame(width: 60, alignment: .trailing)
+                        Image(systemName: "chevron.right")
+                            .font(.caption2.weight(.bold)).foregroundStyle(Theme.secondary)
                     }
-                    .frame(height: 10)
-                    Text(Money.format(cents, alwaysShowCents: true)).font(Theme.rounded(13))
-                        .frame(width: 56, alignment: .trailing)
+                    .frame(minHeight: 28)
+                    .contentShape(Rectangle())
                 }
+                .buttonStyle(.plain)
                 .accessibilityElement(children: .combine)
+                .accessibilityHint("Shows \(cat.title.lowercased()) expenses")
             }
         }
         .padding(16)
@@ -318,7 +341,8 @@ struct DayDetailView: View {
                     .listRowBackground(Color.white.opacity(0.06))
             }
             .onDelete { offsets in
-                for i in offsets { context.delete(items[i]) }
+                let doomed = offsets.map { items[$0] }
+                for e in doomed { BillPayments.delete(e, in: context) }
             }
             if items.isEmpty {
                 Text("No expenses on this day.").foregroundStyle(Theme.secondary)

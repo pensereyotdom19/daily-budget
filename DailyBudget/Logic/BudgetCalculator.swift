@@ -139,6 +139,14 @@ struct BudgetCalculator {
         bills.filter { $0.dueMonths.contains(month) }.reduce(livingMonthlyCents) { $0 + $1.cents }
     }
 
+    /// Date for a bill payment expense: now if the bill is ticked in its own month,
+    /// otherwise noon on the 1st of the bill's month (so it lands in the right month).
+    static func billPaymentDate(month: String, now: Date, calendar: Calendar = .current) -> Date {
+        if MonthKey.key(for: now, calendar: calendar) == month { return now }
+        guard let first = MonthKey.firstDay(of: month, calendar: calendar) else { return now }
+        return calendar.date(byAdding: .hour, value: 12, to: first) ?? first
+    }
+
     // MARK: - Streak start
 
     /// The streak counts from the later of the plan start and the first time the app was opened,

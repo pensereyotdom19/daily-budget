@@ -38,6 +38,7 @@ targets:
       base:
         GENERATE_INFOPLIST_FILE: YES
         PRODUCT_BUNDLE_IDENTIFIER: com.pensereyotdom19.dailybudget.tests
+        DEVELOPMENT_TEAM: 7K4A6SZT3P
 schemes:
   DailyBudget:
     build:

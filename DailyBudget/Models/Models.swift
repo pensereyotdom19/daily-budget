@@ -9,6 +9,10 @@ final class Expense {
     var categoryRaw: String = Category.other.rawValue
     var note: String = ""
     var date: Date = Date()
+    /// Set when this expense was created by ticking a bill paid (see BillPayments).
+    var billID: UUID? = nil
+    /// The month key ("2026-11") of that bill payment.
+    var billMonth: String? = nil
 
     init(amountCents: Int, category: Category, note: String = "", date: Date = .now) {
         self.id = UUID()
@@ -45,14 +49,7 @@ final class Bill {
 
     func isDue(in monthKey: String) -> Bool { dueMonths.contains(monthKey) }
     func isPaid(in monthKey: String) -> Bool { paidMonths.contains(monthKey) }
-
-    func togglePaid(in monthKey: String) {
-        if let i = paidMonths.firstIndex(of: monthKey) {
-            paidMonths.remove(at: i)
-        } else {
-            paidMonths.append(monthKey)
-        }
-    }
+    // Mark paid/unpaid through BillPayments so the matching Bills expense is kept in step.
 }
 
 /// The overall 6-month plan. There is exactly one.
