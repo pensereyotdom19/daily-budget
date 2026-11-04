@@ -58,22 +58,25 @@ enum Category: String, CaseIterable, Codable, Identifiable {
         return table.first { entry in entry.keys.contains { n.contains($0) } }?.symbol
     }
 
-    var color: Color {
+    /// The category's colour as 0xRRGGBB (also used by the widget).
+    var hex: UInt32 {
         switch self {
-        case .food: return Color(hex: 0xFFC27A)
-        case .coffee: return Color(hex: 0xE6B48A)
-        case .transport: return Color(hex: 0x7FD8FF)
-        case .sport: return Color(hex: 0x9DF7B8)
-        case .skinCare: return Color(hex: 0xFF9BD2)
-        case .phone: return Color(hex: 0xB6A4FF)
-        case .shopping: return Color(hex: 0xFFE08F)
-        case .health: return Color(hex: 0xFFA3A3)
-        case .fun: return Color(hex: 0xFFE59A)
-        case .bills: return Color(hex: 0xC9D2E3)
-        case .engagement: return Color(hex: 0xFFB0C8)
-        case .other: return Color(hex: 0xE6E6EE)
+        case .food: return 0xFFC27A
+        case .coffee: return 0xE6B48A
+        case .transport: return 0x7FD8FF
+        case .sport: return 0x9DF7B8
+        case .skinCare: return 0xFF9BD2
+        case .phone: return 0xB6A4FF
+        case .shopping: return 0xFFE08F
+        case .health: return 0xFFA3A3
+        case .fun: return 0xFFE59A
+        case .bills: return 0xC9D2E3
+        case .engagement: return 0xFFB0C8
+        case .other: return 0xE6E6EE
         }
     }
+
+    var color: Color { Color(hex: hex) }
 
     /// True when spending in this category comes out of the daily living money.
     var countsAsLiving: Bool {

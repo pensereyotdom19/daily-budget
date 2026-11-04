@@ -1,5 +1,6 @@
 import WidgetKit
 import SwiftUI
+import AppIntents
 
 @main
 struct DailyBudgetWidgets: WidgetBundle {
@@ -31,6 +32,7 @@ struct DayEntry: TimelineEntry {
     var spentCents: Int
     var monthLeftCents: Int
     var hasData: Bool
+    var quickItems: [WidgetQuickItem] = []
     var leftCents: Int { limitCents - spentCents }
     var isOver: Bool { spentCents > limitCents }
     var fraction: Double { limitCents > 0 ? min(1, max(0, Double(leftCents) / Double(limitCents))) : 0 }
@@ -65,7 +67,8 @@ struct Provider: TimelineProvider {
         let calc = snap.calculator()
         let today = calc.summary(on: date)
         return DayEntry(date: date, limitCents: today.limitCents, spentCents: today.spentCents,
-                        monthLeftCents: calc.monthLeftCents(inMonthOf: date), hasData: true)
+                        monthLeftCents: calc.monthLeftCents(inMonthOf: date), hasData: true,
+                        quickItems: Array((snap.quickItems ?? []).prefix(3)))
     }
 }
 
@@ -161,8 +164,44 @@ struct TodayLeftView: View {
     }
 
     private var medium: some View {
-        HStack(spacing: 16) {
-            ZStack { ring(size: 118, line: 11); ringLabel }
+        HStack(spacing: 14) {
+            VStack(spacing: 4) {
+                ZStack { ring(size: entry.quickItems.isEmpty ? 118 : 100, line: 10); ringLabel }
+                if !entry.quickItems.isEmpty {
+                    Text("Limit \(limit)").font(.system(size: 10, weight: .semibold)).foregroundStyle(W.secondary)
+                }
+            }
+            if entry.quickItems.isEmpty { stats } else { buttons }
+        }
+        .foregroundStyle(.white)
+    }
+
+    /// Tap to log it right away. The app saves it next time it opens.
+    private var buttons: some View {
+        VStack(spacing: 6) {
+            ForEach(entry.quickItems, id: \.self) { item in
+                Button(intent: QuickAddIntent(item: item)) {
+                    HStack(spacing: 8) {
+                        Image(systemName: item.symbol)
+                            .font(.system(size: 11, weight: .bold))
+                            .foregroundStyle(W.base.opacity(0.85))
+                            .frame(width: 24, height: 24)
+                            .background(Color(widgetHex: item.colorHex), in: RoundedRectangle(cornerRadius: 7, style: .continuous))
+                        Text(item.title).font(.system(size: 12, weight: .semibold)).lineLimit(1)
+                        Spacer(minLength: 2)
+                        Text(Money.format(item.cents, alwaysShowCents: true)).font(W.rounded(12, .semibold))
+                        Image(systemName: "plus").font(.system(size: 10, weight: .heavy)).foregroundStyle(W.mint)
+                    }
+                    .padding(.horizontal, 8).frame(height: 32)
+                    .background(Color.white.opacity(0.1), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                }
+                .buttonStyle(.plain)
+            }
+        }
+    }
+
+    private var stats: some View {
+        HStack(spacing: 0) {
             VStack(alignment: .leading, spacing: 8) {
                 stat("DAILY LIMIT", limit)
                 stat("SPENT TODAY", Money.format(entry.spentCents, alwaysShowCents: true))
@@ -199,5 +238,38 @@ struct TodayLeftView: View {
             Text("Limit \(limit)").font(.caption2)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+private extension Color {
+    init(widgetHex hex: UInt32) {
+        self.init(.sRGB, red: Double((hex >> 16) & 0xFF) / 255, green: Double((hex >> 8) & 0xFF) / 255,
+                  blue: Double(hex & 0xFF) / 255, opacity: 1)
+    }
+}
+
+/// A widget button: queues the expense for the app and updates the ring straight away.
+struct QuickAddIntent: AppIntent {
+    static let title: LocalizedStringResource = "Quick add"
+    static let isDiscoverable = false
+
+    @Parameter(title: "Note") var note: String
+    @Parameter(title: "Category") var category: String
+    @Parameter(title: "Amount in cents") var cents: Int
+
+    init() {}
+
+    init(item: WidgetQuickItem) {
+        note = item.note
+        category = item.category
+        cents = item.cents
+    }
+
+    func perform() async throws -> some IntentResult {
+        guard cents > 0 else { return .result() }
+        let pending = PendingExpense(id: UUID(), cents: cents, category: category, note: note, date: .now)
+        QuickAddQueue.append(pending)
+        QuickAddQueue.applyToSnapshot(pending, countsAsLiving: QuickAddQueue.countsAsLiving(category))
+        return .result()
     }
 }

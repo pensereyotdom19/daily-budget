@@ -15,6 +15,8 @@ struct WidgetSnapshot: Codable, Equatable {
     var updatedAt: Date
     /// Extra income added to living money, by month key. Optional so older snapshots still load.
     var extraLivingByMonth: [String: Int]? = nil
+    /// The app's most-used items, shown as buttons on the medium widget.
+    var quickItems: [WidgetQuickItem]? = nil
 
     static let appGroup = "group.com.pensereyotdom19.dailybudget"
     static let key = "widgetSnapshot.v1"

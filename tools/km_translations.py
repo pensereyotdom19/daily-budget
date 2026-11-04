@@ -56,7 +56,7 @@ KM = {
     "Tap to add it now": "ចុចដើម្បីបន្ថែមភ្លាម",
     "Add %@, %@": "បន្ថែម %1$@, %2$@",
     "Added %@ %@": "បានបន្ថែម %1$@ %2$@",
-    "Undo": "មិនធ្វើវិញ",
+    "Undo": "ត្រឡប់វិញ",
     "Backing up": "កំពុងបម្រុងទុក",
     "Backup problem": "មានបញ្ហាបម្រុងទុក",
     "%lld changes waiting to back up": "ការផ្លាស់ប្ដូរ %lld កំពុងរង់ចាំបម្រុងទុក",
@@ -221,7 +221,7 @@ KM = {
     "Added to the Engagement money": "បន្ថែមទៅលុយភ្ជាប់ពាក្យ",
     "%@ left today → %@ after this": "នៅសល់ថ្ងៃនេះ %1$@ → %2$@ ក្រោយចាយនេះ",
     "Paid from the %@ budget, not daily money": "បង់ពីថវិកា %@ មិនមែនលុយប្រចាំថ្ងៃទេ",
-    "OFTEN": "ញឹកញាប់",
+    "OFTEN": "ប្រើញឹកញាប់",
     "Fill in %@, %@": "បំពេញ %1$@, %2$@",
     "CATEGORY": "ប្រភេទ",
     "WHERE SHOULD IT GO?": "ដាក់លុយនេះទៅណា?",
@@ -254,7 +254,7 @@ KM = {
     # Can I afford it?
     "Type a price to see how it changes your budget. Nothing is saved.": "វាយតម្លៃដើម្បីមើលថាវាប៉ះពាល់ថវិកាយ៉ាងដូចម្ដេច។ មិនរក្សាទុកអ្វីទេ។",
     "Price": "តម្លៃ",
-    "Yes, it fits in today's money.": "បាទ/ចាស អាចទិញបានក្នុងលុយថ្ងៃនេះ។",
+    "Yes, it fits in today's money.": "បាន! វានៅក្នុងលុយថ្ងៃនេះ។",
     "More than today's money. Your month can take it, but the next days get less.": "លើសលុយថ្ងៃនេះ។ ខែនេះនៅតែអាចទ្រាំបាន ប៉ុន្តែថ្ងៃបន្ទាប់នឹងបានតិចជាងមុន។",
     "That's more than all the everyday money left this month.": "នេះលើសលុយចាយប្រចាំថ្ងៃទាំងអស់ដែលនៅសល់ខែនេះ។",
     "Left today": "នៅសល់ថ្ងៃនេះ",
@@ -315,6 +315,68 @@ KM = {
     "Total money for the plan": "លុយសរុបសម្រាប់ផែនការ",
     "Engagement (set aside)": "ភ្ជាប់ពាក្យ (ទុកដាច់ដោយឡែក)",
     "Total": "សរុប",
+
+    # Daily habits
+    "%@ spent on everyday things. %lld of %lld days on budget.": "ចាយប្រចាំថ្ងៃ %1$@។ %2$lld ក្នុងចំណោម %3$lld ថ្ងៃក្នុងថវិកា។",
+    "Most went to %@.": "ចាយច្រើនជាងគេលើ %@។",
+    "Your week": "សប្ដាហ៍របស់អ្នក",
+    "Weekly summary": "សង្ខេបប្រចាំសប្ដាហ៍",
+    "Sunday 7 PM: what you spent and how many days were on budget.": "ថ្ងៃអាទិត្យ ម៉ោង ៧ យប់៖ អ្នកចាយប៉ុន្មាន និងប៉ុន្មានថ្ងៃក្នុងថវិកា។",
+    "%@ this month": "%@ ខែនេះ",
+    "%@ this month: %@ of %@": "%1$@ ខែនេះ៖ %2$@ ក្នុងចំណោម %3$@",
+    "%@: %@ left of %@": "%1$@៖ នៅសល់ %2$@ ក្នុងចំណោម %3$@",
+    "%@: %@ over this month's limit": "%1$@៖ លើសដែនកំណត់ខែនេះ %2$@",
+    "A monthly limit, e.g. Coffee $15": "ដែនកំណត់ប្រចាំខែ ឧ. កាហ្វេ $15",
+    "Category limits": "ដែនកំណត់តាមប្រភេទ",
+    "Set a monthly limit for a category. Today warns you at 80% and when you go over. Leave it empty for no limit.":
+        "កំណត់ដែនកំណត់ប្រចាំខែសម្រាប់ប្រភេទមួយ។ ទំព័រ ថ្ងៃនេះ នឹងព្រមានពេលដល់ 80% និងពេលលើស។ ទុកទទេបើមិនចង់កំណត់។",
+    "Monthly limit in dollars": "ដែនកំណត់ប្រចាំខែជាដុល្លារ",
+    "No limit": "គ្មានដែនកំណត់",
+    "Remove limit": "លុបដែនកំណត់",
+    "Nothing": "គ្មាន",
+    # Expiry
+    "App expiry": "កម្មវិធីផុតកំណត់",
+    "The day before the free install stops opening, and that morning.": "មួយថ្ងៃមុនពេលកម្មវិធីឈប់បើក និងព្រឹកថ្ងៃនោះ។",
+    "This install": "ការដំឡើងនេះ",
+    "Works until %@": "ប្រើបានរហូតដល់ %@",
+    "%lld days left. Run it from Xcode again before then to reset to 7 days.": "នៅសល់ %lld ថ្ងៃ។ ដំណើរការពី Xcode ម្ដងទៀតមុនពេលនោះ ដើម្បីបានថ្មី ៧ ថ្ងៃ។",
+    "Last day. Run it from Xcode on your Mac today.": "ថ្ងៃចុងក្រោយ។ ដំណើរការពី Xcode លើ Mac របស់អ្នកថ្ងៃនេះ។",
+    "Reinstall Daily Budget soon": "ដំឡើង Daily Budget ឡើងវិញឆាប់ៗ",
+    "It stops opening tomorrow at %@. Run it from Xcode on your Mac to get 7 more days. Your data stays.":
+        "វានឹងឈប់បើកនៅថ្ងៃស្អែក ម៉ោង %@។ ដំណើរការពី Xcode លើ Mac ដើម្បីបានថែម ៧ ថ្ងៃ។ ទិន្នន័យនៅដដែល។",
+    "Daily Budget stops opening today": "Daily Budget ឈប់បើកនៅថ្ងៃនេះ",
+    "At %@. Run it from Xcode on your Mac to get 7 more days. Your data stays.": "នៅម៉ោង %@។ ដំណើរការពី Xcode លើ Mac ដើម្បីបានថែម ៧ ថ្ងៃ។ ទិន្នន័យនៅដដែល។",
+    "This install stops opening today. Run it from Xcode on your Mac to get 7 more days.": "កម្មវិធីនេះឈប់បើកនៅថ្ងៃនេះ។ ដំណើរការពី Xcode លើ Mac ដើម្បីបានថែម ៧ ថ្ងៃ។",
+    "This install stops opening tomorrow. Run it from Xcode on your Mac to get 7 more days.": "កម្មវិធីនេះឈប់បើកនៅថ្ងៃស្អែក។ ដំណើរការពី Xcode លើ Mac ដើម្បីបានថែម ៧ ថ្ងៃ។",
+    # Search and trends
+    "Search": "ស្វែងរក",
+    "Search expenses": "ស្វែងរកការចំណាយ",
+    "All months": "គ្រប់ខែ",
+    "Coffee, Grab, 1.25…": "កាហ្វេ, Grab, 1.25…",
+    "Clear search": "សម្អាតការស្វែងរក",
+    "Type a note, a category or an amount.": "វាយកំណត់ចំណាំ ប្រភេទ ឬចំនួនទឹកប្រាក់។",
+    "Nothing found for \"%@\".": "រកមិនឃើញ \"%@\" ទេ។",
+    "%lld found · %@ in total": "រកឃើញ %1$lld · សរុប %2$@",
+    "Everyday spending": "ការចាយប្រចាំថ្ងៃ",
+    "Everyday spending by month": "ការចាយប្រចាំថ្ងៃតាមខែ",
+    "Avg %@ / month": "មធ្យម %@ / ខែ",
+    "Living money": "លុយចាយប្រចាំខែ",
+    # Siri, widget
+    "Quick add": "បន្ថែមរហ័ស",
+    "Amount in cents": "ចំនួនជាសេន",
+    "Added %@ %@.": "បានបន្ថែម %1$@ %2$@។",
+    "Added %@ %@. %@ left today.": "បានបន្ថែម %1$@ %2$@។ នៅសល់ %3$@ ថ្ងៃនេះ។",
+    "How much was it, in dollars?": "តម្លៃប៉ុន្មានដុល្លារ?",
+    "In US dollars": "ជាដុល្លារអាមេរិក",
+    "Logs an expense in Daily Budget.": "កត់ត្រាការចំណាយក្នុង Daily Budget។",
+    "Opens Daily Budget ready to add an expense.": "បើក Daily Budget រួចរាល់សម្រាប់បន្ថែមការចំណាយ។",
+    # Sign out everywhere
+    "Sign out everywhere": "ចាកចេញគ្រប់ទីកន្លែង",
+    "Sign out on all devices": "ចាកចេញពីឧបករណ៍ទាំងអស់",
+    "Sign out on all devices?": "ចាកចេញពីឧបករណ៍ទាំងអស់មែនទេ?",
+    "Use this if a phone is lost. Every phone and browser signed in to this account is signed out. Your data stays on this phone and on the server.":
+        "ប្រើពេលបាត់ទូរស័ព្ទ។ ទូរស័ព្ទ និងកម្មវិធីរុករកទាំងអស់ដែលចូលគណនីនេះនឹងត្រូវចាកចេញ។ ទិន្នន័យនៅលើទូរស័ព្ទនេះ និងម៉ាស៊ីនមេដដែល។",
+    "Signed out on every device. Sign in again to keep backing up.": "បានចាកចេញពីឧបករណ៍ទាំងអស់។ ចូលគណនីម្ដងទៀតដើម្បីបន្តបម្រុងទុក។",
     "Settings": "ការកំណត់",
     "Same as iPhone": "ដូច iPhone",
     "Money and security": "លុយ និងសុវត្ថិភាព",
@@ -356,4 +418,4 @@ KM = {
 }
 
 # Not words (symbols, numbers, placeholders only): keep as they are.
-KEEP = {"Daily Budget", "%@ · %@", "%@ %@", "%lld", "+%@", "–", "$", "៛", "0", "0.00", "4100", "", "· %lld", "%@, %@, %@"}
+KEEP = {"Add ${amount} for ${category}", "Add ${category} in ${applicationName}", "New expense in ${applicationName}", "Daily Budget", "%@ · %@", "%@ %@", "%lld", "+%@", "–", "$", "៛", "0", "0.00", "4100", "", "· %lld", "%@, %@, %@"}

@@ -67,6 +67,20 @@ struct TodayView: View {
                     if sync.isSignedIn { syncBadge }
                 }
 
+                if let expiry = AppExpiry.date, AppExpiry.daysLeft(until: expiry) <= 1 {
+                    HStack(spacing: 10) {
+                        Image(systemName: "hourglass").foregroundStyle(Theme.warn)
+                        Text(AppExpiry.daysLeft(until: expiry) <= 0
+                             ? "This install stops opening today. Run it from Xcode on your Mac to get 7 more days."
+                             : "This install stops opening tomorrow. Run it from Xcode on your Mac to get 7 more days.")
+                            .font(.footnote.weight(.semibold))
+                            .fixedSize(horizontal: false, vertical: true)
+                        Spacer(minLength: 0)
+                    }
+                    .padding(14)
+                    .glassCard(radius: 20)
+                }
+
                 if BudgetCalculator.planHasEnded(planMonths: settings?.planMonths ?? [], today: .now) {
                     NavigationLink(value: PlanSummaryRoute()) {
                         HStack(spacing: 10) {
@@ -111,6 +125,9 @@ struct TodayView: View {
                         .buttonStyle(.pressable)
                     }
                 }
+
+                let warnings = calc.limitStatuses(limits: settings?.categoryLimits ?? [:], on: .now).filter { $0.level != .ok }
+                if !warnings.isEmpty { limitWarnings(warnings) }
 
                 Button { affording = true } label: {
                     HStack(spacing: 10) {
@@ -268,6 +285,37 @@ struct TodayView: View {
         toastTask?.cancel()
         withAnimation(.snappy) { justAdded = nil }
         BillPayments.delete(e, in: context)
+    }
+
+    /// Categories at 80% of their monthly limit or over it.
+    private func limitWarnings(_ list: [BudgetCalculator.LimitStatus]) -> some View {
+        VStack(spacing: 8) {
+            ForEach(list) { s in
+                let c = Category(rawValue: s.category) ?? .other
+                NavigationLink(value: MonthRoute(monthKey: MonthKey.key(for: .now), category: c)) {
+                    HStack(spacing: 10) {
+                        CategoryIcon(category: c, size: 30)
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(s.level == .over
+                                 ? "\(c.title): \(Money.format(-s.leftCents, alwaysShowCents: true)) over this month's limit"
+                                 : "\(c.title): \(Money.format(s.leftCents, alwaysShowCents: true)) left of \(Money.format(s.limitCents))")
+                                .font(.footnote.weight(.semibold))
+                                .foregroundStyle(s.level == .over ? Theme.warn : .white)
+                            GeometryReader { geo in
+                                Capsule().fill(s.level == .over ? Theme.warn : c.color)
+                                    .frame(width: geo.size.width * min(1, CGFloat(s.spentCents) / CGFloat(max(1, s.limitCents))))
+                            }
+                            .frame(height: 5)
+                            .background(Color.white.opacity(0.1), in: Capsule())
+                        }
+                        Image(systemName: "chevron.right").font(.caption2.weight(.bold)).foregroundStyle(Theme.secondary)
+                    }
+                    .padding(12)
+                    .glassCard(radius: 18)
+                }
+                .buttonStyle(.pressable)
+            }
+        }
     }
 
     /// Backup status: synced, waiting to upload, syncing or a problem. Tap for details.

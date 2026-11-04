@@ -32,10 +32,23 @@ struct HistoryView: View {
         NavigationStack(path: $path) {
             ScrollView {
                 VStack(spacing: 14) {
-                    ScreenHeader(caption: rangeCaption, title: "History")
+                    HStack(alignment: .bottom) {
+                        ScreenHeader(caption: rangeCaption, title: "History")
+                        NavigationLink(value: SearchRoute()) {
+                            Image(systemName: "magnifyingglass")
+                                .font(.system(size: 16, weight: .bold))
+                                .frame(width: 44, height: 44)
+                                .glassCard(radius: 22)
+                        }
+                        .buttonStyle(.pressable)
+                        .accessibilityLabel("Search expenses")
+                    }
                     NavigationLink(value: SpendingRoute()) { overviewCard }
                         .buttonStyle(.pressable)
                         .accessibilityHint("Shows where your money went")
+                    TrendCard(months: calc.monthlySpending(months: historyMonths),
+                              budget: { key in MonthKey.firstDay(of: key).map { calc.livingBudget(inMonthOf: $0) } ?? living },
+                              currentMonth: currentMonth)
                     monthsSection
                     daysSection
                 }
@@ -55,6 +68,7 @@ struct HistoryView: View {
             .navigationDestination(for: SpendingRoute.self) { _ in
                 SpendingOverviewView()
             }
+            .navigationDestination(for: SearchRoute.self) { _ in SearchView() }
         }
     }
 

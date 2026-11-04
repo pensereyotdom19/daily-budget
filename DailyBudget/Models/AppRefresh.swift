@@ -26,8 +26,12 @@ enum WidgetSync {
             .map { WidgetSnapshot.Item(date: $0.date, cents: $0.amountCents) }
             .sorted { $0.date < $1.date }
         let extra = Income.byMonth(incomes, target: .living, calendar: calendar)
+        let quick = QuickAdd.suggestions(from: expenses.filter { $0.billID == nil }
+            .map { QuickAdd.Past(category: $0.category, note: $0.note, cents: $0.amountCents, date: $0.date) }, now: now, limit: 3)
+            .map { WidgetQuickItem(title: $0.title, note: $0.note, category: $0.category.rawValue, cents: $0.cents,
+                                   symbol: $0.category.symbol, colorHex: $0.category.hex) }
         return WidgetSnapshot(livingMonthlyCents: settings?.livingMonthlyCents ?? 9_200, items: items, updatedAt: now,
-                              extraLivingByMonth: extra.isEmpty ? nil : extra)
+                              extraLivingByMonth: extra.isEmpty ? nil : extra, quickItems: quick.isEmpty ? nil : quick)
     }
 
     static func update(expenses: [Expense], settings: BudgetSettings?, incomes: [Income], now: Date) {
@@ -47,12 +51,16 @@ enum ReminderPrefs {
     static let eveningOn = "remind.eveningOn"
     static let eveningMinutes = "remind.eveningMinutes"
     static let billsOn = "remind.billsOn"
+    static let weeklyOn = "remind.weeklyOn"
+    static let expiryOn = "remind.expiryOn"
 
     static func current(_ d: UserDefaults = .standard) -> ReminderPlanner.Settings {
         var s = ReminderPlanner.Settings()
         s.morningOn = d.bool(forKey: morningOn)
         s.eveningOn = d.bool(forKey: eveningOn)
         s.billsOn = d.bool(forKey: billsOn)
+        s.weeklyOn = d.bool(forKey: weeklyOn)
+        s.expiryOn = d.bool(forKey: expiryOn)
         if d.object(forKey: morningMinutes) != nil { s.morningMinutes = d.integer(forKey: morningMinutes) }
         if d.object(forKey: eveningMinutes) != nil { s.eveningMinutes = d.integer(forKey: eveningMinutes) }
         return s
@@ -86,7 +94,10 @@ enum ReminderScheduler {
         let plan = ReminderPlanner.plan(now: now, settings: prefs,
                                         calculator: BudgetCalculator(expenses: expenses, settings: settings, incomes: incomes),
                                         loggedToday: loggedToday, bills: dues,
-                                        planMonths: settings?.planMonths ?? [])
+                                        planMonths: settings?.planMonths ?? [],
+                                        appExpiresAt: AppExpiry.date,
+                                        streakStart: settings?.streakStartDate ?? .distantPast,
+                                        categoryTitle: { (Category(rawValue: $0) ?? .other).title })
         for r in plan {
             let content = UNMutableNotificationContent()
             content.title = r.title

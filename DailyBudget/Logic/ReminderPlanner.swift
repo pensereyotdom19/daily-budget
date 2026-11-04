@@ -15,8 +15,11 @@ enum ReminderPlanner {
         var eveningOn = false
         var eveningMinutes = 20 * 60
         var billsOn = false
+        var weeklyOn = false
+        var expiryOn = false
         static let billMinutes = 9 * 60
-        var anyOn: Bool { morningOn || eveningOn || billsOn }
+        static let weeklyMinutes = 19 * 60
+        var anyOn: Bool { morningOn || eveningOn || billsOn || weeklyOn || expiryOn }
     }
 
     struct BillDue {
@@ -26,7 +29,7 @@ enum ReminderPlanner {
         var isPaid: Bool
     }
 
-    enum Kind: String { case morning, evening, billsDue, billsUnpaid }
+    enum Kind: String { case morning, evening, billsDue, billsUnpaid, weekly, expiry }
 
     struct Reminder: Equatable {
         var id: String
@@ -37,7 +40,9 @@ enum ReminderPlanner {
     }
 
     static func plan(now: Date, settings: Settings, calculator: BudgetCalculator, loggedToday: Bool,
-                     bills: [BillDue], planMonths: [String], days: Int = 7) -> [Reminder] {
+                     bills: [BillDue], planMonths: [String], days: Int = 7,
+                     appExpiresAt: Date? = nil, streakStart: Date = .distantPast,
+                     categoryTitle: (String) -> String = { $0 }) -> [Reminder] {
         let cal = calculator.calendar
         let today = cal.startOfDay(for: now)
         var out: [Reminder] = []
@@ -91,6 +96,40 @@ enum ReminderPlanner {
                                         title: String(localized: "Bills not paid yet", bundle: AppLanguage.bundle),
                                         body: String(localized: "\(name): \(list). Tick them in Plan once paid.", bundle: AppLanguage.bundle)))
                 }
+            }
+        }
+
+        // Sunday 7 PM: the week so far (rescheduled every time the app opens or closes, so it stays current).
+        if settings.weeklyOn {
+            for offset in 0..<days {
+                guard let day = cal.date(byAdding: .day, value: offset, to: today),
+                      cal.component(.weekday, from: day) == 1,
+                      let fire = at(day, Settings.weeklyMinutes), fire > now else { continue }
+                let w = calculator.weekSummary(endingOn: day, now: now, since: streakStart)
+                var body = String(localized: "\(Money.format(w.spentCents, alwaysShowCents: true)) spent on everyday things. \(w.daysOnBudget) of \(w.daysCounted) days on budget.", bundle: AppLanguage.bundle)
+                if let top = w.topCategory {
+                    body += " " + String(localized: "Most went to \(categoryTitle(top)).", bundle: AppLanguage.bundle)
+                }
+                out.append(Reminder(id: "weekly-\(dayID(day))", kind: .weekly, fireDate: fire,
+                                    title: String(localized: "Your week", bundle: AppLanguage.bundle), body: body))
+                break
+            }
+        }
+
+        // Free Apple ID: the app stops opening 7 days after install. Warn the day before and that morning.
+        if settings.expiryOn, let expiry = appExpiresAt, expiry > now {
+            let time = expiry.formatted(Date.FormatStyle(date: .omitted, time: .shortened, locale: AppLanguage.locale))
+            let expiryDay = cal.startOfDay(for: expiry)
+            if let dayBefore = cal.date(byAdding: .day, value: -1, to: expiryDay),
+               let fire = at(dayBefore, Settings.billMinutes), fire > now {
+                out.append(Reminder(id: "expiry-before", kind: .expiry, fireDate: fire,
+                                    title: String(localized: "Reinstall Daily Budget soon", bundle: AppLanguage.bundle),
+                                    body: String(localized: "It stops opening tomorrow at \(time). Run it from Xcode on your Mac to get 7 more days. Your data stays.", bundle: AppLanguage.bundle)))
+            }
+            if let fire = at(expiryDay, Settings.billMinutes), fire > now, fire < expiry {
+                out.append(Reminder(id: "expiry-today", kind: .expiry, fireDate: fire,
+                                    title: String(localized: "Daily Budget stops opening today", bundle: AppLanguage.bundle),
+                                    body: String(localized: "At \(time). Run it from Xcode on your Mac to get 7 more days. Your data stays.", bundle: AppLanguage.bundle)))
             }
         }
 

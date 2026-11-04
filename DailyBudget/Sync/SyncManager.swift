@@ -80,6 +80,15 @@ final class SyncManager {
         notice = nil
     }
 
+    /// Signs out this phone and every other device or browser using this account (if a phone is lost).
+    /// Needs the internet; on failure nothing changes and the error says why.
+    func signOutEverywhere() async throws {
+        guard let session else { return }
+        try await APIClient(baseURL: baseURL, token: session.token).logoutAll()
+        signOut()
+        notice = String(localized: "Signed out on every device. Sign in again to keep backing up.", bundle: AppLanguage.bundle)
+    }
+
     // MARK: When to sync
 
     func appBecameActive() {

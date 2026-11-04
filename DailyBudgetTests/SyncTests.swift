@@ -260,6 +260,35 @@ final class SyncTests: XCTestCase {
         XCTAssertEqual(try newPhone.fetch(FetchDescriptor<Expense>()).filter { $0.note == "Top-up" }.count, 1)
     }
 
+    @MainActor
+    func testCategoryLimitsTravelWithThePlan() async throws {
+        let oldPhone = try makeContainer().mainContext
+        Seed.insertIfNeeded(into: oldPhone)
+        try oldPhone.fetch(FetchDescriptor<BudgetSettings>()).first!.categoryLimits = ["coffee": 1_500, "fun": 0]
+        try oldPhone.save()
+        var state = SyncState()
+        _ = try await engine(oldPhone).run(state: &state)
+        XCTAssertEqual(server.settings?.categoryLimits, ["coffee": 1_500])  // 0 means no limit
+
+        let newPhone = try makeContainer().mainContext
+        Seed.insertIfNeeded(into: newPhone)
+        var newState = SyncState()
+        _ = try await engine(newPhone).run(state: &newState)
+        XCTAssertEqual(try newPhone.fetch(FetchDescriptor<BudgetSettings>()).first?.categoryLimits, ["coffee": 1_500])
+    }
+
+    func testDownloadsAskFromAFewSecondsBeforeLastTime() async throws {
+        let context = try makeContainer().mainContext
+        var state = SyncState()
+        state.lastServerTime = "2026-11-04T10:00:10.000Z"
+        state.userID = UUID()
+        server.requests.removeAll()
+        _ = try await engine(context).run(state: &state)
+        let sync = server.requests.first { $0.hasPrefix("GET /api/sync") }
+        XCTAssertNotNil(sync)
+        XCTAssertEqual(server.lastSince, "2026-11-04T10:00:05.000Z")
+    }
+
     func testAnExpiredSignInStopsTheSync() async throws {
         let context = try makeContainer().mainContext
         var state = SyncState()
@@ -306,6 +335,7 @@ final class FakeServer {
     var incomes: [UUID: Stored<IncomeDTO>] = [:]
     var recurring: [UUID: Stored<RecurringDTO>] = [:]
     var requests: [String] = []
+    var lastSince: String?
     /// Makes DELETE fail with 409, to leave a delete waiting on the phone.
     var refuseDeletes = false
 
@@ -348,8 +378,9 @@ final class FakeServer {
 
         switch (method, parts.count > 1 ? parts[1] : "") {
         case ("GET", "sync"):
-            let since = URLComponents(url: request.url!, resolvingAgainstBaseURL: false)?
-                .queryItems?.first { $0.name == "since" }?.value.map(ticks)
+            lastSince = URLComponents(url: request.url!, resolvingAgainstBaseURL: false)?
+                .queryItems?.first { $0.name == "since" }?.value
+            let since = lastSince.map(ticks)
             let newer: (Int) -> Bool = { since == nil || $0 > since! }
             let reply = Changes(serverTime: time(tick),
                                 settings: newer(settingsUpdated) ? settings : nil,

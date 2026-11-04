@@ -10,6 +10,8 @@ struct RemindersCard: View {
     @AppStorage(ReminderPrefs.morningOn) private var morningOn = false
     @AppStorage(ReminderPrefs.morningMinutes) private var morningMinutes = 8 * 60
     @AppStorage(ReminderPrefs.billsOn) private var billsOn = false
+    @AppStorage(ReminderPrefs.weeklyOn) private var weeklyOn = false
+    @AppStorage(ReminderPrefs.expiryOn) private var expiryOn = false
     @State private var denied = false
 
     var body: some View {
@@ -31,6 +33,16 @@ struct RemindersCard: View {
             row(symbol: "doc.text.fill", color: Category.bills.color, title: "Bills",
                 detail: "9 AM on the 1st, and on the 25th if still not paid.",
                 isOn: $billsOn, minutes: nil)
+            divider
+            row(symbol: "calendar.badge.checkmark", color: Theme.sky, title: "Weekly summary",
+                detail: "Sunday 7 PM: what you spent and how many days were on budget.",
+                isOn: $weeklyOn, minutes: nil)
+            if AppExpiry.date != nil {
+                divider
+                row(symbol: "hourglass", color: Theme.warn, title: "App expiry",
+                    detail: "The day before the free install stops opening, and that morning.",
+                    isOn: $expiryOn, minutes: nil)
+            }
 
             if denied {
                 VStack(alignment: .leading, spacing: 6) {
@@ -49,6 +61,8 @@ struct RemindersCard: View {
         .onChange(of: eveningOn) { _, on in switched(on) { eveningOn = false } }
         .onChange(of: morningOn) { _, on in switched(on) { morningOn = false } }
         .onChange(of: billsOn) { _, on in switched(on) { billsOn = false } }
+        .onChange(of: weeklyOn) { _, on in switched(on) { weeklyOn = false } }
+        .onChange(of: expiryOn) { _, on in switched(on) { expiryOn = false } }
         .onChange(of: eveningMinutes) { AppRefresh.run(context: context) }
         .onChange(of: morningMinutes) { AppRefresh.run(context: context) }
         .animation(.snappy, value: eveningOn)

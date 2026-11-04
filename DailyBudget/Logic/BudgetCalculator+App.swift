@@ -5,7 +5,7 @@ extension BudgetCalculator {
     init(expenses: [Expense], settings: BudgetSettings?, incomes: [Income] = []) {
         self.init(
             entries: expenses.map { Entry(date: $0.date, cents: $0.amountCents, countsAsLiving: $0.category.countsAsLiving,
-                                         isEngagement: $0.category == .engagement) },
+                                         isEngagement: $0.category == .engagement, category: $0.categoryRaw) },
             livingMonthlyCents: settings?.livingMonthlyCents ?? 9_200,
             extraLivingByMonth: Income.byMonth(incomes, target: .living)
         )
@@ -26,6 +26,15 @@ extension Income {
 
 extension BudgetSettings {
     var planMonths: [String] { MonthKey.range(start: startMonth, count: monthCount) }
+
+    /// Monthly limits per category raw name, in cents. Stored as JSON so it syncs with the plan.
+    var categoryLimits: [String: Int] {
+        get { (try? JSONDecoder().decode([String: Int].self, from: Data(categoryLimitsJSON.utf8))) ?? [:] }
+        set {
+            let clean = newValue.filter { $0.value > 0 }
+            categoryLimitsJSON = clean.isEmpty ? "" : String(decoding: (try? JSONEncoder().encode(clean)) ?? Data(), as: UTF8.self)
+        }
+    }
     var planStartDate: Date { MonthKey.firstDay(of: startMonth) ?? .now }
     /// First day the streak may count: the later of plan start and first app use.
     var streakStartDate: Date { BudgetCalculator.streakStart(planStart: planStartDate, firstOpened: firstOpenedAt) }

@@ -168,7 +168,10 @@ struct SyncEngine {
     // MARK: Download
 
     private func download(state: inout SyncState, report: inout Report) async throws {
-        let changes = try await api.changes(since: state.lastServerTime)
+        // Ask from 5 seconds earlier than last time: a change another device saved while we were downloading
+        // can carry a slightly earlier time than our last download. Getting something twice changes nothing.
+        let since = state.lastServerTime.flatMap(APIDate.parse).map { APIDate.string($0.addingTimeInterval(-5)) }
+        let changes = try await api.changes(since: since)
         apply(changes, force: false, state: &state, report: &report)
         state.lastServerTime = changes.serverTime
         if context.hasChanges { try context.save() }
@@ -192,6 +195,7 @@ struct SyncEngine {
                 target.firstOpenedAt = remote.firstOpenedAt
                 target.historyStartMonth = remote.historyStartMonth
                 if let saved = remote.savedBeforeCents { target.savedBeforeCents = saved }
+                if let limits = remote.categoryLimits { target.categoryLimits = limits }
                 state.settings = Fingerprint.of(remote)
             }
         }
@@ -313,7 +317,7 @@ enum DTO {
         SettingsDTO(startMonth: s.startMonth, monthCount: s.monthCount, totalCents: s.totalCents,
                     livingMonthlyCents: s.livingMonthlyCents, engagementCents: s.engagementCents,
                     firstOpenedAt: s.firstOpenedAt, historyStartMonth: s.historyStartMonth,
-                    savedBeforeCents: s.savedBeforeCents)
+                    savedBeforeCents: s.savedBeforeCents, categoryLimits: s.categoryLimits)
     }
 
     static func income(_ i: Income) -> IncomeDTO {
@@ -346,7 +350,8 @@ enum Fingerprint {
     static func of(_ s: BudgetSettings) -> String { of(DTO.settings(s)) }
     static func of(_ s: SettingsDTO) -> String {
         join([s.startMonth, "\(s.monthCount)", "\(s.totalCents)", "\(s.livingMonthlyCents)",
-              "\(s.engagementCents)", ms(s.firstOpenedAt), s.historyStartMonth ?? "", "\(s.savedBeforeCents ?? 0)"])
+              "\(s.engagementCents)", ms(s.firstOpenedAt), s.historyStartMonth ?? "", "\(s.savedBeforeCents ?? 0)",
+              (s.categoryLimits ?? [:]).filter { $0.value > 0 }.sorted { $0.key < $1.key }.map { "\($0.key)=\($0.value)" }.joined(separator: ",")])
     }
 
     static func of(_ i: Income) -> String { of(DTO.income(i)) }

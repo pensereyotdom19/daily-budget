@@ -204,6 +204,14 @@ struct AddExpenseView: View {
             case .engagement:
                 pill("Added to the Engagement money", warn: false)
             }
+        } else if category.countsAsLiving, let limit = settingsList.first?.categoryLimits[category.rawValue] {
+            let old = editing.map { $0.category == category ? $0.amountCents : 0 } ?? 0
+            let spent = calc.spent(category: category.rawValue, inMonthOf: date) - old + (amountCents ?? 0)
+            let after = leftToday - (amountCents ?? 0) + (editing.map { $0.category.countsAsLiving ? $0.amountCents : 0 } ?? 0)
+            VStack(spacing: 6) {
+                pill("\(Money.format(leftToday, alwaysShowCents: true)) left today → \(Money.format(after, alwaysShowCents: true)) after this", warn: after < 0)
+                pill("\(category.title) this month: \(Money.format(spent, alwaysShowCents: true)) of \(Money.format(limit))", warn: spent > limit)
+            }
         } else if category.countsAsLiving {
             let after = leftToday - (amountCents ?? 0) + (editing.map { $0.category.countsAsLiving ? $0.amountCents : 0 } ?? 0)
             pill("\(Money.format(leftToday, alwaysShowCents: true)) left today → \(Money.format(after, alwaysShowCents: true)) after this", warn: after < 0)

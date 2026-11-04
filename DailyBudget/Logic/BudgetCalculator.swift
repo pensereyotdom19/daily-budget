@@ -16,6 +16,8 @@ struct BudgetCalculator {
         var countsAsLiving: Bool
         /// Only used to split non-living spending into bills vs engagement.
         var isEngagement: Bool = false
+        /// Category raw name ("coffee"), for category limits and the weekly summary.
+        var category: String = ""
     }
 
     /// What was actually spent in one month, split into the three money groups.
@@ -263,6 +265,70 @@ struct BudgetCalculator {
             if !summary(on: day).isOver { out.daysOnBudget += 1 }
             day = calendar.date(byAdding: .day, value: 1, to: day)!
         }
+        return out
+    }
+
+    // MARK: - Category limits
+
+    struct LimitStatus: Identifiable, Equatable {
+        enum Level { case ok, near, over }
+        var category: String
+        var spentCents: Int
+        var limitCents: Int
+        var id: String { category }
+        var leftCents: Int { limitCents - spentCents }
+        /// 80% or more is "near"; more than the limit is "over".
+        var level: Level {
+            if spentCents > limitCents { return .over }
+            return limitCents > 0 && spentCents * 5 >= limitCents * 4 ? .near : .ok
+        }
+    }
+
+    func spent(category: String, inMonthOf date: Date) -> Int {
+        let m = monthInterval(containing: date)
+        return entries.lazy
+            .filter { $0.category == category && $0.date >= m.start && $0.date < m.end }
+            .reduce(0) { $0 + $1.cents }
+    }
+
+    /// Every category with a limit, the closest to (or furthest over) its limit first.
+    func limitStatuses(limits: [String: Int], on date: Date) -> [LimitStatus] {
+        limits.filter { $0.value > 0 }
+            .map { LimitStatus(category: $0.key, spentCents: spent(category: $0.key, inMonthOf: date), limitCents: $0.value) }
+            .sorted { Double($0.spentCents) / Double($0.limitCents) > Double($1.spentCents) / Double($1.limitCents) }
+    }
+
+    // MARK: - Weekly summary
+
+    struct WeekSummary: Equatable {
+        var spentCents = 0
+        var daysOnBudget = 0
+        var daysCounted = 0
+        /// The category with the most everyday spending this week, if any.
+        var topCategory: String?
+    }
+
+    /// Monday to Sunday of the week ending on `sunday`, counting only days up to `now` and not before `since`.
+    func weekSummary(endingOn sunday: Date, now: Date, since: Date) -> WeekSummary {
+        var out = WeekSummary()
+        let end = calendar.startOfDay(for: sunday)
+        guard let monday = calendar.date(byAdding: .day, value: -6, to: end) else { return out }
+        var byCategory: [String: Int] = [:]
+        var day = max(monday, calendar.startOfDay(for: since))
+        let last = min(end, calendar.startOfDay(for: now))
+        while day <= last {
+            let s = summary(on: day)
+            out.spentCents += s.spentCents
+            out.daysCounted += 1
+            if !s.isOver { out.daysOnBudget += 1 }
+            let next = calendar.date(byAdding: .day, value: 1, to: day)!
+            for e in entries where e.countsAsLiving && e.date >= day && e.date < next {
+                byCategory[e.category, default: 0] += e.cents
+            }
+            day = next
+        }
+        out.topCategory = byCategory.filter { !$0.key.isEmpty && $0.value > 0 }
+            .max { $0.value != $1.value ? $0.value < $1.value : $0.key > $1.key }?.key
         return out
     }
 

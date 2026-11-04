@@ -22,6 +22,11 @@ struct APIClient {
         try await send("POST", "api/auth/login", body: LoginDTO(email: email, password: password))
     }
 
+    /// Makes every login token for this account stop working, on every device.
+    func logoutAll() async throws {
+        _ = try await raw("POST", "api/auth/logout-all", body: nil, query: [])
+    }
+
     func changes(since: String?) async throws -> ChangesDTO {
         try await send("GET", "api/sync", query: since.map { [URLQueryItem(name: "since", value: $0)] } ?? [])
     }
@@ -138,6 +143,8 @@ struct SettingsDTO: Codable, Equatable {
     var historyStartMonth: String? = nil
     /// Optional so replies from an older server still decode.
     var savedBeforeCents: Int? = nil
+    /// Category raw name → monthly limit in cents.
+    var categoryLimits: [String: Int]? = nil
 }
 
 struct BillDTO: Codable, Equatable {

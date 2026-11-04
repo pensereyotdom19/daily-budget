@@ -69,6 +69,8 @@ final class BudgetSettings {
     var historyStartMonth: String? = nil
     /// Emergency savings carried over from earlier plans.
     var savedBeforeCents: Int = 0
+    /// Monthly limit per category as JSON ({"coffee":1500}); use `categoryLimits`.
+    var categoryLimitsJSON: String = ""
 
     init() {}
 }

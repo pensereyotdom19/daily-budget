@@ -10,6 +10,9 @@ struct AccountView: View {
     @State private var signingIn = false
     @State private var error: String?
     @State private var confirmSignOut = false
+    @State private var confirmEverywhere = false
+    @State private var signingOutEverywhere = false
+    @State private var everywhereError: String?
 
     var body: some View {
         ScrollView {
@@ -40,6 +43,18 @@ struct AccountView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.visible, for: .navigationBar)
         .toolbarBackground(.hidden, for: .navigationBar)
+        .confirmationDialog("Sign out on all devices?", isPresented: $confirmEverywhere, titleVisibility: .visible) {
+            Button("Sign out everywhere", role: .destructive) {
+                signingOutEverywhere = true
+                everywhereError = nil
+                Task {
+                    do { try await sync.signOutEverywhere() } catch { everywhereError = error.localizedDescription }
+                    signingOutEverywhere = false
+                }
+            }
+        } message: {
+            Text("Use this if a phone is lost. Every phone and browser signed in to this account is signed out. Your data stays on this phone and on the server.")
+        }
         .confirmationDialog("Sign out?", isPresented: $confirmSignOut, titleVisibility: .visible) {
             Button("Sign out", role: .destructive) { sync.signOut() }
         } message: {
@@ -138,7 +153,7 @@ struct AccountView: View {
             Divider().overlay(Color.white.opacity(0.14))
 
             row("Account", session.email)
-            row("Waiting to upload", sync.pending == 0 ? "Nothing" : "\(sync.pending)")
+            row("Waiting to upload", sync.pending == 0 ? String(localized: "Nothing", bundle: AppLanguage.bundle) : "\(sync.pending)")
 
             HStack(spacing: 10) {
                 Button {
@@ -160,6 +175,17 @@ struct AccountView: View {
                         .glassCard(radius: 23)
                 }
                 .buttonStyle(.pressable)
+            }
+
+            Button { confirmEverywhere = true } label: {
+                Label("Sign out on all devices", systemImage: "lock.rotation")
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(Theme.warn)
+            }
+            .buttonStyle(.pressable)
+            .disabled(signingOutEverywhere)
+            if let everywhereError {
+                Text(everywhereError).font(.caption).foregroundStyle(Theme.warn)
             }
         }
         .padding(16)

@@ -65,15 +65,27 @@ struct RootView: View {
             Seed.insertIfNeeded(into: context)
             BillPayments.sync(in: context)
             RecurringRunner.addDue(in: context)
+            QuickAddImporter.run(in: context)
+            if QuickAddImporter.takeOpenAddRequest() { showingAdd = true }
             lock.sceneChanged(to: .active)
             AppRefresh.run(context: context)
             sync.attach(context)
             sync.appBecameActive()
         }
+        .onReceive(NotificationCenter.default.publisher(for: .quickAddQueued)) { _ in
+            // Siri ran while the app was open: save now, and open + if a Shortcut asked for it.
+            QuickAddImporter.run(in: context)
+            if QuickAddImporter.takeOpenAddRequest() { showingAdd = true }
+            AppRefresh.run(context: context)
+        }
         .onChange(of: scenePhase) { _, phase in
             // Opening or leaving the app updates the widget and reschedules reminders, and backs up changes.
             lock.sceneChanged(to: phase)
-            if phase == .active { RecurringRunner.addDue(in: context) }
+            if phase == .active {
+                RecurringRunner.addDue(in: context)
+                QuickAddImporter.run(in: context)
+                if QuickAddImporter.takeOpenAddRequest() { showingAdd = true }
+            }
             if phase != .inactive { AppRefresh.run(context: context) }
             if phase == .active { sync.appBecameActive() }
             if phase == .background { sync.appWentToBackground() }

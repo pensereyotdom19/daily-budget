@@ -18,6 +18,13 @@ struct MoreCard: View {
             }
             .buttonStyle(.pressable)
             divider
+            NavigationLink(value: CategoryLimitsRoute()) {
+                row("gauge.with.needle", Theme.pink, "Category limits", "A monthly limit, e.g. Coffee $15") {
+                    Image(systemName: "chevron.right").font(.caption.weight(.bold)).foregroundStyle(Theme.secondary)
+                }
+            }
+            .buttonStyle(.pressable)
+            divider
             row("faceid", Theme.mint, "Lock with \(AppLock.methodName)",
                 lockFailed ? "Couldn't confirm it was you. Try again." : "Asks every time you open the app") {
                 Toggle("", isOn: Binding(get: { lockOn }, set: setLock(_:)))

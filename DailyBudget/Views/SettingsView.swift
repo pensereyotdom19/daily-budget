@@ -23,6 +23,11 @@ struct SettingsView: View {
                     section("Money and security")
                     MoreCard()
 
+                    if let expiry = AppExpiry.date {
+                        section("This install")
+                        expiryCard(expiry)
+                    }
+
                     section("Your data")
                     SyncCard()
                     ShareLink(item: CSVExport.make(expenses: expenses),
@@ -53,7 +58,31 @@ struct SettingsView: View {
             .toolbar(.hidden, for: .navigationBar)
             .navigationDestination(for: RecurringRoute.self) { _ in RecurringView() }
             .navigationDestination(for: AccountRoute.self) { _ in AccountView() }
+            .navigationDestination(for: CategoryLimitsRoute.self) { _ in CategoryLimitsView() }
         }
+    }
+
+    /// Free Apple ID installs stop opening after 7 days; this shows when.
+    private func expiryCard(_ expiry: Date) -> some View {
+        let days = AppExpiry.daysLeft(until: expiry)
+        let date = expiry.formatted(.dateTime.weekday(.wide).month(.abbreviated).day().hour().minute().locale(AppLanguage.locale))
+        return HStack(spacing: 12) {
+            Image(systemName: "hourglass")
+                .font(.system(size: 15, weight: .bold))
+                .foregroundStyle(days <= 1 ? Theme.warn : Theme.mint)
+                .frame(width: 38, height: 38)
+                .background(Color.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+            VStack(alignment: .leading, spacing: 1) {
+                Text("Works until \(date)").font(.subheadline.weight(.semibold))
+                Text(days <= 0 ? "Last day. Run it from Xcode on your Mac today." :
+                     "\(days) days left. Run it from Xcode again before then to reset to 7 days.")
+                    .font(.caption).foregroundStyle(days <= 1 ? Theme.warn : Theme.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            Spacer(minLength: 0)
+        }
+        .padding(14)
+        .glassCard(radius: 22)
     }
 
     private func section(_ title: LocalizedStringKey) -> some View {
