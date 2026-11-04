@@ -36,7 +36,13 @@ struct SyncEngine {
         let expenses = (try? context.fetch(FetchDescriptor<Expense>())) ?? []
         let bills = (try? context.fetch(FetchDescriptor<Bill>())) ?? []
         let settings = (try? context.fetch(FetchDescriptor<BudgetSettings>()))?.first
+        let incomes = (try? context.fetch(FetchDescriptor<Income>())) ?? []
+        let recurring = (try? context.fetch(FetchDescriptor<RecurringExpense>())) ?? []
         var count = 0
+        count += incomes.filter { state.incomes[$0.id] != Fingerprint.of($0) }.count
+        count += recurring.filter { state.recurring[$0.id] != Fingerprint.of($0) }.count
+        count += Set(state.incomes.keys).subtracting(incomes.map(\.id)).count
+        count += Set(state.recurring.keys).subtracting(recurring.map(\.id)).count
         count += expenses.filter { state.expenses[$0.id] != Fingerprint.of($0) }.count
         count += bills.filter { state.bills[$0.id] != Fingerprint.of($0) }.count
         count += Set(state.expenses.keys).subtracting(expenses.map(\.id)).count
@@ -113,6 +119,39 @@ struct SyncEngine {
                 state.expenses[id] = nil
             }
         }
+
+        let incomes = try context.fetch(FetchDescriptor<Income>())
+        for income in incomes {
+            let fp = Fingerprint.of(income)
+            guard state.incomes[income.id] != fp else { continue }
+            try await attempt(income.note.isEmpty ? String(localized: "Extra money", bundle: AppLanguage.bundle) : income.note,
+                              report: &report) {
+                _ = try await api.putIncome(DTO.income(income))
+                state.incomes[income.id] = fp
+            }
+        }
+        for id in Set(state.incomes.keys).subtracting(incomes.map(\.id)) {
+            try await attempt("Deleted income", report: &report) {
+                try await api.deleteIncome(id)
+                state.incomes[id] = nil
+            }
+        }
+
+        let recurring = try context.fetch(FetchDescriptor<RecurringExpense>())
+        for item in recurring {
+            let fp = Fingerprint.of(item)
+            guard state.recurring[item.id] != fp else { continue }
+            try await attempt(item.note.isEmpty ? item.category.title : item.note, report: &report) {
+                _ = try await api.putRecurring(DTO.recurring(item))
+                state.recurring[item.id] = fp
+            }
+        }
+        for id in Set(state.recurring.keys).subtracting(recurring.map(\.id)) {
+            try await attempt("Deleted recurring expense", report: &report) {
+                try await api.deleteRecurring(id)
+                state.recurring[id] = nil
+            }
+        }
     }
 
     /// Runs one upload. A record the server refuses is reported and skipped; being offline or
@@ -151,6 +190,8 @@ struct SyncEngine {
                 target.livingMonthlyCents = remote.livingMonthlyCents
                 target.engagementCents = remote.engagementCents
                 target.firstOpenedAt = remote.firstOpenedAt
+                target.historyStartMonth = remote.historyStartMonth
+                if let saved = remote.savedBeforeCents { target.savedBeforeCents = saved }
                 state.settings = Fingerprint.of(remote)
             }
         }
@@ -209,6 +250,60 @@ struct SyncEngine {
             target.billMonth = remote.billMonth
             state.expenses[remote.id] = Fingerprint.of(remote)
         }
+
+        let localIncomes = Dictionary(((try? context.fetch(FetchDescriptor<Income>())) ?? []).map { ($0.id, $0) },
+                                      uniquingKeysWith: { a, _ in a })
+        for remote in changes.incomes ?? [] {
+            let local = localIncomes[remote.id]
+            if let local, !force, state.incomes[remote.id] != Fingerprint.of(local) { continue }
+            if local == nil, !force, state.incomes[remote.id] != nil, remote.deleted != true { continue }
+            if remote.deleted == true {
+                if let local { context.delete(local); report.downloaded += 1 }
+                state.incomes[remote.id] = nil
+                continue
+            }
+            let target = local ?? {
+                let i = Income(amountCents: remote.amountCents, target: .living)
+                i.id = remote.id
+                context.insert(i)
+                return i
+            }()
+            if local == nil || Fingerprint.of(target) != Fingerprint.of(remote) { report.downloaded += 1 }
+            target.amountCents = remote.amountCents
+            target.targetRaw = IncomeTarget(rawValue: remote.target)?.rawValue ?? IncomeTarget.living.rawValue
+            target.note = remote.note
+            target.date = remote.receivedAt
+            state.incomes[remote.id] = Fingerprint.of(remote)
+        }
+
+        let localRecurring = Dictionary(((try? context.fetch(FetchDescriptor<RecurringExpense>())) ?? []).map { ($0.id, $0) },
+                                        uniquingKeysWith: { a, _ in a })
+        for remote in changes.recurring ?? [] {
+            let local = localRecurring[remote.id]
+            if let local, !force, state.recurring[remote.id] != Fingerprint.of(local) { continue }
+            if local == nil, !force, state.recurring[remote.id] != nil, remote.deleted != true { continue }
+            if remote.deleted == true {
+                if let local { context.delete(local); report.downloaded += 1 }
+                state.recurring[remote.id] = nil
+                continue
+            }
+            let target = local ?? {
+                let r = RecurringExpense(amountCents: remote.amountCents, category: .other, note: remote.note,
+                                         dayOfMonth: remote.dayOfMonth, startMonth: remote.startMonth)
+                r.id = remote.id
+                context.insert(r)
+                return r
+            }()
+            if local == nil || Fingerprint.of(target) != Fingerprint.of(remote) { report.downloaded += 1 }
+            target.amountCents = remote.amountCents
+            target.categoryRaw = Category(rawValue: remote.category)?.rawValue ?? Category.other.rawValue
+            target.note = remote.note
+            target.dayOfMonth = remote.dayOfMonth
+            target.startMonth = remote.startMonth
+            target.lastAddedMonth = remote.lastAddedMonth
+            target.isActive = remote.active
+            state.recurring[remote.id] = Fingerprint.of(remote)
+        }
     }
 }
 
@@ -217,7 +312,18 @@ enum DTO {
     static func settings(_ s: BudgetSettings) -> SettingsDTO {
         SettingsDTO(startMonth: s.startMonth, monthCount: s.monthCount, totalCents: s.totalCents,
                     livingMonthlyCents: s.livingMonthlyCents, engagementCents: s.engagementCents,
-                    firstOpenedAt: s.firstOpenedAt)
+                    firstOpenedAt: s.firstOpenedAt, historyStartMonth: s.historyStartMonth,
+                    savedBeforeCents: s.savedBeforeCents)
+    }
+
+    static func income(_ i: Income) -> IncomeDTO {
+        IncomeDTO(id: i.id, amountCents: i.amountCents, target: i.targetRaw, note: i.note, receivedAt: i.date)
+    }
+
+    static func recurring(_ r: RecurringExpense) -> RecurringDTO {
+        RecurringDTO(id: r.id, amountCents: r.amountCents, category: r.categoryRaw, note: r.note,
+                     dayOfMonth: r.dayOfMonth, startMonth: r.startMonth, lastAddedMonth: r.lastAddedMonth,
+                     active: r.isActive)
     }
 
     static func bill(_ b: Bill) -> BillDTO {
@@ -240,7 +346,18 @@ enum Fingerprint {
     static func of(_ s: BudgetSettings) -> String { of(DTO.settings(s)) }
     static func of(_ s: SettingsDTO) -> String {
         join([s.startMonth, "\(s.monthCount)", "\(s.totalCents)", "\(s.livingMonthlyCents)",
-              "\(s.engagementCents)", ms(s.firstOpenedAt)])
+              "\(s.engagementCents)", ms(s.firstOpenedAt), s.historyStartMonth ?? "", "\(s.savedBeforeCents ?? 0)"])
+    }
+
+    static func of(_ i: Income) -> String { of(DTO.income(i)) }
+    static func of(_ i: IncomeDTO) -> String {
+        join(["\(i.amountCents)", i.target, i.note, ms(i.receivedAt)])
+    }
+
+    static func of(_ r: RecurringExpense) -> String { of(DTO.recurring(r)) }
+    static func of(_ r: RecurringDTO) -> String {
+        join(["\(r.amountCents)", r.category, r.note, "\(r.dayOfMonth)", r.startMonth, r.lastAddedMonth ?? "",
+              r.active ? "1" : "0"])
     }
 
     static func of(_ b: Bill) -> String { of(DTO.bill(b)) }

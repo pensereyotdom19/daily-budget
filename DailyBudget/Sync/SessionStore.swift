@@ -60,6 +60,25 @@ struct SyncState: Codable, Equatable {
     var settings: String?
     var bills: [UUID: String] = [:]
     var expenses: [UUID: String] = [:]
+    var incomes: [UUID: String] = [:]
+    var recurring: [UUID: String] = [:]
+
+    init(userID: UUID? = nil) {
+        self.userID = userID
+    }
+
+    /// Fields added later are optional when reading, so a sync-state file from an older version still loads.
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        userID = try c.decodeIfPresent(UUID.self, forKey: .userID)
+        lastServerTime = try c.decodeIfPresent(String.self, forKey: .lastServerTime)
+        lastSyncedAt = try c.decodeIfPresent(Date.self, forKey: .lastSyncedAt)
+        settings = try c.decodeIfPresent(String.self, forKey: .settings)
+        bills = try c.decodeIfPresent([UUID: String].self, forKey: .bills) ?? [:]
+        expenses = try c.decodeIfPresent([UUID: String].self, forKey: .expenses) ?? [:]
+        incomes = try c.decodeIfPresent([UUID: String].self, forKey: .incomes) ?? [:]
+        recurring = try c.decodeIfPresent([UUID: String].self, forKey: .recurring) ?? [:]
+    }
 
     private static var fileURL: URL {
         URL.applicationSupportDirectory.appending(path: "sync-state.json")

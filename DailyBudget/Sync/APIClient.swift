@@ -38,6 +38,17 @@ struct APIClient {
         try await send("PUT", "api/expenses/\(e.id.uuidString.lowercased())", body: e)
     }
 
+    func putIncome(_ i: IncomeDTO) async throws -> IncomeDTO {
+        try await send("PUT", "api/incomes/\(i.id.uuidString.lowercased())", body: i)
+    }
+
+    func putRecurring(_ r: RecurringDTO) async throws -> RecurringDTO {
+        try await send("PUT", "api/recurring/\(r.id.uuidString.lowercased())", body: r)
+    }
+
+    func deleteIncome(_ id: UUID) async throws { try await delete("api/incomes/\(id.uuidString.lowercased())") }
+    func deleteRecurring(_ id: UUID) async throws { try await delete("api/recurring/\(id.uuidString.lowercased())") }
+
     /// Deleting something the server never had is fine.
     func deleteBill(_ id: UUID) async throws { try await delete("api/bills/\(id.uuidString.lowercased())") }
     func deleteExpense(_ id: UUID) async throws { try await delete("api/expenses/\(id.uuidString.lowercased())") }
@@ -124,6 +135,9 @@ struct SettingsDTO: Codable, Equatable {
     var livingMonthlyCents: Int
     var engagementCents: Int
     var firstOpenedAt: Date?
+    var historyStartMonth: String? = nil
+    /// Optional so replies from an older server still decode.
+    var savedBeforeCents: Int? = nil
 }
 
 struct BillDTO: Codable, Equatable {
@@ -147,12 +161,35 @@ struct ExpenseDTO: Codable, Equatable {
     var deleted: Bool? = nil
 }
 
+struct IncomeDTO: Codable, Equatable {
+    var id: UUID
+    var amountCents: Int
+    var target: String
+    var note: String
+    var receivedAt: Date
+    var deleted: Bool? = nil
+}
+
+struct RecurringDTO: Codable, Equatable {
+    var id: UUID
+    var amountCents: Int
+    var category: String
+    var note: String
+    var dayOfMonth: Int
+    var startMonth: String
+    var lastAddedMonth: String?
+    var active: Bool
+    var deleted: Bool? = nil
+}
+
 struct ChangesDTO: Decodable {
     /// Kept exactly as the server sent it, and sent back as `since` next time.
     var serverTime: String
     var settings: SettingsDTO?
     var bills: [BillDTO]
     var expenses: [ExpenseDTO]
+    var incomes: [IncomeDTO]? = nil
+    var recurring: [RecurringDTO]? = nil
 }
 
 /// Spring's error body: {"title": "...", "detail": "Wrong email or password", "status": 401}

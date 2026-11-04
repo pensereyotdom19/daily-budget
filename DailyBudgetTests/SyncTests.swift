@@ -203,6 +203,63 @@ final class SyncTests: XCTestCase {
         XCTAssertNil(try context.fetch(FetchDescriptor<Bill>()).first { $0.id == id })
     }
 
+    func testIncomeRecurringAndPlanHistoryAreBackedUp() async throws {
+        let context = try makeContainer().mainContext
+        Seed.insertIfNeeded(into: context)
+        let plan = try context.fetch(FetchDescriptor<BudgetSettings>()).first!
+        plan.historyStartMonth = "2026-11"
+        plan.savedBeforeCents = 4_200
+        let gift = Income(amountCents: 2_000, target: .savings, note: "Gift", date: date("2026-11-04T03:00:00Z"))
+        let topUp = RecurringExpense(amountCents: 500, category: .phone, note: "Top-up", dayOfMonth: 5, startMonth: "2026-11")
+        topUp.lastAddedMonth = "2026-11"
+        context.insert(gift)
+        context.insert(topUp)
+        try context.save()
+        var state = SyncState()
+        _ = try await engine(context).run(state: &state)
+
+        XCTAssertEqual(server.liveIncomes.map(\.target), ["savings"])
+        XCTAssertEqual(server.liveRecurring.first?.lastAddedMonth, "2026-11")
+        XCTAssertEqual(server.settings?.savedBeforeCents, 4_200)
+        XCTAssertEqual(server.settings?.historyStartMonth, "2026-11")
+        XCTAssertEqual(SyncEngine.pendingCount(context: context, state: state), 0)
+
+        context.delete(gift)
+        topUp.amountCents = 600
+        try context.save()
+        XCTAssertEqual(SyncEngine.pendingCount(context: context, state: state), 2)
+        _ = try await engine(context).run(state: &state)
+        XCTAssertTrue(server.liveIncomes.isEmpty)
+        XCTAssertEqual(server.liveRecurring.first?.amountCents, 600)
+    }
+
+    func testReinstallRestoresIncomeRecurringAndPlanHistoryWithoutAddingRecurringTwice() async throws {
+        let oldPhone = try makeContainer().mainContext
+        Seed.insertIfNeeded(into: oldPhone)
+        let plan = try oldPhone.fetch(FetchDescriptor<BudgetSettings>()).first!
+        plan.savedBeforeCents = 4_200
+        oldPhone.insert(Income(amountCents: 2_000, target: .living, note: "Gift", date: date("2026-11-04T03:00:00Z")))
+        let topUp = RecurringExpense(amountCents: 500, category: .phone, note: "Top-up", dayOfMonth: 1, startMonth: "2026-11")
+        oldPhone.insert(topUp)
+        try oldPhone.save()
+        RecurringRunner.addDue(in: oldPhone, now: date("2026-11-04T05:00:00Z"))
+        var oldState = SyncState()
+        _ = try await engine(oldPhone).run(state: &oldState)
+
+        let newPhone = try makeContainer().mainContext
+        Seed.insertIfNeeded(into: newPhone)
+        var newState = SyncState()
+        _ = try await engine(newPhone).run(state: &newState)
+
+        XCTAssertEqual(try newPhone.fetch(FetchDescriptor<Income>()).map(\.note), ["Gift"])
+        XCTAssertEqual(try newPhone.fetch(FetchDescriptor<BudgetSettings>()).first?.savedBeforeCents, 4_200)
+        let restored = try newPhone.fetch(FetchDescriptor<RecurringExpense>())
+        XCTAssertEqual(restored.first?.lastAddedMonth, "2026-11")
+        // Opening the restored app in the same month must not add the top-up again.
+        XCTAssertEqual(RecurringRunner.addDue(in: newPhone, now: date("2026-11-04T06:00:00Z")), 0)
+        XCTAssertEqual(try newPhone.fetch(FetchDescriptor<Expense>()).filter { $0.note == "Top-up" }.count, 1)
+    }
+
     func testAnExpiredSignInStopsTheSync() async throws {
         let context = try makeContainer().mainContext
         var state = SyncState()
@@ -246,12 +303,16 @@ final class FakeServer {
     var settingsUpdated = 0
     var bills: [UUID: Stored<BillDTO>] = [:]
     var expenses: [UUID: Stored<ExpenseDTO>] = [:]
+    var incomes: [UUID: Stored<IncomeDTO>] = [:]
+    var recurring: [UUID: Stored<RecurringDTO>] = [:]
     var requests: [String] = []
     /// Makes DELETE fail with 409, to leave a delete waiting on the phone.
     var refuseDeletes = false
 
     var liveBills: [BillDTO] { bills.values.map(\.dto).filter { $0.deleted != true } }
     var liveExpenses: [ExpenseDTO] { expenses.values.map(\.dto).filter { $0.deleted != true } }
+    var liveIncomes: [IncomeDTO] { incomes.values.map(\.dto).filter { $0.deleted != true } }
+    var liveRecurring: [RecurringDTO] { recurring.values.map(\.dto).filter { $0.deleted != true } }
 
     /// Simulates edits made from another device: everything touched gets a newer time.
     func change(_ edit: (FakeServer) -> Void) {
@@ -271,6 +332,8 @@ final class FakeServer {
         var settings: SettingsDTO?
         var bills: [BillDTO]
         var expenses: [ExpenseDTO]
+        var incomes: [IncomeDTO]
+        var recurring: [RecurringDTO]
     }
 
     func handle(_ request: URLRequest, body: Data?) -> (Int, Data) {
@@ -291,7 +354,9 @@ final class FakeServer {
             let reply = Changes(serverTime: time(tick),
                                 settings: newer(settingsUpdated) ? settings : nil,
                                 bills: bills.values.filter { newer($0.updated) }.map(\.dto),
-                                expenses: expenses.values.filter { newer($0.updated) }.map(\.dto))
+                                expenses: expenses.values.filter { newer($0.updated) }.map(\.dto),
+                                incomes: incomes.values.filter { newer($0.updated) }.map(\.dto),
+                                recurring: recurring.values.filter { newer($0.updated) }.map(\.dto))
             return (200, try! APIDate.encoder.encode(reply))
 
         case ("PUT", "settings"):
@@ -314,6 +379,28 @@ final class FakeServer {
 
         case ("DELETE", _) where refuseDeletes:
             return (409, Data(#"{"detail":"Try again later"}"#.utf8))
+
+        case ("PUT", "incomes"):
+            var i = try! APIDate.decoder.decode(IncomeDTO.self, from: body!)
+            i.id = id!; i.note = i.note.trimmingCharacters(in: .whitespaces); i.deleted = false
+            tick += 1; incomes[id!] = Stored(dto: i, updated: tick)
+            return (200, try! APIDate.encoder.encode(i))
+
+        case ("PUT", "recurring"):
+            var r = try! APIDate.decoder.decode(RecurringDTO.self, from: body!)
+            r.id = id!; r.deleted = false
+            tick += 1; recurring[id!] = Stored(dto: r, updated: tick)
+            return (200, try! APIDate.encoder.encode(r))
+
+        case ("DELETE", "incomes"):
+            guard incomes[id!] != nil else { return (404, Data()) }
+            tick += 1; incomes[id!]!.dto.deleted = true; incomes[id!]!.updated = tick
+            return (204, Data())
+
+        case ("DELETE", "recurring"):
+            guard recurring[id!] != nil else { return (404, Data()) }
+            tick += 1; recurring[id!]!.dto.deleted = true; recurring[id!]!.updated = tick
+            return (204, Data())
 
         case ("DELETE", "bills"):
             guard bills[id!] != nil else { return (404, Data()) }
