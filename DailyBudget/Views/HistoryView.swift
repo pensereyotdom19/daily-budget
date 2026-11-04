@@ -1,57 +1,32 @@
 import SwiftUI
 import SwiftData
 
+/// History: the whole plan at a glance, one row per month (tap to open it),
+/// then this month day by day.
 struct HistoryView: View {
     @Query(sort: \Expense.date, order: .reverse) private var expenses: [Expense]
     @Query private var settingsList: [BudgetSettings]
     @Query(sort: \Bill.sortOrder) private var bills: [Bill]
-    @State private var monthKey = MonthKey.key(for: .now)
 
     private var settings: BudgetSettings? { settingsList.first }
     private var calc: BudgetCalculator { BudgetCalculator(expenses: expenses, settings: settings) }
+    private var currentMonth: String { MonthKey.key(for: .now) }
+    private var planMonths: [String] { settings?.planMonths ?? [currentMonth] }
+    private var living: Int { settings?.livingMonthlyCents ?? 0 }
 
-    /// Plan months up to the current one.
-    private var availableMonths: [String] {
-        let current = MonthKey.key(for: .now)
-        let months = (settings?.planMonths ?? [current]).filter { $0 <= current }
-        return months.isEmpty ? [current] : months
-    }
-
-    private var monthExpenses: [Expense] {
-        expenses.filter { MonthKey.key(for: $0.date) == monthKey }
-    }
-
-    /// The last day to show: today for the current month, the month's last day otherwise.
-    private var lastDay: Date {
-        if monthKey == MonthKey.key(for: .now) { return .now }
-        let first = MonthKey.firstDay(of: monthKey) ?? .now
-        let next = Calendar.current.date(byAdding: .month, value: 1, to: first) ?? first
-        return next.addingTimeInterval(-1)
-    }
-
-    private struct CategoryTotal: Identifiable {
-        let category: Category
-        let cents: Int
-        var id: String { category.rawValue }
-    }
-
-    private var categoryTotals: [CategoryTotal] {
-        var totals: [Category: Int] = [:]
-        for e in monthExpenses { totals[e.category, default: 0] += e.amountCents }
-        return totals.map { CategoryTotal(category: $0.key, cents: $0.value) }.sorted { $0.cents > $1.cents }
+    private func planned(_ month: String) -> Int {
+        BudgetCalculator.plannedCents(month: month, livingMonthlyCents: living,
+                                      bills: bills.map { (cents: $0.amountCents, dueMonths: $0.dueMonths) })
     }
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 14) {
-                    HStack(alignment: .bottom) {
-                        ScreenHeader(caption: monthCaption, title: "History")
-                        monthSwitcher
-                    }
-                    everyMonthCard
-                    totalsCard
-                    daysList
+                    ScreenHeader(caption: rangeCaption, title: "History")
+                    overviewCard
+                    monthsSection
+                    daysSection
                 }
                 .padding(.horizontal, 18)
                 .padding(.top, 12)
@@ -69,181 +44,137 @@ struct HistoryView: View {
         }
     }
 
-    private var monthCaption: String {
-        guard let d = MonthKey.firstDay(of: monthKey) else { return monthKey }
-        return d.formatted(.dateTime.month(.wide).year())
+    private var rangeCaption: String {
+        guard let first = planMonths.first, let last = planMonths.last,
+              let a = MonthKey.firstDay(of: first), let b = MonthKey.firstDay(of: last) else { return "" }
+        return "\(a.formatted(.dateTime.month(.abbreviated).year())) – \(b.formatted(.dateTime.month(.abbreviated).year()))"
     }
 
-    private var monthSwitcher: some View {
-        let i = availableMonths.firstIndex(of: monthKey) ?? 0
-        return HStack(spacing: 4) {
-            Button { monthKey = availableMonths[i - 1] } label: {
-                Image(systemName: "chevron.left").frame(width: 40, height: 40)
-            }
-            .disabled(i == 0)
-            .accessibilityLabel("Previous month")
-            Button { monthKey = availableMonths[i + 1] } label: {
-                Image(systemName: "chevron.right").frame(width: 40, height: 40)
-            }
-            .disabled(i >= availableMonths.count - 1)
-            .accessibilityLabel("Next month")
-        }
-        .font(.system(size: 15, weight: .bold))
-        .padding(2)
-        .glassCard(radius: 22)
-    }
+    // MARK: - Overview
 
-    // MARK: - Every month
-
-    private var planMonths: [String] { settings?.planMonths ?? [MonthKey.key(for: .now)] }
-
-    private func planned(_ month: String) -> Int {
-        BudgetCalculator.plannedCents(month: month,
-                                      livingMonthlyCents: settings?.livingMonthlyCents ?? 0,
-                                      bills: bills.map { (cents: $0.amountCents, dueMonths: $0.dueMonths) })
-    }
-
-    /// One bar per plan month (actual spending, split by group) over a dashed outline of the plan.
-    private var everyMonthCard: some View {
-        let data = calc.monthlySpending(months: planMonths)
-        let current = MonthKey.key(for: .now)
-        let past = data.filter { $0.monthKey <= current }
-        let spentSoFar = past.reduce(0) { $0 + $1.totalCents }
-        let average = past.isEmpty ? 0 : spentSoFar / past.count
-        let maxValue = max(1, data.map { max($0.totalCents, planned($0.monthKey)) }.max() ?? 1)
-        let selected = data.first { $0.monthKey == monthKey } ?? BudgetCalculator.MonthSpending(monthKey: monthKey)
-        return VStack(alignment: .leading, spacing: 12) {
-            HStack(alignment: .firstTextBaseline) {
-                Text("Every month").font(.subheadline.weight(.semibold))
-                Spacer()
-                Text("avg \(Money.format(average, alwaysShowCents: true))/mo")
-                    .font(Theme.rounded(15)).foregroundStyle(Theme.secondary)
-            }
-            HStack(alignment: .bottom, spacing: 6) {
-                ForEach(data) { m in
-                    NavigationLink(value: MonthRoute(monthKey: m.monthKey)) {
-                        MonthBar(spending: m, plannedCents: planned(m.monthKey), maxCents: maxValue,
-                                 isSelected: m.monthKey == monthKey, isFuture: m.monthKey > current)
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityHint("Opens this month")
+    private var overviewCard: some View {
+        let soFar = planMonths.filter { $0 <= currentMonth }
+        let spent = calc.monthlySpending(months: soFar).reduce(0) { $0 + $1.totalCents }
+        let plannedSoFar = soFar.reduce(0) { $0 + planned($1) }
+        let diff = plannedSoFar - spent
+        let saved = calc.emergencySavingsCents(planMonths: planMonths, today: .now)
+        let finished = soFar.filter { $0 < currentMonth }
+        let finishedSpent = calc.monthlySpending(months: finished).reduce(0) { $0 + $1.totalCents }
+        return VStack(alignment: .leading, spacing: 14) {
+            VStack(alignment: .leading, spacing: 2) {
+                Text("SPENT SO FAR").font(.caption.weight(.semibold)).foregroundStyle(Theme.secondary)
+                Text(Money.format(spent, alwaysShowCents: true)).font(Theme.rounded(38))
+                if finished.count >= 2 {
+                    Text("About \(Money.format(finishedSpent / finished.count)) per finished month")
+                        .font(.caption).foregroundStyle(Theme.secondary)
                 }
             }
-            .frame(height: 150)
-            Text("Tap a month to see its bills and expenses")
-                .font(.caption2).foregroundStyle(Theme.secondary)
-                .frame(maxWidth: .infinity)
-            HStack(spacing: 12) {
-                legendItem("Everyday", selected.livingCents, Theme.mint)
-                legendItem("Bills", selected.billsCents, Category.bills.color)
-                legendItem("Engagement", selected.engagementCents, Category.engagement.color)
-            }
-            HStack {
-                Text("Spent since \(MonthKey.title(of: planMonths.first ?? current))")
-                    .font(.footnote).foregroundStyle(Theme.secondary)
-                Spacer()
-                Text(Money.format(spentSoFar, alwaysShowCents: true)).font(Theme.rounded(15))
+            HStack(spacing: 10) {
+                overviewStat("Planned", Money.format(plannedSoFar), Theme.secondary)
+                overviewStat(diff >= 0 ? "Under plan" : "Over plan",
+                             Money.format(abs(diff), alwaysShowCents: true), diff >= 0 ? Theme.mint : Theme.warn)
+                overviewStat("Saved", Money.format(saved, alwaysShowCents: true), Theme.sky)
             }
         }
-        .padding(16)
+        .padding(18)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .glassCard(radius: 28)
     }
 
-    private func legendItem(_ name: String, _ cents: Int, _ color: Color) -> some View {
-        HStack(spacing: 5) {
-            Circle().fill(color).frame(width: 8, height: 8)
-            VStack(alignment: .leading, spacing: 0) {
-                Text(name).font(.caption2).foregroundStyle(Theme.secondary)
-                Text(Money.format(cents, alwaysShowCents: true)).font(Theme.rounded(13))
-            }
+    private func overviewStat(_ title: String, _ value: String, _ color: Color) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(title).font(.caption2.weight(.semibold)).foregroundStyle(Theme.secondary)
+            Text(value).font(Theme.rounded(16)).foregroundStyle(color == Theme.secondary ? .white : color)
+                .lineLimit(1).minimumScaleFactor(0.7)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(10)
+        .background(Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
         .accessibilityElement(children: .combine)
     }
 
-    // MARK: - Selected month
+    // MARK: - Month by month
 
-    private var totalsCard: some View {
-        let total = monthExpenses.reduce(0) { $0 + $1.amountCents }
-        let plan = planned(monthKey)
-        let maxValue = max(1, categoryTotals.first?.cents ?? 1)
-        return VStack(spacing: 12) {
+    private var monthsSection: some View {
+        let data = calc.monthlySpending(months: planMonths)
+        return VStack(alignment: .leading, spacing: 10) {
             HStack(alignment: .firstTextBaseline) {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("Spent in \(MonthKey.title(of: monthKey))").font(.subheadline.weight(.semibold))
-                    Text("Planned \(Money.format(plan))")
-                        .font(.caption).foregroundStyle(total > plan ? Theme.warn : Theme.secondary)
-                }
+                Text("Month by month").font(.title3.weight(.bold))
                 Spacer()
-                Text(Money.format(total, alwaysShowCents: true)).font(Theme.rounded(26))
-            }
-            NavigationLink(value: MonthRoute(monthKey: monthKey)) {
-                HStack {
-                    Text("Open \(MonthKey.title(of: monthKey)) details")
-                    Spacer()
-                    Image(systemName: "chevron.right")
+                HStack(spacing: 10) {
+                    legendDot("Everyday", Theme.mint)
+                    legendDot("Bills", Category.bills.color)
+                    legendDot("Engagement", Category.engagement.color)
                 }
-                .font(.footnote.weight(.semibold))
-                .padding(.horizontal, 12).frame(height: 36)
-                .background(Color.white.opacity(0.08), in: Capsule())
-                .contentShape(Capsule())
             }
-            .buttonStyle(.plain)
-            if categoryTotals.isEmpty {
-                Text("No expenses this month yet.").font(.footnote).foregroundStyle(Theme.secondary)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            ForEach(categoryTotals) { item in
-                let cat = item.category
-                let cents = item.cents
-                NavigationLink(value: MonthRoute(monthKey: monthKey, category: cat)) {
-                    HStack(spacing: 10) {
-                        Text(cat.title).font(.footnote).foregroundStyle(.white.opacity(0.85))
-                            .frame(width: 82, alignment: .leading)
-                        GeometryReader { geo in
-                            ZStack(alignment: .leading) {
-                                Capsule().fill(Color.white.opacity(0.12))
-                                Capsule().fill(cat.color)
-                                    .frame(width: max(6, geo.size.width * CGFloat(cents) / CGFloat(maxValue)))
-                            }
-                        }
-                        .frame(height: 10)
-                        Text(Money.format(cents, alwaysShowCents: true)).font(Theme.rounded(13))
-                            .frame(width: 60, alignment: .trailing)
-                        Image(systemName: "chevron.right")
-                            .font(.caption2.weight(.bold)).foregroundStyle(Theme.secondary)
-                    }
-                    .frame(minHeight: 28)
-                    .contentShape(Rectangle())
+            .padding(.horizontal, 4)
+            ForEach(data) { m in
+                NavigationLink(value: MonthRoute(monthKey: m.monthKey)) {
+                    MonthRow(spending: m,
+                             plannedCents: planned(m.monthKey),
+                             stage: m.monthKey < currentMonth ? .finished : m.monthKey == currentMonth ? .now : .upcoming,
+                             specialBills: specialBills(in: m.monthKey))
                 }
                 .buttonStyle(.plain)
-                .accessibilityElement(children: .combine)
-                .accessibilityHint("Shows \(cat.title.lowercased()) expenses")
+                .accessibilityHint("Opens \(MonthKey.title(of: m.monthKey))")
             }
         }
-        .padding(16)
-        .glassCard(radius: 28)
     }
 
-    private var daysList: some View {
-        VStack(spacing: 10) {
-            ForEach(calc.daySummaries(inMonthOf: lastDay)) { day in
-                let dayItems = monthExpenses.filter { Calendar.current.isDate($0.date, inSameDayAs: day.day) }
+    private func legendDot(_ name: String, _ color: Color) -> some View {
+        HStack(spacing: 4) {
+            Circle().fill(color).frame(width: 7, height: 7)
+            Text(name).font(.caption2).foregroundStyle(Theme.secondary)
+        }
+    }
+
+    /// Bills that aren't due every month, e.g. "Credit card $700 · Water $5".
+    private func specialBills(in month: String) -> String? {
+        let list = bills.filter { $0.isDue(in: month) && $0.dueMonths.count < planMonths.count }
+        guard !list.isEmpty else { return nil }
+        return list.map { "\($0.name) \(Money.format($0.amountCents))" }.joined(separator: " · ")
+    }
+
+    // MARK: - This month, day by day
+
+    /// Days of this month from the first day the app was used, newest first.
+    private var days: [BudgetCalculator.DaySummary] {
+        let start = Calendar.current.startOfDay(for: settings?.streakStartDate ?? .now)
+        return calc.daySummaries(inMonthOf: .now).filter { $0.day >= start }
+    }
+
+    private var daysSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .firstTextBaseline) {
+                Text("\(MonthKey.title(of: currentMonth)), day by day").font(.title3.weight(.bold))
+                Spacer()
+                Text("everyday money").font(.caption2).foregroundStyle(Theme.secondary)
+            }
+            .padding(.horizontal, 4)
+            .padding(.top, 6)
+            ForEach(days) { day in
+                let items = expenses.filter { Calendar.current.isDate($0.date, inSameDayAs: day.day) }
                 NavigationLink(value: day.day) {
-                    HStack {
+                    HStack(spacing: 12) {
                         VStack(alignment: .leading, spacing: 2) {
                             Text(day.day.formatted(.dateTime.weekday(.abbreviated).month(.abbreviated).day()))
                                 .font(.subheadline.weight(.bold))
-                            Text(dayItems.isEmpty ? "No expenses" : categoriesText(dayItems))
+                            Text(daySubtitle(items))
                                 .font(.caption).foregroundStyle(Theme.secondary).lineLimit(1)
                         }
                         Spacer()
                         VStack(alignment: .trailing, spacing: 4) {
-                            Text(Money.format(day.spentCents, alwaysShowCents: true)).font(Theme.rounded(17))
+                            HStack(alignment: .firstTextBaseline, spacing: 4) {
+                                Text(Money.format(day.spentCents, alwaysShowCents: true)).font(Theme.rounded(17))
+                                Text("of \(Money.format(day.limitCents, alwaysShowCents: true))")
+                                    .font(.caption2).foregroundStyle(Theme.secondary)
+                            }
                             StatusBadge(isOver: day.isOver, overBy: day.spentCents - day.limitCents)
                         }
+                        Image(systemName: "chevron.right")
+                            .font(.caption2.weight(.bold)).foregroundStyle(Theme.secondary)
                     }
-                    .padding(.horizontal, 16).padding(.vertical, 13)
+                    .padding(.horizontal, 16).padding(.vertical, 12)
                     .glassCard(radius: 22)
                 }
                 .buttonStyle(.plain)
@@ -251,59 +182,118 @@ struct HistoryView: View {
         }
     }
 
-    private func categoriesText(_ items: [Expense]) -> String {
+    private func daySubtitle(_ items: [Expense]) -> String {
         var seen: [Category] = []
-        for e in items where !seen.contains(e.category) { seen.append(e.category) }
-        return seen.map(\.title).joined(separator: ", ")
+        for e in items where e.billID == nil && !seen.contains(e.category) { seen.append(e.category) }
+        var parts = seen.isEmpty ? [] : [seen.map(\.title).joined(separator: ", ")]
+        let billCount = items.filter { $0.billID != nil }.count
+        if billCount > 0 { parts.append("\(billCount) bill\(billCount == 1 ? "" : "s") paid") }
+        return parts.isEmpty ? "No expenses" : parts.joined(separator: " · ")
     }
 }
 
-/// One month's column in the "Every month" card: stacked actual spending inside a dashed plan outline.
-private struct MonthBar: View {
+/// One month in "Month by month": spent vs planned with a bar split into everyday, bills and engagement.
+private struct MonthRow: View {
+    enum Stage { case finished, now, upcoming }
+
     let spending: BudgetCalculator.MonthSpending
     let plannedCents: Int
-    let maxCents: Int
-    let isSelected: Bool
-    let isFuture: Bool
+    let stage: Stage
+    let specialBills: String?
 
-    private var shortName: String {
-        MonthKey.firstDay(of: spending.monthKey)?.formatted(.dateTime.month(.abbreviated)) ?? spending.monthKey
-    }
+    private var total: Int { spending.totalCents }
+    private var diff: Int { plannedCents - total }
 
     var body: some View {
-        VStack(spacing: 6) {
-            GeometryReader { geo in
-                let k = geo.size.height / CGFloat(maxCents)
-                ZStack(alignment: .bottom) {
-                    RoundedRectangle(cornerRadius: 8, style: .continuous)
-                        .strokeBorder(Color.white.opacity(0.28), style: StrokeStyle(lineWidth: 1, dash: [3, 3]))
-                        .frame(height: max(8, CGFloat(plannedCents) * k))
-                    VStack(spacing: 0) {
-                        Rectangle().fill(Category.engagement.color).frame(height: CGFloat(spending.engagementCents) * k)
-                        Rectangle().fill(Category.bills.color).frame(height: CGFloat(spending.billsCents) * k)
-                        Rectangle().fill(Theme.mint).frame(height: CGFloat(spending.livingCents) * k)
-                    }
-                    .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-                    .overlay(alignment: .top) {
-                        if spending.totalCents > plannedCents {
-                            Circle().fill(Theme.warn).frame(width: 6, height: 6).offset(y: -9)
-                        }
-                    }
+        VStack(alignment: .leading, spacing: 9) {
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                Text(MonthKey.title(of: spending.monthKey)).font(.headline)
+                stageChip
+                Spacer()
+                if stage == .upcoming {
+                    Text(Money.format(plannedCents)).font(Theme.rounded(17)).foregroundStyle(Theme.secondary)
+                } else {
+                    Text(Money.format(total, alwaysShowCents: true)).font(Theme.rounded(17))
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+                Image(systemName: "chevron.right")
+                    .font(.caption2.weight(.bold)).foregroundStyle(Theme.secondary)
             }
-            Text(shortName)
-                .font(.caption2.weight(.bold))
-                .foregroundStyle(isSelected ? Color.white : Theme.secondary)
+            if stage != .upcoming { bar }
+            HStack(alignment: .firstTextBaseline) {
+                Text(leftText).lineLimit(1)
+                    .foregroundStyle(stage == .upcoming && specialBills != nil ? Theme.warn : Theme.secondary)
+                Spacer()
+                Text(rightText).fontWeight(.semibold).foregroundStyle(rightColor)
+            }
+            .font(.caption)
         }
-        .padding(.horizontal, 3).padding(.vertical, 6)
-        .background(isSelected ? Color.white.opacity(0.10) : Color.clear,
-                    in: RoundedRectangle(cornerRadius: 12, style: .continuous))
-        .opacity(isFuture ? 0.4 : 1)
+        .padding(14)
+        .glassCard(radius: 22)
         .contentShape(Rectangle())
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(MonthKey.title(of: spending.monthKey)): spent \(Money.format(spending.totalCents, alwaysShowCents: true)) of \(Money.format(plannedCents)) planned")
-        .accessibilityAddTraits(isSelected ? .isSelected : [])
+        .accessibilityLabel(accessibilityText)
+    }
+
+    @ViewBuilder private var stageChip: some View {
+        switch stage {
+        case .now:
+            chip("NOW", Theme.mint.opacity(0.25))
+        case .finished:
+            chip("DONE", Color.white.opacity(0.12))
+        case .upcoming:
+            EmptyView()
+        }
+    }
+
+    private func chip(_ text: String, _ background: Color) -> some View {
+        Text(text).font(.caption2.weight(.bold))
+            .padding(.horizontal, 6).padding(.vertical, 2)
+            .background(background, in: Capsule())
+    }
+
+    private var bar: some View {
+        GeometryReader { geo in
+            let scale = geo.size.width / CGFloat(max(1, max(plannedCents, total)))
+            ZStack(alignment: .leading) {
+                Capsule().fill(Color.white.opacity(stage == .upcoming ? 0.07 : 0.12))
+                HStack(spacing: 0) {
+                    Rectangle().fill(Theme.mint).frame(width: CGFloat(spending.livingCents) * scale)
+                    Rectangle().fill(Category.bills.color).frame(width: CGFloat(spending.billsCents) * scale)
+                    Rectangle().fill(Category.engagement.color).frame(width: CGFloat(spending.engagementCents) * scale)
+                }
+                .clipShape(Capsule())
+            }
+            .overlay {
+                if total > plannedCents { Capsule().strokeBorder(Theme.warn, lineWidth: 1) }
+            }
+        }
+        .frame(height: 8)
+    }
+
+    private var leftText: String {
+        switch stage {
+        case .upcoming: return specialBills ?? "Regular bills + everyday money"
+        case .now, .finished: return "of \(Money.format(plannedCents)) planned"
+        }
+    }
+
+    private var rightText: String {
+        switch stage {
+        case .upcoming: return "Coming up"
+        case .now: return diff >= 0 ? "\(Money.format(diff, alwaysShowCents: true)) left" : "\(Money.format(-diff, alwaysShowCents: true)) over"
+        case .finished: return diff >= 0 ? "\(Money.format(diff, alwaysShowCents: true)) under" : "\(Money.format(-diff, alwaysShowCents: true)) over"
+        }
+    }
+
+    private var rightColor: Color {
+        if stage == .upcoming { return Theme.secondary }
+        return diff >= 0 ? Theme.mint : Theme.warn
+    }
+
+    private var accessibilityText: String {
+        let name = MonthKey.title(of: spending.monthKey)
+        if stage == .upcoming { return "\(name), coming up, \(Money.format(plannedCents)) planned. \(specialBills ?? "")" }
+        return "\(name), spent \(Money.format(total, alwaysShowCents: true)) of \(Money.format(plannedCents)) planned, \(rightText)"
     }
 }
 

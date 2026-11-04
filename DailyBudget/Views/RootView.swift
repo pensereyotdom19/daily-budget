@@ -1,7 +1,7 @@
 import SwiftUI
 import SwiftData
 
-enum AppTab: CaseIterable {
+enum AppTab: String, CaseIterable {
     case today, history, plan
 
     var title: String {
@@ -23,7 +23,8 @@ enum AppTab: CaseIterable {
 
 struct RootView: View {
     @Environment(\.modelContext) private var context
-    @State private var tab: AppTab = .today
+    /// Opens on Today. For screenshots during development, launch with `-startTab history` (or plan).
+    @State private var tab: AppTab = AppTab(rawValue: UserDefaults.standard.string(forKey: "startTab") ?? "") ?? .today
     @State private var showingAdd = false
 
     var body: some View {
