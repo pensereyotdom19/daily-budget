@@ -117,7 +117,7 @@ struct AddExpenseView: View {
                         .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous)
                             .strokeBorder(selected ? Theme.mint.opacity(0.8) : Color.white.opacity(0.1), lineWidth: selected ? 1.5 : 1))
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(.pressable)
                     .accessibilityAddTraits(selected ? .isSelected : [])
                 }
             }

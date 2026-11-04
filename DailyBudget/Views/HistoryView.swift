@@ -115,7 +115,7 @@ struct HistoryView: View {
                              stage: m.monthKey < currentMonth ? .finished : m.monthKey == currentMonth ? .now : .upcoming,
                              specialBills: specialBills(in: m.monthKey))
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(.pressable)
                 .accessibilityHint("Opens \(MonthKey.title(of: m.monthKey))")
             }
         }
@@ -177,7 +177,7 @@ struct HistoryView: View {
                     .padding(.horizontal, 16).padding(.vertical, 12)
                     .glassCard(radius: 22)
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(.pressable)
             }
         }
     }
@@ -327,7 +327,7 @@ struct DayDetailView: View {
         List {
             ForEach(items) { e in
                 Button { editing = e } label: { ExpenseRow(expense: e) }
-                    .buttonStyle(.plain)
+                    .buttonStyle(.pressable)
                     .listRowBackground(Color.white.opacity(0.06))
             }
             .onDelete { offsets in

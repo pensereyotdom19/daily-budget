@@ -170,7 +170,7 @@ struct PlanView: View {
                             }
                             .contentShape(Rectangle())
                         }
-                        .buttonStyle(.plain)
+                        .buttonStyle(.pressable)
                     }
                     if bill.id != due.last?.id { Divider().overlay(Color.white.opacity(0.14)) }
                 }
@@ -221,7 +221,7 @@ struct PlanView: View {
                     .padding(.vertical, 9)
                     .contentShape(Rectangle())
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(.pressable)
                     .accessibilityHint("Opens \(MonthKey.title(of: month))")
                     if month != months.last { Divider().overlay(Color.white.opacity(0.14)) }
                 }

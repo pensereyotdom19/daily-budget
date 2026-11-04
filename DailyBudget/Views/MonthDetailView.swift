@@ -177,7 +177,7 @@ struct MonthDetailView: View {
                         .padding(.vertical, 10)
                         .contentShape(Rectangle())
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(.pressable)
                     .accessibilityLabel("\(bill.name), \(Money.format(bill.amountCents)), \(paid ? "paid" : "not paid")")
                     .accessibilityHint(paid ? "Marks it unpaid" : "Marks it paid")
                     if bill.id != dueBills.last?.id { Divider().overlay(Color.white.opacity(0.14)) }
@@ -231,7 +231,7 @@ struct MonthDetailView: View {
                                 in: RoundedRectangle(cornerRadius: 12, style: .continuous))
                     .contentShape(Rectangle())
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(.pressable)
                 .accessibilityElement(children: .combine)
                 .accessibilityAddTraits(selected ? .isSelected : [])
             }
@@ -269,7 +269,7 @@ struct MonthDetailView: View {
                         .padding(.horizontal, 10).frame(height: 28)
                         .glassCard(radius: 14)
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(.pressable)
                     .accessibilityLabel("Show all categories")
                 }
             }
@@ -295,7 +295,7 @@ struct MonthDetailView: View {
                     VStack(spacing: 0) {
                         ForEach(group.items) { e in
                             Button { editing = e } label: { ExpenseRow(expense: e) }
-                                .buttonStyle(.plain)
+                                .buttonStyle(.pressable)
                                 .contextMenu {
                                     Button("Edit", systemImage: "pencil") { editing = e }
                                     Button("Delete", systemImage: "trash", role: .destructive) {

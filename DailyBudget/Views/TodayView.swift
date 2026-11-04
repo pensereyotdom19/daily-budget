@@ -57,7 +57,7 @@ struct TodayView: View {
                 NavigationLink(value: Calendar.current.startOfDay(for: .now)) {
                     ringCard(today)
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(.pressable)
                 .accessibilityHint("Shows today's expenses")
 
                 HStack(spacing: 12) {
@@ -67,7 +67,7 @@ struct TodayView: View {
                                  note: "of \(Money.format(settings?.livingMonthlyCents ?? 0)) living money",
                                  noteColor: Theme.secondary)
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(.pressable)
                     if let next = nextBill {
                         NavigationLink(value: MonthRoute(monthKey: next.month)) {
                             statCard(title: "NEXT BILL",
@@ -75,12 +75,12 @@ struct TodayView: View {
                                      note: "\(next.bill.name) · \(MonthKey.title(of: next.month))",
                                      noteColor: Theme.warn)
                         }
-                        .buttonStyle(.plain)
+                        .buttonStyle(.pressable)
                     } else {
                         NavigationLink(value: MonthRoute(monthKey: MonthKey.key(for: .now))) {
                             statCard(title: "NEXT BILL", value: "None", note: "All bills paid", noteColor: Theme.secondary)
                         }
-                        .buttonStyle(.plain)
+                        .buttonStyle(.pressable)
                     }
                 }
 
@@ -106,7 +106,7 @@ struct TodayView: View {
                         .padding(.horizontal, 14).frame(height: 40)
                         .glassCard(radius: 20)
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(.pressable)
                     .accessibilityHint("Shows this month's bills")
                 }
 
@@ -121,7 +121,7 @@ struct TodayView: View {
                     VStack(spacing: 0) {
                         ForEach(todaysExpenses) { e in
                             Button { editing = e } label: { ExpenseRow(expense: e) }
-                                .buttonStyle(.plain)
+                                .buttonStyle(.pressable)
                                 .contextMenu {
                                     Button("Edit", systemImage: "pencil") { editing = e }
                                     Button("Delete", systemImage: "trash", role: .destructive) {

@@ -29,14 +29,42 @@ enum Theme {
 /// Near-black background with faint colored glows behind the glass.
 struct GlowBackground: View {
     var body: some View {
-        ZStack {
-            Theme.base
-            Circle().fill(Theme.violet.opacity(0.30)).frame(width: 420).blur(radius: 90).offset(x: -150, y: -330)
-            Circle().fill(Theme.pink.opacity(0.18)).frame(width: 360).blur(radius: 90).offset(x: 170, y: -60)
-            Circle().fill(Theme.teal.opacity(0.22)).frame(width: 420).blur(radius: 100).offset(x: -110, y: 380)
-        }
-        .ignoresSafeArea()
+        // The glows sit in an overlay so they never make the screen wider than the phone.
+        // Radial gradients look like the old blurred circles but are far cheaper to draw,
+        // which keeps tab switches and screen pushes smooth.
+        Theme.base
+            .overlay {
+                ZStack {
+                    glow(Theme.violet, 0.30, size: 600).offset(x: -150, y: -330)
+                    glow(Theme.pink, 0.18, size: 540).offset(x: 170, y: -60)
+                    glow(Theme.teal, 0.22, size: 620).offset(x: -110, y: 380)
+                }
+            }
+            .clipped()
+            .ignoresSafeArea()
+        .allowsHitTesting(false)
     }
+
+    private func glow(_ color: Color, _ opacity: Double, size: CGFloat) -> some View {
+        Circle()
+            .fill(RadialGradient(colors: [color.opacity(opacity), color.opacity(opacity * 0.55), color.opacity(0)],
+                                 center: .center, startRadius: 0, endRadius: size / 2))
+            .frame(width: size, height: size)
+    }
+}
+
+/// Cards and buttons sink a little under your finger, so every tap feels answered.
+struct PressableButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.97 : 1)
+            .opacity(configuration.isPressed ? 0.85 : 1)
+            .animation(.spring(response: 0.22, dampingFraction: 0.75), value: configuration.isPressed)
+    }
+}
+
+extension ButtonStyle where Self == PressableButtonStyle {
+    static var pressable: PressableButtonStyle { PressableButtonStyle() }
 }
 
 /// Frosted glass card. Uses Liquid Glass on iOS 26+, a thin material before that.
