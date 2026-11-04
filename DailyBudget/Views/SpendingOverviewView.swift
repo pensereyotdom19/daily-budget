@@ -110,7 +110,7 @@ struct SpendingOverviewView: View {
         .glassCard(radius: 28)
     }
 
-    private func stat(_ title: String, _ value: String, _ color: Color) -> some View {
+    private func stat(_ title: LocalizedStringKey, _ value: String, _ color: Color) -> some View {
         VStack(alignment: .leading, spacing: 2) {
             Text(title).font(.caption2.weight(.semibold)).foregroundStyle(Theme.secondary).lineLimit(1)
             Text(value).font(Theme.rounded(16)).foregroundStyle(color).lineLimit(1).minimumScaleFactor(0.7)

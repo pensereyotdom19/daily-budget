@@ -181,9 +181,9 @@ struct AccountView: View {
 
     private var statusTitle: String {
         switch sync.status {
-        case .syncing: return "Syncing…"
-        case .failed: return "Not synced"
-        default: return sync.pending > 0 ? "Changes waiting" : "Backed up"
+        case .syncing: return String(localized: "Syncing…")
+        case .failed: return String(localized: "Not synced")
+        default: return sync.pending > 0 ? String(localized: "Changes waiting") : String(localized: "Backed up")
         }
     }
 
@@ -192,7 +192,7 @@ struct AccountView: View {
         return SyncStatusText.lastSynced(sync.lastSyncedAt)
     }
 
-    private func row(_ title: String, _ value: String) -> some View {
+    private func row(_ title: LocalizedStringKey, _ value: String) -> some View {
         HStack {
             Text(title).foregroundStyle(Theme.secondary)
             Spacer()
@@ -241,10 +241,10 @@ struct SyncCard: View {
     }
 
     private var subtitle: String {
-        guard sync.isSignedIn else { return "Off · sign in to back up your data" }
+        guard sync.isSignedIn else { return String(localized: "Off · sign in to back up your data") }
         switch sync.status {
-        case .syncing: return "Syncing…"
-        case .failed: return "Not synced · tap for details"
+        case .syncing: return String(localized: "Syncing…")
+        case .failed: return String(localized: "Not synced · tap for details")
         default: 
             let last = SyncStatusText.lastSynced(sync.lastSyncedAt)
             return sync.pending > 0 ? last + " · " + String(localized: "\(sync.pending) waiting") : last
@@ -254,11 +254,12 @@ struct SyncCard: View {
 
 enum SyncStatusText {
     static func lastSynced(_ date: Date?, now: Date = .now) -> String {
-        guard let date else { return "Not synced yet" }
-        if now.timeIntervalSince(date) < 60 { return "Synced just now" }
+        guard let date else { return String(localized: "Not synced yet") }
+        if now.timeIntervalSince(date) < 60 { return String(localized: "Synced just now") }
         let f = RelativeDateTimeFormatter()
         f.unitsStyle = .full
-        return "Synced " + f.localizedString(for: date, relativeTo: now)
+        let ago = f.localizedString(for: date, relativeTo: now)
+        return String(localized: "Synced \(ago)")
     }
 }
 

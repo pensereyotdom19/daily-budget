@@ -1,0 +1,12 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "NSFaceIDUsageDescription" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Face ID keeps your budget private." } },
+        "km" : { "stringUnit" : { "state" : "translated", "value" : "Face ID រក្សាថវិការបស់អ្នកជាឯកជន។" } }
+      }
+    }
+  },
+  "version" : "1.0"
+}

@@ -6,9 +6,9 @@ enum AppTab: String, CaseIterable {
 
     var title: String {
         switch self {
-        case .today: return "Today"
-        case .history: return "History"
-        case .plan: return "Plan"
+        case .today: return String(localized: "Today")
+        case .history: return String(localized: "History")
+        case .plan: return String(localized: "Plan")
         }
     }
 

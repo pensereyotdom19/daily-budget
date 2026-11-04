@@ -1,0 +1,3083 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "": {},
+    "$": {
+      "shouldTranslate": false
+    },
+    "%@ %@": {
+      "shouldTranslate": false
+    },
+    "%@ = $1": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ = $1"
+          }
+        }
+      }
+    },
+    "%@ LEFT": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ នៅសល់"
+          }
+        }
+      }
+    },
+    "%@ extra saved": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "សន្សំបន្ថែម %@"
+          }
+        }
+      }
+    },
+    "%@ left over": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "នៅសល់ %@"
+          }
+        }
+      }
+    },
+    "%@ left today": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "នៅសល់ %@ ថ្ងៃនេះ"
+          }
+        }
+      }
+    },
+    "%@ left today → %@ after this": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "នៅសល់ថ្ងៃនេះ %1$@ → %2$@ ក្រោយចាយនេះ"
+          }
+        }
+      }
+    },
+    "%@ not planned yet": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ មិនទាន់គ្រោងទុក"
+          }
+        }
+      }
+    },
+    "%@ over today": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "លើស %@ ថ្ងៃនេះ"
+          }
+        }
+      }
+    },
+    "%@ set aside": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ទុក %@"
+          }
+        }
+      }
+    },
+    "%@ set aside + %@ extra": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ទុក %1$@ + បន្ថែម %2$@"
+          }
+        }
+      }
+    },
+    "%@ · %@": {
+      "shouldTranslate": false
+    },
+    "%@, %@, %@": {
+      "shouldTranslate": false
+    },
+    "%@, day by day": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ថ្ងៃនីមួយៗ"
+          }
+        }
+      }
+    },
+    "%@. Total %@.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@។ សរុប %2$@។"
+          }
+        }
+      }
+    },
+    "%@: %@. Tick them in Plan once paid.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@៖ %2$@។ សម្គាល់នៅក្នុង ផែនការ ពេលបង់រួច។"
+          }
+        }
+      }
+    },
+    "%lld": {
+      "shouldTranslate": false
+    },
+    "%lld changes waiting to back up": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ការផ្លាស់ប្ដូរ %lld កំពុងរង់ចាំបម្រុងទុក"
+          }
+        }
+      }
+    },
+    "%lld day%@ on budget": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld ថ្ងៃក្នុងថវិកា"
+          }
+        }
+      }
+    },
+    "%lld of %lld": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld ក្នុងចំណោម %2$lld"
+          }
+        }
+      }
+    },
+    "%lld waiting": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld កំពុងរង់ចាំ"
+          }
+        }
+      }
+    },
+    "%lld%%": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld%%"
+          }
+        }
+      }
+    },
+    "%lld×": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld ដង"
+          }
+        }
+      }
+    },
+    "+%@": {
+      "shouldTranslate": false
+    },
+    "0": {
+      "shouldTranslate": false
+    },
+    "0.00": {
+      "shouldTranslate": false
+    },
+    "4100": {
+      "shouldTranslate": false
+    },
+    "6-month plan": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ផែនការ ៦ ខែ"
+          }
+        }
+      }
+    },
+    "9 AM on the 1st, and on the 25th if still not paid.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ម៉ោង ៩ ព្រឹក ថ្ងៃទី ១ និងថ្ងៃទី ២៥ បើមិនទាន់បង់។"
+          }
+        }
+      }
+    },
+    "About %@ per finished month": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ប្រហែល %@ ក្នុងមួយខែដែលចប់"
+          }
+        }
+      }
+    },
+    "Account": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "គណនី"
+          }
+        }
+      }
+    },
+    "Active": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "កំពុងប្រើ"
+          }
+        }
+      }
+    },
+    "Add": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បន្ថែម"
+          }
+        }
+      }
+    },
+    "Add %@, %@": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បន្ថែម %1$@, %2$@"
+          }
+        }
+      }
+    },
+    "Add a bill": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បន្ថែមវិក្កយបត្រ"
+          }
+        }
+      }
+    },
+    "Add expense": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បន្ថែមការចំណាយ"
+          }
+        }
+      }
+    },
+    "Add recurring expense": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បន្ថែមចំណាយប្រចាំខែ"
+          }
+        }
+      }
+    },
+    "Added %@ %@": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បានបន្ថែម %1$@ %2$@"
+          }
+        }
+      }
+    },
+    "Added for you every month": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បន្ថែមឱ្យអ្នករៀងរាល់ខែ"
+          }
+        }
+      }
+    },
+    "Added for you on their day each month, like a phone top-up. They count like any other expense.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បន្ថែមឱ្យអ្នកដោយស្វ័យប្រវត្តិនៅថ្ងៃកំណត់រៀងរាល់ខែ ដូចជាការបញ្ចូលលុយទូរស័ព្ទ។ វារាប់ដូចការចំណាយផ្សេងទៀតដែរ។"
+          }
+        }
+      }
+    },
+    "Added to the Engagement money": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បន្ថែមទៅលុយភ្ជាប់ពាក្យ"
+          }
+        }
+      }
+    },
+    "Adds to the money set aside for the engagement.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បន្ថែមទៅលុយដែលទុកសម្រាប់ភ្ជាប់ពាក្យ។"
+          }
+        }
+      }
+    },
+    "Adds what's left when the month ends": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បន្ថែមលុយដែលនៅសល់ពេលចប់ខែ"
+          }
+        }
+      }
+    },
+    "All bills paid": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បង់វិក្កយបត្រទាំងអស់ហើយ"
+          }
+        }
+      }
+    },
+    "All expenses": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ការចំណាយទាំងអស់"
+          }
+        }
+      }
+    },
+    "Also add it for this month": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បន្ថែមសម្រាប់ខែនេះផងដែរ"
+          }
+        }
+      }
+    },
+    "Amount": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ចំនួនទឹកប្រាក់"
+          }
+        }
+      }
+    },
+    "Amount in dollars": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ចំនួនជាដុល្លារ"
+          }
+        }
+      }
+    },
+    "Amount in riel": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ចំនួនជារៀល"
+          }
+        }
+      }
+    },
+    "Asks every time you open the app": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "សួររាល់ពេលអ្នកបើកកម្មវិធី"
+          }
+        }
+      }
+    },
+    "Backed up": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បានបម្រុងទុក"
+          }
+        }
+      }
+    },
+    "Backing up": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "កំពុងបម្រុងទុក"
+          }
+        }
+      }
+    },
+    "Backup & sync": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បម្រុងទុក និងធ្វើសមកាលកម្ម"
+          }
+        }
+      }
+    },
+    "Backup problem": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "មានបញ្ហាបម្រុងទុក"
+          }
+        }
+      }
+    },
+    "Best month": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ខែល្អបំផុត"
+          }
+        }
+      }
+    },
+    "Biggest expenses": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ការចំណាយធំបំផុត"
+          }
+        }
+      }
+    },
+    "Bill name": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ឈ្មោះវិក្កយបត្រ"
+          }
+        }
+      }
+    },
+    "Bills": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "វិក្កយបត្រ"
+          }
+        }
+      }
+    },
+    "Bills %@": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "វិក្កយបត្រ %@"
+          }
+        }
+      }
+    },
+    "Bills due in %@": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "វិក្កយបត្រត្រូវបង់ក្នុង %@"
+          }
+        }
+      }
+    },
+    "Bills not paid yet": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "វិក្កយបត្រមិនទាន់បង់"
+          }
+        }
+      }
+    },
+    "Bills paid today %@": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "វិក្កយបត្របានបង់ថ្ងៃនេះ %@"
+          }
+        }
+      }
+    },
+    "Bills this month": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "វិក្កយបត្រខែនេះ"
+          }
+        }
+      }
+    },
+    "By category · tap to filter": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "តាមប្រភេទ · ចុចដើម្បីតម្រង"
+          }
+        }
+      }
+    },
+    "CATEGORY": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ប្រភេទ"
+          }
+        }
+      }
+    },
+    "Can I afford it?": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "តើខ្ញុំអាចទិញបានទេ?"
+          }
+        }
+      }
+    },
+    "Can't reach the server. Check your internet and try again.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "មិនអាចភ្ជាប់ម៉ាស៊ីនមេបានទេ។ សូមពិនិត្យអ៊ីនធឺណិត ហើយព្យាយាមម្ដងទៀត។"
+          }
+        }
+      }
+    },
+    "Cancel": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បោះបង់"
+          }
+        }
+      }
+    },
+    "Category": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ប្រភេទ"
+          }
+        }
+      }
+    },
+    "Change the exchange rate": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ប្ដូរអត្រាប្ដូរប្រាក់"
+          }
+        }
+      }
+    },
+    "Changes waiting": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "មានការផ្លាស់ប្ដូររង់ចាំ"
+          }
+        }
+      }
+    },
+    "Check": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ពិនិត្យ"
+          }
+        }
+      }
+    },
+    "Check a price before you buy": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ពិនិត្យតម្លៃមុនពេលទិញ"
+          }
+        }
+      }
+    },
+    "Close": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បិទ"
+          }
+        }
+      }
+    },
+    "Coffee": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "កាហ្វេ"
+          }
+        }
+      }
+    },
+    "Coming up": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "នឹងមកដល់"
+          }
+        }
+      }
+    },
+    "Couldn't confirm it was you. Try again.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "មិនអាចបញ្ជាក់ថាជាអ្នកទេ។ សូមព្យាយាមម្ដងទៀត។"
+          }
+        }
+      }
+    },
+    "Credit card": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "កាតឥណទាន"
+          }
+        }
+      }
+    },
+    "DAILY LIMIT": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ដែនកំណត់ប្រចាំថ្ងៃ"
+          }
+        }
+      }
+    },
+    "DAYS ON BUDGET": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ថ្ងៃក្នុងថវិកា"
+          }
+        }
+      }
+    },
+    "DONE": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "រួចរាល់"
+          }
+        }
+      }
+    },
+    "Daily Budget expenses": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ការចំណាយ Daily Budget"
+          }
+        }
+      }
+    },
+    "Daily Budget is locked": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Daily Budget ត្រូវបានចាក់សោ"
+          }
+        }
+      }
+    },
+    "Daily limit %@ → %@": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ដែនកំណត់ប្រចាំថ្ងៃ %1$@ → %2$@"
+          }
+        }
+      }
+    },
+    "Date": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "កាលបរិច្ឆេទ"
+          }
+        }
+      }
+    },
+    "Dates": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "កាលបរិច្ឆេទ"
+          }
+        }
+      }
+    },
+    "Day %lld of each month": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ថ្ងៃទី %lld នៃខែនីមួយៗ"
+          }
+        }
+      }
+    },
+    "Days you spent no more than that day's limit.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ថ្ងៃដែលអ្នកចាយមិនលើសដែនកំណត់របស់ថ្ងៃនោះ។"
+          }
+        }
+      }
+    },
+    "Delete": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "លុប"
+          }
+        }
+      }
+    },
+    "Details": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ព័ត៌មានលម្អិត"
+          }
+        }
+      }
+    },
+    "Did you spend anything today? Add it before you forget.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ថ្ងៃនេះអ្នកបានចាយអ្វីទេ? បន្ថែមវាមុនពេលភ្លេច។"
+          }
+        }
+      }
+    },
+    "Due": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ត្រូវបង់"
+          }
+        }
+      }
+    },
+    "EMERGENCY SAVINGS": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ប្រាក់សន្សំបន្ទាន់"
+          }
+        }
+      }
+    },
+    "Edit": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "កែ"
+          }
+        }
+      }
+    },
+    "Edit amount": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "កែចំនួន"
+          }
+        }
+      }
+    },
+    "Edit expense": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "កែការចំណាយ"
+          }
+        }
+      }
+    },
+    "Edit income": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "កែចំណូល"
+          }
+        }
+      }
+    },
+    "Edit plan amounts": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "កែចំនួនក្នុងផែនការ"
+          }
+        }
+      }
+    },
+    "Edit recurring": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "កែចំណាយប្រចាំខែ"
+          }
+        }
+      }
+    },
+    "Email": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "អ៊ីមែល"
+          }
+        }
+      }
+    },
+    "Emergency savings": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ប្រាក់សន្សំបន្ទាន់"
+          }
+        }
+      }
+    },
+    "Ends": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បញ្ចប់"
+          }
+        }
+      }
+    },
+    "Engagement": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ភ្ជាប់ពាក្យ"
+          }
+        }
+      }
+    },
+    "Engagement %@ is set aside on day 1 and kept out of daily spending.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "លុយភ្ជាប់ពាក្យ %@ ត្រូវបានទុកនៅថ្ងៃដំបូង ហើយមិនរាប់ក្នុងការចាយប្រចាំថ្ងៃទេ។"
+          }
+        }
+      }
+    },
+    "Engagement (set aside)": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ភ្ជាប់ពាក្យ (ទុកដាច់ដោយឡែក)"
+          }
+        }
+      }
+    },
+    "Engagement money (total)": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "លុយភ្ជាប់ពាក្យ (សរុប)"
+          }
+        }
+      }
+    },
+    "English or ខ្មែរ, in the iPhone Settings app": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "English ឬ ខ្មែរ នៅក្នុងកម្មវិធី Settings របស់ iPhone"
+          }
+        }
+      }
+    },
+    "Every 3 months": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "រៀងរាល់ ៣ ខែ"
+          }
+        }
+      }
+    },
+    "Every evening. Skipped if you already added something.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "រៀងរាល់ល្ងាច។ រំលងបើអ្នកបានបន្ថែមអ្វីមួយរួចហើយ។"
+          }
+        }
+      }
+    },
+    "Every month": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "រៀងរាល់ខែ"
+          }
+        }
+      }
+    },
+    "Every month on day %lld": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "រៀងរាល់ខែ នៅថ្ងៃទី %lld"
+          }
+        }
+      }
+    },
+    "Every morning: how much you can spend today.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "រៀងរាល់ព្រឹក៖ ថ្ងៃនេះអ្នកអាចចាយបានប៉ុន្មាន។"
+          }
+        }
+      }
+    },
+    "Everyday": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ប្រចាំថ្ងៃ"
+          }
+        }
+      }
+    },
+    "Everyday / day": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ប្រចាំថ្ងៃ / ថ្ងៃ"
+          }
+        }
+      }
+    },
+    "Everyday money left": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "លុយចាយប្រចាំថ្ងៃនៅសល់"
+          }
+        }
+      }
+    },
+    "Everyday money over by": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "លុយចាយប្រចាំថ្ងៃលើស"
+          }
+        }
+      }
+    },
+    "Everything is still saved on this phone first, so the app works without internet. When you're signed in, changes are copied to your server a few seconds later, and when you open or leave the app.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "អ្វីៗទាំងអស់នៅតែរក្សាទុកលើទូរស័ព្ទនេះមុន ដូច្នេះកម្មវិធីដំណើរការដោយគ្មានអ៊ីនធឺណិត។ ពេលអ្នកចូលគណនី ការផ្លាស់ប្ដូរត្រូវបានចម្លងទៅម៉ាស៊ីនមេរបស់អ្នកពីរបីវិនាទីក្រោយ និងពេលអ្នកបើក ឬចាកចេញពីកម្មវិធី។"
+          }
+        }
+      }
+    },
+    "Expenses": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ការចំណាយ"
+          }
+        }
+      }
+    },
+    "Export expenses as CSV": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "នាំចេញការចំណាយជា CSV"
+          }
+        }
+      }
+    },
+    "Extra money": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "លុយបន្ថែម"
+          }
+        }
+      }
+    },
+    "Fill in %@, %@": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បំពេញ %1$@, %2$@"
+          }
+        }
+      }
+    },
+    "Food": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "អាហារ"
+          }
+        }
+      }
+    },
+    "From earlier plans": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ពីផែនការមុនៗ"
+          }
+        }
+      }
+    },
+    "Fun": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "កម្សាន្ត"
+          }
+        }
+      }
+    },
+    "Goes straight to emergency savings": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ចូលប្រាក់សន្សំបន្ទាន់ផ្ទាល់"
+          }
+        }
+      }
+    },
+    "Good morning": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "អរុណសួស្ដី"
+          }
+        }
+      }
+    },
+    "Got a gift or side-job money? Tap + and choose \"I got money\".": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បានកាដូ ឬលុយពីការងារបន្ថែម? ចុច + ហើយជ្រើស \"ខ្ញុំបានលុយ\"។"
+          }
+        }
+      }
+    },
+    "Health": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "សុខភាព"
+          }
+        }
+      }
+    },
+    "History": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ប្រវត្តិ"
+          }
+        }
+      }
+    },
+    "How it works": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "របៀបដំណើរការ"
+          }
+        }
+      }
+    },
+    "How many riel make one US dollar. Riel amounts are saved in dollars at this rate.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ប៉ុន្មានរៀលស្មើមួយដុល្លារ។ ចំនួនជារៀលត្រូវរក្សាទុកជាដុល្លារតាមអត្រានេះ។"
+          }
+        }
+      }
+    },
+    "How much you can still spend today.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ថ្ងៃនេះអ្នកនៅអាចចាយបានប៉ុន្មាន។"
+          }
+        }
+      }
+    },
+    "I got money": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ខ្ញុំបានលុយ"
+          }
+        }
+      }
+    },
+    "I spent": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ខ្ញុំបានចាយ"
+          }
+        }
+      }
+    },
+    "If you ever reinstall the app, sign in again and your plan, bills and expenses come back.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បើអ្នកដំឡើងកម្មវិធីឡើងវិញ សូមចូលគណនីម្ដងទៀត ហើយផែនការ វិក្កយបត្រ និងការចំណាយនឹងត្រលប់មកវិញ។"
+          }
+        }
+      }
+    },
+    "In shorter months, days 29–31 use the last day.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ក្នុងខែខ្លី ថ្ងៃទី ២៩–៣១ នឹងប្រើថ្ងៃចុងក្រោយនៃខែ។"
+          }
+        }
+      }
+    },
+    "Kept safe. The daily limit doesn't change.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "រក្សាទុកឱ្យមានសុវត្ថិភាព។ ដែនកំណត់ប្រចាំថ្ងៃមិនប្ដូរទេ។"
+          }
+        }
+      }
+    },
+    "LEFT TODAY": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "នៅសល់ថ្ងៃនេះ"
+          }
+        }
+      }
+    },
+    "Language": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ភាសា"
+          }
+        }
+      }
+    },
+    "Lasts %lld months": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "រយៈពេល %lld ខែ"
+          }
+        }
+      }
+    },
+    "Left": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "នៅសល់"
+          }
+        }
+      }
+    },
+    "Left this month": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "នៅសល់ខែនេះ"
+          }
+        }
+      }
+    },
+    "Left today": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "នៅសល់ថ្ងៃនេះ"
+          }
+        }
+      }
+    },
+    "Limit %@": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ដែនកំណត់ %@"
+          }
+        }
+      }
+    },
+    "Living": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ចាយប្រចាំថ្ងៃ"
+          }
+        }
+      }
+    },
+    "Living money is what the daily limit is made from. Engagement is the total for the engagement, including what earlier plans set aside.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ដែនកំណត់ប្រចាំថ្ងៃគិតចេញពីលុយចាយប្រចាំខែ។ លុយភ្ជាប់ពាក្យគឺចំនួនសរុប រួមទាំងលុយដែលផែនការមុនៗបានទុក។"
+          }
+        }
+      }
+    },
+    "Living money per month": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "លុយចាយប្រចាំខែ"
+          }
+        }
+      }
+    },
+    "Living money you didn't spend goes here when a month ends, plus extra money you saved.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "លុយចាយដែលអ្នកមិនបានចាយ នឹងចូលទីនេះពេលចប់ខែ បូកនឹងលុយបន្ថែមដែលអ្នកបានសន្សំ។"
+          }
+        }
+      }
+    },
+    "Lock with %@": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ចាក់សោដោយ %@"
+          }
+        }
+      }
+    },
+    "Log my spending": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "កត់ត្រាការចាយ"
+          }
+        }
+      }
+    },
+    "Log today's spending": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "កត់ត្រាការចាយថ្ងៃនេះ"
+          }
+        }
+      }
+    },
+    "Mark %@ paid": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "សម្គាល់ %@ ថាបានបង់"
+          }
+        }
+      }
+    },
+    "Mark %@ unpaid": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "សម្គាល់ %@ ថាមិនទាន់បង់"
+          }
+        }
+      }
+    },
+    "Marks it paid": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "សម្គាល់ថាបានបង់"
+          }
+        }
+      }
+    },
+    "Marks it unpaid": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "សម្គាល់ថាមិនទាន់បង់"
+          }
+        }
+      }
+    },
+    "Money": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "លុយ"
+          }
+        }
+      }
+    },
+    "Money kept aside": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "លុយដែលទុកដាច់ដោយឡែក"
+          }
+        }
+      }
+    },
+    "Month": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ខែ"
+          }
+        }
+      }
+    },
+    "Month by month": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ខែនីមួយៗ"
+          }
+        }
+      }
+    },
+    "Monthly bills carry over from your current plan. Swipe left to remove one.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "វិក្កយបត្រប្រចាំខែយកមកពីផែនការបច្ចុប្បន្ន។ អូសទៅឆ្វេងដើម្បីដកចេញ។"
+          }
+        }
+      }
+    },
+    "More than today's money. Your month can take it, but the next days get less.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "លើសលុយថ្ងៃនេះ។ ខែនេះនៅតែអាចទ្រាំបាន ប៉ុន្តែថ្ងៃបន្ទាប់នឹងបានតិចជាងមុន។"
+          }
+        }
+      }
+    },
+    "NEXT BILL": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "វិក្កយបត្របន្ទាប់"
+          }
+        }
+      }
+    },
+    "NOW": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ឥឡូវ"
+          }
+        }
+      }
+    },
+    "New expense": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ការចំណាយថ្មី"
+          }
+        }
+      }
+    },
+    "New month, no change": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ខែថ្មី មិនប្រែប្រួល"
+          }
+        }
+      }
+    },
+    "New plan": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ផែនការថ្មី"
+          }
+        }
+      }
+    },
+    "New recurring": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ចំណាយប្រចាំខែថ្មី"
+          }
+        }
+      }
+    },
+    "No %@ expenses in %@.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "គ្មានការចំណាយ %1$@ ក្នុង %2$@ ទេ។"
+          }
+        }
+      }
+    },
+    "No %@ expenses yet.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "មិនទាន់មានការចំណាយ %@ ទេ។"
+          }
+        }
+      }
+    },
+    "No bills due in %@.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "គ្មានវិក្កយបត្រត្រូវបង់ក្នុង %@ ទេ។"
+          }
+        }
+      }
+    },
+    "No bills due this month.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "គ្មានវិក្កយបត្រត្រូវបង់ខែនេះទេ។"
+          }
+        }
+      }
+    },
+    "No expenses": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "គ្មានការចំណាយ"
+          }
+        }
+      }
+    },
+    "No expenses in %@ yet. Tap + to add one.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "មិនទាន់មានការចំណាយក្នុង %@ ទេ។ ចុច + ដើម្បីបន្ថែម។"
+          }
+        }
+      }
+    },
+    "No expenses on this day.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "គ្មានការចំណាយនៅថ្ងៃនេះទេ។"
+          }
+        }
+      }
+    },
+    "None": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "គ្មាន"
+          }
+        }
+      }
+    },
+    "Not planned yet": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "មិនទាន់គ្រោងទុក"
+          }
+        }
+      }
+    },
+    "Not synced": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "មិនទាន់ធ្វើសមកាលកម្ម"
+          }
+        }
+      }
+    },
+    "Not synced yet": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "មិនទាន់ធ្វើសមកាលកម្មនៅឡើយ"
+          }
+        }
+      }
+    },
+    "Not synced · tap for details": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "មិនទាន់ធ្វើសមកាលកម្ម · ចុចមើលលម្អិត"
+          }
+        }
+      }
+    },
+    "Note": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ចំណាំ"
+          }
+        }
+      }
+    },
+    "Note, e.g. Phone top-up": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "កំណត់ចំណាំ ឧ. បញ្ចូលលុយទូរស័ព្ទ"
+          }
+        }
+      }
+    },
+    "Nothing left over": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "គ្មានលុយនៅសល់"
+          }
+        }
+      }
+    },
+    "Nothing logged yet today. You still have %@ to spend.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ថ្ងៃនេះមិនទាន់កត់ត្រាអ្វីទេ។ អ្នកនៅមាន %@ សម្រាប់ចាយ។"
+          }
+        }
+      }
+    },
+    "Nothing spent yet": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "មិនទាន់ចាយអ្វីទេ"
+          }
+        }
+      }
+    },
+    "Nothing spent yet. Tap + to add an expense.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "មិនទាន់ចាយអ្វីទេ។ ចុច + ដើម្បីបន្ថែមការចំណាយ។"
+          }
+        }
+      }
+    },
+    "Nothing yet today. Tap + to add an expense.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "មិនទាន់មានអ្វីទេថ្ងៃនេះ។ ចុច + ដើម្បីបន្ថែមការចំណាយ។"
+          }
+        }
+      }
+    },
+    "Nothing yet. Tap Add to create one.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "មិនទាន់មានទេ។ ចុច បន្ថែម ដើម្បីបង្កើតមួយ។"
+          }
+        }
+      }
+    },
+    "Nothing yet. Your first month adds to it when it ends.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "មិនទាន់មានទេ។ ខែដំបូងរបស់អ្នកនឹងបន្ថែមពេលវាចប់។"
+          }
+        }
+      }
+    },
+    "Notifications are turned off for Daily Budget.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ការជូនដំណឹងត្រូវបានបិទសម្រាប់ Daily Budget។"
+          }
+        }
+      }
+    },
+    "OFTEN": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ញឹកញាប់"
+          }
+        }
+      }
+    },
+    "OVER TODAY": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "លើសថ្ងៃនេះ"
+          }
+        }
+      }
+    },
+    "Off · sign in to back up your data": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បិទ · ចូលគណនីដើម្បីបម្រុងទុកទិន្នន័យ"
+          }
+        }
+      }
+    },
+    "Once": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ម្ដង"
+          }
+        }
+      }
+    },
+    "Open Daily Budget once to set up this widget.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បើក Daily Budget ម្ដងដើម្បីរៀបចំ widget នេះ។"
+          }
+        }
+      }
+    },
+    "Open Daily Budget to see today's limit.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បើក Daily Budget ដើម្បីមើលដែនកំណត់ថ្ងៃនេះ។"
+          }
+        }
+      }
+    },
+    "Open Settings": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បើក Settings"
+          }
+        }
+      }
+    },
+    "Opens %@": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បើក %@"
+          }
+        }
+      }
+    },
+    "Other": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ផ្សេងៗ"
+          }
+        }
+      }
+    },
+    "Over": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "លើស"
+          }
+        }
+      }
+    },
+    "Over %@": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "លើស %@"
+          }
+        }
+      }
+    },
+    "Over plan": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "លើសផែនការ"
+          }
+        }
+      }
+    },
+    "Over today": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "លើសថ្ងៃនេះ"
+          }
+        }
+      }
+    },
+    "Over your total": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "លើសលុយសរុប"
+          }
+        }
+      }
+    },
+    "Paid from the %@ budget, not daily money": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បង់ពីថវិកា %@ មិនមែនលុយប្រចាំថ្ងៃទេ"
+          }
+        }
+      }
+    },
+    "Paid · counted as spent": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បានបង់ · រាប់ជាការចាយ"
+          }
+        }
+      }
+    },
+    "Password": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ពាក្យសម្ងាត់"
+          }
+        }
+      }
+    },
+    "Paused": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បានផ្អាក"
+          }
+        }
+      }
+    },
+    "Phone": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ទូរស័ព្ទ"
+          }
+        }
+      }
+    },
+    "Plan": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ផែនការ"
+          }
+        }
+      }
+    },
+    "Plan amounts": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ចំនួនក្នុងផែនការ"
+          }
+        }
+      }
+    },
+    "Plan finished": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ផែនការបានបញ្ចប់"
+          }
+        }
+      }
+    },
+    "Plan is %@ over your total": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ផែនការលើសលុយសរុប %@"
+          }
+        }
+      }
+    },
+    "Plan so far": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ផែនការរហូតមកដល់ពេលនេះ"
+          }
+        }
+      }
+    },
+    "Planned": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "គ្រោងទុក"
+          }
+        }
+      }
+    },
+    "Please sign in again.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "សូមចូលគណនីម្ដងទៀត។"
+          }
+        }
+      }
+    },
+    "Price": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "តម្លៃ"
+          }
+        }
+      }
+    },
+    "QUICK ADD": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បន្ថែមរហ័ស"
+          }
+        }
+      }
+    },
+    "Recurring": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ចំណាយប្រចាំខែ"
+          }
+        }
+      }
+    },
+    "Recurring expenses": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ចំណាយប្រចាំខែ"
+          }
+        }
+      }
+    },
+    "Regular bills + everyday money": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "វិក្កយបត្រធម្មតា + លុយចាយប្រចាំថ្ងៃ"
+          }
+        }
+      }
+    },
+    "Reminders": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ការរំលឹក"
+          }
+        }
+      }
+    },
+    "Riel per dollar": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "រៀលក្នុងមួយដុល្លារ"
+          }
+        }
+      }
+    },
+    "Riel rate": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "អត្រារៀល"
+          }
+        }
+      }
+    },
+    "SPENT": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បានចាយ"
+          }
+        }
+      }
+    },
+    "SPENT SO FAR": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បានចាយរហូតមកដល់ពេលនេះ"
+          }
+        }
+      }
+    },
+    "SPENT TODAY": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ចាយថ្ងៃនេះ"
+          }
+        }
+      }
+    },
+    "Save": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "រក្សាទុក"
+          }
+        }
+      }
+    },
+    "Save changes": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "រក្សាទុកការកែប្រែ"
+          }
+        }
+      }
+    },
+    "Save expense": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "រក្សាទុកការចំណាយ"
+          }
+        }
+      }
+    },
+    "Save money": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "រក្សាទុកលុយ"
+          }
+        }
+      }
+    },
+    "Saved": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បានសន្សំ"
+          }
+        }
+      }
+    },
+    "Saved to emergency": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បានសន្សំទុកបន្ទាន់"
+          }
+        }
+      }
+    },
+    "Savings": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ប្រាក់សន្សំ"
+          }
+        }
+      }
+    },
+    "See all": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "មើលទាំងអស់"
+          }
+        }
+      }
+    },
+    "Server error %lld": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "កំហុសម៉ាស៊ីនមេ %lld"
+          }
+        }
+      }
+    },
+    "Shopping": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ទិញឥវ៉ាន់"
+          }
+        }
+      }
+    },
+    "Show all categories": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បង្ហាញប្រភេទទាំងអស់"
+          }
+        }
+      }
+    },
+    "Shows engagement spending": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បង្ហាញការចំណាយភ្ជាប់ពាក្យ"
+          }
+        }
+      }
+    },
+    "Shows this month's bills": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បង្ហាញវិក្កយបត្រខែនេះ"
+          }
+        }
+      }
+    },
+    "Shows today's expenses": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បង្ហាញការចំណាយថ្ងៃនេះ"
+          }
+        }
+      }
+    },
+    "Shows where your money went": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បង្ហាញថាលុយរបស់អ្នកទៅណា"
+          }
+        }
+      }
+    },
+    "Shows your savings": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បង្ហាញប្រាក់សន្សំរបស់អ្នក"
+          }
+        }
+      }
+    },
+    "Sign in": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ចូលគណនី"
+          }
+        }
+      }
+    },
+    "Sign in to back up": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ចូលគណនីដើម្បីបម្រុងទុក"
+          }
+        }
+      }
+    },
+    "Sign out": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ចាកចេញ"
+          }
+        }
+      }
+    },
+    "Sign out?": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ចាកចេញមែនទេ?"
+          }
+        }
+      }
+    },
+    "Signing in…": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "កំពុងចូល…"
+          }
+        }
+      }
+    },
+    "Skin care": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ថែស្បែក"
+          }
+        }
+      }
+    },
+    "Spent": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បានចាយ"
+          }
+        }
+      }
+    },
+    "Spent %@": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បានចាយ %@"
+          }
+        }
+      }
+    },
+    "Spent so far": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បានចាយរហូតមកដល់ពេលនេះ"
+          }
+        }
+      }
+    },
+    "Sport": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "កីឡា"
+          }
+        }
+      }
+    },
+    "Start": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ចាប់ផ្ដើម"
+          }
+        }
+      }
+    },
+    "Start %@ plan": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ចាប់ផ្ដើមផែនការ %@"
+          }
+        }
+      }
+    },
+    "Start a new plan": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ចាប់ផ្ដើមផែនការថ្មី"
+          }
+        }
+      }
+    },
+    "Start the new plan?": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ចាប់ផ្ដើមផែនការថ្មីមែនទេ?"
+          }
+        }
+      }
+    },
+    "Starts": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ចាប់ផ្ដើម"
+          }
+        }
+      }
+    },
+    "Summary": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "សេចក្ដីសង្ខេប"
+          }
+        }
+      }
+    },
+    "Sync now": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ធ្វើសមកាលកម្មឥឡូវ"
+          }
+        }
+      }
+    },
+    "Synced %@": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ធ្វើសមកាលកម្ម %@"
+          }
+        }
+      }
+    },
+    "Synced just now": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ទើបធ្វើសមកាលកម្មអម្បាញ់មិញ"
+          }
+        }
+      }
+    },
+    "Syncing…": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "កំពុងធ្វើសមកាលកម្ម…"
+          }
+        }
+      }
+    },
+    "Tap an expense to edit it. Press and hold to delete.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ចុចលើការចំណាយដើម្បីកែ។ ចុចឱ្យជាប់ដើម្បីលុប។"
+          }
+        }
+      }
+    },
+    "Tap to add it now": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ចុចដើម្បីបន្ថែមភ្លាម"
+          }
+        }
+      }
+    },
+    "Tap to edit. Press and hold to delete.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ចុចដើម្បីកែ។ ចុចឱ្យជាប់ដើម្បីលុប។"
+          }
+        }
+      }
+    },
+    "Tap to edit. Press and hold to delete. Expenses already added stay.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ចុចដើម្បីកែ។ ចុចឱ្យជាប់ដើម្បីលុប។ ការចំណាយដែលបានបន្ថែមរួចនៅដដែល។"
+          }
+        }
+      }
+    },
+    "Tap to mark paid": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ចុចដើម្បីសម្គាល់ថាបានបង់"
+          }
+        }
+      }
+    },
+    "That's more than all the everyday money left this month.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "នេះលើសលុយចាយប្រចាំថ្ងៃទាំងអស់ដែលនៅសល់ខែនេះ។"
+          }
+        }
+      }
+    },
+    "The free server may take up to a minute to wake up.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ម៉ាស៊ីនមេឥតគិតថ្លៃអាចចំណាយពេលរហូតដល់មួយនាទីដើម្បីភ្ញាក់។"
+          }
+        }
+      }
+    },
+    "This is the last month of your plan. Set up the next one when you're ready.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "នេះជាខែចុងក្រោយនៃផែនការ។ រៀបចំផែនការបន្ទាប់ពេលអ្នករួចរាល់។"
+          }
+        }
+      }
+    },
+    "This month's everyday money": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "លុយចាយប្រចាំថ្ងៃខែនេះ"
+          }
+        }
+      }
+    },
+    "Time": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ម៉ោង"
+          }
+        }
+      }
+    },
+    "Today": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ថ្ងៃនេះ"
+          }
+        }
+      }
+    },
+    "Today you can spend %@.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ថ្ងៃនេះអ្នកអាចចាយបាន %@។"
+          }
+        }
+      }
+    },
+    "Today's limit": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ដែនកំណត់ថ្ងៃនេះ"
+          }
+        }
+      }
+    },
+    "Today's spending": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ការចំណាយថ្ងៃនេះ"
+          }
+        }
+      }
+    },
+    "Tomorrow's limit": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ដែនកំណត់ថ្ងៃស្អែក"
+          }
+        }
+      }
+    },
+    "Total": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "សរុប"
+          }
+        }
+      }
+    },
+    "Total money": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "លុយសរុប"
+          }
+        }
+      }
+    },
+    "Total money for the plan": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "លុយសរុបសម្រាប់ផែនការ"
+          }
+        }
+      }
+    },
+    "Transport": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ធ្វើដំណើរ"
+          }
+        }
+      }
+    },
+    "Turn off the app lock": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បិទសោកម្មវិធី"
+          }
+        }
+      }
+    },
+    "Turn on the app lock": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បើកសោកម្មវិធី"
+          }
+        }
+      }
+    },
+    "Type a price to see how it changes your budget. Nothing is saved.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "វាយតម្លៃដើម្បីមើលថាវាប៉ះពាល់ថវិកាយ៉ាងដូចម្ដេច។ មិនរក្សាទុកអ្វីទេ។"
+          }
+        }
+      }
+    },
+    "Typing in dollars. Switch to riel": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "កំពុងវាយជាដុល្លារ។ ប្ដូរទៅរៀល"
+          }
+        }
+      }
+    },
+    "Typing in riel. Switch to dollars": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "កំពុងវាយជារៀល។ ប្ដូរទៅដុល្លារ"
+          }
+        }
+      }
+    },
+    "Under": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ក្រោម"
+          }
+        }
+      }
+    },
+    "Under plan": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ក្រោមផែនការ"
+          }
+        }
+      }
+    },
+    "Undo": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "មិនធ្វើវិញ"
+          }
+        }
+      }
+    },
+    "Unexpected reply from the server": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ម៉ាស៊ីនមេឆ្លើយតបមិនត្រឹមត្រូវ"
+          }
+        }
+      }
+    },
+    "Unlock with %@": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ដោះសោដោយ %@"
+          }
+        }
+      }
+    },
+    "Unused money rolls into tomorrow": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "លុយមិនបានចាយនឹងបន្តទៅថ្ងៃស្អែក"
+          }
+        }
+      }
+    },
+    "Used": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បានប្រើ"
+          }
+        }
+      }
+    },
+    "WHERE SHOULD IT GO?": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ដាក់លុយនេះទៅណា?"
+          }
+        }
+      }
+    },
+    "Waiting to upload": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "រង់ចាំផ្ទុកឡើង"
+          }
+        }
+      }
+    },
+    "Where it went": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "លុយទៅណា"
+          }
+        }
+      }
+    },
+    "Yes, it fits in today's money.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បាទ/ចាស អាចទិញបានក្នុងលុយថ្ងៃនេះ។"
+          }
+        }
+      }
+    },
+    "Your daily limit goes up for the rest of the month.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ដែនកំណត់ប្រចាំថ្ងៃកើនឡើងសម្រាប់ពេលនៅសល់នៃខែ។"
+          }
+        }
+      }
+    },
+    "Your data stays on this phone. Changes stop backing up until you sign in again.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ទិន្នន័យរបស់អ្នកនៅលើទូរស័ព្ទនេះ។ ការផ្លាស់ប្ដូរនឹងឈប់បម្រុងទុក រហូតដល់អ្នកចូលគណនីម្ដងទៀត។"
+          }
+        }
+      }
+    },
+    "Your history, savings and paid bills stay. The daily limit uses the new living money from %@.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ប្រវត្តិ ប្រាក់សន្សំ និងវិក្កយបត្រដែលបានបង់នៅដដែល។ ដែនកំណត់ប្រចាំថ្ងៃប្រើលុយចាយថ្មីចាប់ពី %@។"
+          }
+        }
+      }
+    },
+    "Your plan has ended. See how it went and start a new one.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ផែនការរបស់អ្នកបានបញ្ចប់ហើយ។ មើលលទ្ធផល ហើយចាប់ផ្ដើមផែនការថ្មី។"
+          }
+        }
+      }
+    },
+    "Your plan has ended. Start a new one to keep your daily limit going.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ផែនការរបស់អ្នកបានបញ្ចប់។ ចាប់ផ្ដើមផែនការថ្មីដើម្បីបន្តដែនកំណត់ប្រចាំថ្ងៃ។"
+          }
+        }
+      }
+    },
+    "at %@ per $1": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "តាមអត្រា %@ ក្នុង $1"
+          }
+        }
+      }
+    },
+    "e.g. Gift from mom": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ឧ. កាដូពីម្ដាយ"
+          }
+        }
+      }
+    },
+    "e.g. Iced coffee": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ឧ. កាហ្វេទឹកកក"
+          }
+        }
+      }
+    },
+    "emergency savings": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ប្រាក់សន្សំបន្ទាន់"
+          }
+        }
+      }
+    },
+    "everyday money": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "លុយចាយប្រចាំថ្ងៃ"
+          }
+        }
+      }
+    },
+    "living %@": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "លុយចាយ %@"
+          }
+        }
+      }
+    },
+    "of %@": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ក្នុងចំណោម %@"
+          }
+        }
+      }
+    },
+    "of %@ living money": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ក្នុងចំណោមលុយចាយ %@"
+          }
+        }
+      }
+    },
+    "of %@ planned": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ក្នុងចំណោម %@ ដែលគ្រោងទុក"
+          }
+        }
+      }
+    },
+    "of %@ total": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ក្នុងចំណោមសរុប %@"
+          }
+        }
+      }
+    },
+    "· %lld": {
+      "shouldTranslate": false
+    },
+    "៛": {
+      "shouldTranslate": false
+    },
+    "–": {
+      "shouldTranslate": false
+    }
+  },
+  "version": "1.0"
+}

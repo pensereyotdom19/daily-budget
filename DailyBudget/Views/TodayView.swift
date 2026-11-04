@@ -106,7 +106,7 @@ struct TodayView: View {
                         .buttonStyle(.pressable)
                     } else {
                         NavigationLink(value: MonthRoute(monthKey: MonthKey.key(for: .now))) {
-                            statCard(title: "NEXT BILL", value: "None", note: "All bills paid", noteColor: Theme.secondary)
+                            statCard(title: "NEXT BILL", value: String(localized: "None"), note: "All bills paid", noteColor: Theme.secondary)
                         }
                         .buttonStyle(.pressable)
                     }
@@ -341,14 +341,14 @@ struct TodayView: View {
         .glassCard(radius: 30)
     }
 
-    private func labeled(_ title: String, _ value: String) -> some View {
+    private func labeled(_ title: LocalizedStringKey, _ value: String) -> some View {
         VStack(alignment: .leading, spacing: 1) {
             Text(title).font(.caption.weight(.semibold)).foregroundStyle(Theme.secondary)
             Text(value).font(Theme.rounded(20))
         }
     }
 
-    private func statCard(title: String, value: String, note: String, noteColor: Color) -> some View {
+    private func statCard(title: LocalizedStringKey, value: String, note: LocalizedStringKey, noteColor: Color) -> some View {
         VStack(alignment: .leading, spacing: 3) {
             HStack {
                 Text(title).font(.caption.weight(.semibold)).foregroundStyle(Theme.secondary)

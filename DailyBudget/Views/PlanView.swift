@@ -113,10 +113,10 @@ struct PlanView: View {
 
     private var totalCard: some View {
         let parts: [PlanPart] = [
-            PlanPart(name: "Bills", cents: regularBillsTotal, color: Color(hex: 0xB6A4FF)),
-            PlanPart(name: "Engagement", cents: engagement, color: Color(hex: 0xFF9BC0)),
-            PlanPart(name: "Credit card", cents: creditCardTotal, color: Color(hex: 0xFFC27A)),
-            PlanPart(name: "Living", cents: livingTotal, color: Theme.mint),
+            PlanPart(name: String(localized: "Bills"), cents: regularBillsTotal, color: Color(hex: 0xB6A4FF)),
+            PlanPart(name: String(localized: "Engagement"), cents: engagement, color: Color(hex: 0xFF9BC0)),
+            PlanPart(name: String(localized: "Credit card"), cents: creditCardTotal, color: Color(hex: 0xFFC27A)),
+            PlanPart(name: String(localized: "Living"), cents: livingTotal, color: Theme.mint),
         ]
         let denominator = Double(max(total, 1))
         return VStack(spacing: 12) {
@@ -300,11 +300,11 @@ struct PlanView: View {
     private func breakdown(due: [Bill], living: Int) -> String {
         let monthly = due.filter { $0.dueMonths.count == months.count }.reduce(0) { $0 + $1.amountCents }
         var parts: [String] = []
-        if monthly > 0 { parts.append("Bills \(Money.format(monthly))") }
+        if monthly > 0 { parts.append(String(localized: "Bills \(Money.format(monthly))")) }
         for b in due where b.dueMonths.count != months.count {
             parts.append("\(b.name.lowercased()) \(Money.format(b.amountCents))")
         }
-        parts.append("living \(Money.format(living))")
+        parts.append(String(localized: "living \(Money.format(living))"))
         return parts.joined(separator: " + ")
     }
 }

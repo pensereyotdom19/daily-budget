@@ -60,7 +60,7 @@ struct RemindersCard: View {
         Divider().overlay(Color.white.opacity(0.14)).padding(.vertical, 4)
     }
 
-    private func row(symbol: String, color: Color, title: String, detail: String,
+    private func row(symbol: String, color: Color, title: LocalizedStringKey, detail: LocalizedStringKey,
                      isOn: Binding<Bool>, minutes: Binding<Int>?) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             Toggle(isOn: isOn) {

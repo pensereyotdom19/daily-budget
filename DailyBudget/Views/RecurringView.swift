@@ -13,7 +13,7 @@ struct RecurringView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 14) {
-                ScreenHeader(caption: String(localized: "Every month"), title: String(localized: "Recurring"))
+                ScreenHeader(caption: "Every month", title: "Recurring")
                 Text("Added for you on their day each month, like a phone top-up. They count like any other expense.")
                     .font(.footnote).foregroundStyle(Theme.secondary)
                     .padding(.horizontal, 4)

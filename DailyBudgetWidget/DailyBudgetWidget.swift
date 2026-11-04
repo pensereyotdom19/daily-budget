@@ -168,7 +168,7 @@ struct TodayLeftView: View {
         .foregroundStyle(.white)
     }
 
-    private func stat(_ title: String, _ value: String) -> some View {
+    private func stat(_ title: LocalizedStringKey, _ value: String) -> some View {
         VStack(alignment: .leading, spacing: 0) {
             Text(title).font(.system(size: 10, weight: .semibold)).foregroundStyle(W.secondary)
             Text(value).font(W.rounded(17))

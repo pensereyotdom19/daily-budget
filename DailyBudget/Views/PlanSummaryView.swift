@@ -20,8 +20,7 @@ struct PlanSummaryView: View {
         let savings = settings?.savingsCents(calc, incomes: incomes) ?? 0
         ScrollView {
             VStack(spacing: 14) {
-                ScreenHeader(caption: ended ? String(localized: "Plan finished") : String(localized: "Plan so far"),
-                             title: String(localized: "Summary"))
+                ScreenHeader(caption: ended ? "Plan finished" : "Plan so far", title: "Summary")
                 daysCard(s)
                 HStack(spacing: 12) {
                     tile("Spent", Money.format(s.totalSpentCents, alwaysShowCents: true),

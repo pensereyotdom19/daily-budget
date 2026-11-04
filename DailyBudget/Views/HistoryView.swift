@@ -103,7 +103,7 @@ struct HistoryView: View {
         .glassCard(radius: 28)
     }
 
-    private func overviewStat(_ title: String, _ value: String, _ color: Color) -> some View {
+    private func overviewStat(_ title: LocalizedStringKey, _ value: String, _ color: Color) -> some View {
         VStack(alignment: .leading, spacing: 2) {
             Text(title).font(.caption2.weight(.semibold)).foregroundStyle(Theme.secondary)
             Text(value).font(Theme.rounded(16)).foregroundStyle(color == Theme.secondary ? .white : color)
@@ -143,7 +143,7 @@ struct HistoryView: View {
         }
     }
 
-    private func legendDot(_ name: String, _ color: Color) -> some View {
+    private func legendDot(_ name: LocalizedStringKey, _ color: Color) -> some View {
         HStack(spacing: 4) {
             Circle().fill(color).frame(width: 7, height: 7)
             Text(name).font(.caption2).foregroundStyle(Theme.secondary)
@@ -210,7 +210,7 @@ struct HistoryView: View {
         var parts = seen.isEmpty ? [] : [seen.map(\.title).joined(separator: ", ")]
         let billCount = items.filter { $0.billID != nil }.count
         if billCount > 0 { parts.append("\(billCount) bill\(billCount == 1 ? "" : "s") paid") }
-        return parts.isEmpty ? "No expenses" : parts.joined(separator: " · ")
+        return parts.isEmpty ? String(localized: "No expenses") : parts.joined(separator: " · ")
     }
 }
 
@@ -267,7 +267,7 @@ private struct MonthRow: View {
         }
     }
 
-    private func chip(_ text: String, _ background: Color) -> some View {
+    private func chip(_ text: LocalizedStringKey, _ background: Color) -> some View {
         Text(text).font(.caption2.weight(.bold))
             .padding(.horizontal, 6).padding(.vertical, 2)
             .background(background, in: Capsule())
@@ -294,14 +294,14 @@ private struct MonthRow: View {
 
     private var leftText: String {
         switch stage {
-        case .upcoming: return specialBills ?? "Regular bills + everyday money"
-        case .now, .finished: return "of \(Money.format(plannedCents)) planned"
+        case .upcoming: return specialBills ?? String(localized: "Regular bills + everyday money")
+        case .now, .finished: return String(localized: "of \(Money.format(plannedCents)) planned")
         }
     }
 
     private var rightText: String {
         switch stage {
-        case .upcoming: return "Coming up"
+        case .upcoming: return String(localized: "Coming up")
         case .now: return diff >= 0 ? "\(Money.format(diff, alwaysShowCents: true)) left" : "\(Money.format(-diff, alwaysShowCents: true)) over"
         case .finished: return diff >= 0 ? "\(Money.format(diff, alwaysShowCents: true)) under" : "\(Money.format(-diff, alwaysShowCents: true)) over"
         }

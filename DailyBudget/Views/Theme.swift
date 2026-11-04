@@ -133,16 +133,35 @@ extension Expense {
 
 /// Screen title with a small caption above it.
 struct ScreenHeader: View {
-    let caption: String
-    let title: String
+    let caption: Text
+    let title: Text
+
+    init(caption: LocalizedStringKey, title: LocalizedStringKey) {
+        self.caption = Text(caption)
+        self.title = Text(title)
+    }
+
+    /// For a caption that is already translated or isn't words (a date, a month range).
+    @_disfavoredOverload
+    init(caption: String, title: LocalizedStringKey) {
+        self.caption = Text(verbatim: caption)
+        self.title = Text(title)
+    }
+
+    /// For a title that isn't a fixed word, like a month name (already in the phone's language).
+    init(caption: String, verbatimTitle: String) {
+        self.caption = Text(verbatim: caption)
+        self.title = Text(verbatim: verbatimTitle)
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
-            Text(caption.uppercased())
+            caption
+                .textCase(.uppercase)
                 .font(.footnote.weight(.semibold))
                 .tracking(0.6)
                 .foregroundStyle(Theme.secondary)
-            Text(title)
+            title
                 .font(.system(size: 34, weight: .bold))
         }
         .frame(maxWidth: .infinity, alignment: .leading)

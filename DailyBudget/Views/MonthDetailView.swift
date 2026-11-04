@@ -57,7 +57,7 @@ struct MonthDetailView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 14) {
-                ScreenHeader(caption: caption, title: MonthKey.title(of: monthKey))
+                ScreenHeader(caption: caption, verbatimTitle: MonthKey.title(of: monthKey))
                 summaryCard
                 billsCard
                 if !categoryTotals.isEmpty { categoriesCard }
@@ -131,7 +131,7 @@ struct MonthDetailView: View {
         .glassCard(radius: 28)
     }
 
-    private func groupStat(_ name: String, _ cents: Int, of plan: Int?, _ color: Color) -> some View {
+    private func groupStat(_ name: LocalizedStringKey, _ cents: Int, of plan: Int?, _ color: Color) -> some View {
         VStack(alignment: .leading, spacing: 2) {
             HStack(spacing: 5) {
                 Circle().fill(color).frame(width: 8, height: 8)
@@ -319,8 +319,8 @@ struct MonthDetailView: View {
     }
 
     private var emptyText: String {
-        if let categoryFilter { return "No \(categoryFilter.title.lowercased()) expenses in \(MonthKey.title(of: monthKey))." }
+        if let categoryFilter { return String(localized: "No \(categoryFilter.title.lowercased()) expenses in \(MonthKey.title(of: monthKey)).") }
         if isFuture { return "\(MonthKey.title(of: monthKey)) hasn't started yet. The bills above are what's planned." }
-        return "No expenses in \(MonthKey.title(of: monthKey)) yet. Tap + to add one."
+        return String(localized: "No expenses in \(MonthKey.title(of: monthKey)) yet. Tap + to add one.")
     }
 }

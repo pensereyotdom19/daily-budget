@@ -9,18 +9,18 @@ enum Category: String, CaseIterable, Codable, Identifiable {
 
     var title: String {
         switch self {
-        case .food: return "Food"
-        case .coffee: return "Coffee"
-        case .transport: return "Transport"
-        case .sport: return "Sport"
-        case .skinCare: return "Skin care"
-        case .phone: return "Phone"
-        case .shopping: return "Shopping"
-        case .health: return "Health"
-        case .fun: return "Fun"
-        case .bills: return "Bills"
-        case .engagement: return "Engagement"
-        case .other: return "Other"
+        case .food: return String(localized: "Food")
+        case .coffee: return String(localized: "Coffee")
+        case .transport: return String(localized: "Transport")
+        case .sport: return String(localized: "Sport")
+        case .skinCare: return String(localized: "Skin care")
+        case .phone: return String(localized: "Phone")
+        case .shopping: return String(localized: "Shopping")
+        case .health: return String(localized: "Health")
+        case .fun: return String(localized: "Fun")
+        case .bills: return String(localized: "Bills")
+        case .engagement: return String(localized: "Engagement")
+        case .other: return String(localized: "Other")
         }
     }
 
