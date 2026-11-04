@@ -5,6 +5,7 @@ import SwiftData
 /// then this month day by day.
 struct HistoryView: View {
     @Query(sort: \Expense.date, order: .reverse) private var expenses: [Expense]
+    @Query private var incomes: [Income]
     @Query private var settingsList: [BudgetSettings]
     @Query(sort: \Bill.sortOrder) private var bills: [Bill]
     /// Normally empty. For screenshots during development, launch with `-openSpending YES`.
@@ -15,9 +16,11 @@ struct HistoryView: View {
     }()
 
     private var settings: BudgetSettings? { settingsList.first }
-    private var calc: BudgetCalculator { BudgetCalculator(expenses: expenses, settings: settings) }
+    private var calc: BudgetCalculator { BudgetCalculator(expenses: expenses, settings: settings, incomes: incomes) }
     private var currentMonth: String { MonthKey.key(for: .now) }
     private var planMonths: [String] { settings?.planMonths ?? [currentMonth] }
+    /// Includes months of earlier plans, so History keeps them after a new plan starts.
+    private var historyMonths: [String] { settings?.historyMonths ?? [currentMonth] }
     private var living: Int { settings?.livingMonthlyCents ?? 0 }
 
     private func planned(_ month: String) -> Int {
@@ -68,7 +71,7 @@ struct HistoryView: View {
         let spent = calc.monthlySpending(months: soFar).reduce(0) { $0 + $1.totalCents }
         let plannedSoFar = soFar.reduce(0) { $0 + planned($1) }
         let diff = plannedSoFar - spent
-        let saved = calc.emergencySavingsCents(planMonths: planMonths, today: .now)
+        let saved = settings?.savingsCents(calc, incomes: incomes) ?? 0
         let finished = soFar.filter { $0 < currentMonth }
         let finishedSpent = calc.monthlySpending(months: finished).reduce(0) { $0 + $1.totalCents }
         return VStack(alignment: .leading, spacing: 14) {
@@ -115,7 +118,7 @@ struct HistoryView: View {
     // MARK: - Month by month
 
     private var monthsSection: some View {
-        let data = calc.monthlySpending(months: planMonths)
+        let data = calc.monthlySpending(months: historyMonths)
         return VStack(alignment: .leading, spacing: 10) {
             HStack(alignment: .firstTextBaseline) {
                 Text("Month by month").font(.title3.weight(.bold))

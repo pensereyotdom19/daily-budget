@@ -27,7 +27,7 @@ final class SyncTests: XCTestCase {
     }
 
     private func makeContainer() throws -> ModelContainer {
-        let container = try ModelContainer(for: Expense.self, Bill.self, BudgetSettings.self,
+        let container = try ModelContainer(for: Expense.self, Bill.self, BudgetSettings.self, Income.self, RecurringExpense.self,
                                            configurations: ModelConfiguration(isStoredInMemoryOnly: true))
         containers.append(container)
         return container

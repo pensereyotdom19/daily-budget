@@ -25,6 +25,7 @@ struct RootView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.scenePhase) private var scenePhase
     @Environment(SyncManager.self) private var sync
+    @Environment(AppLock.self) private var lock
     /// Opens on Today. For screenshots during development, launch with `-startTab history` (or plan).
     @State private var tab: AppTab = AppTab(rawValue: UserDefaults.standard.string(forKey: "startTab") ?? "") ?? .today
     @State private var showingAdd = false
@@ -59,12 +60,16 @@ struct RootView: View {
         .onAppear {
             Seed.insertIfNeeded(into: context)
             BillPayments.sync(in: context)
+            RecurringRunner.addDue(in: context)
+            lock.sceneChanged(to: .active)
             AppRefresh.run(context: context)
             sync.attach(context)
             sync.appBecameActive()
         }
         .onChange(of: scenePhase) { _, phase in
             // Opening or leaving the app updates the widget and reschedules reminders, and backs up changes.
+            lock.sceneChanged(to: phase)
+            if phase == .active { RecurringRunner.addDue(in: context) }
             if phase != .inactive { AppRefresh.run(context: context) }
             if phase == .active { sync.appBecameActive() }
             if phase == .background { sync.appWentToBackground() }

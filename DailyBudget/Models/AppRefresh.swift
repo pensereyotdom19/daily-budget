@@ -11,24 +11,27 @@ enum AppRefresh {
         let expenses = (try? context.fetch(FetchDescriptor<Expense>())) ?? []
         let settings = (try? context.fetch(FetchDescriptor<BudgetSettings>()))?.first
         let bills = (try? context.fetch(FetchDescriptor<Bill>())) ?? []
-        WidgetSync.update(expenses: expenses, settings: settings, now: now)
-        ReminderScheduler.refresh(expenses: expenses, settings: settings, bills: bills, now: now)
+        let incomes = (try? context.fetch(FetchDescriptor<Income>())) ?? []
+        WidgetSync.update(expenses: expenses, settings: settings, incomes: incomes, now: now)
+        ReminderScheduler.refresh(expenses: expenses, settings: settings, incomes: incomes, bills: bills, now: now)
     }
 }
 
 enum WidgetSync {
-    static func snapshot(expenses: [Expense], settings: BudgetSettings?, now: Date,
+    static func snapshot(expenses: [Expense], settings: BudgetSettings?, incomes: [Income] = [], now: Date,
                          calendar: Calendar = .current) -> WidgetSnapshot {
         let monthStart = calendar.dateInterval(of: .month, for: now)?.start ?? now
         let items = expenses
             .filter { $0.category.countsAsLiving && $0.date >= monthStart }
             .map { WidgetSnapshot.Item(date: $0.date, cents: $0.amountCents) }
             .sorted { $0.date < $1.date }
-        return WidgetSnapshot(livingMonthlyCents: settings?.livingMonthlyCents ?? 9_200, items: items, updatedAt: now)
+        let extra = Income.byMonth(incomes, target: .living, calendar: calendar)
+        return WidgetSnapshot(livingMonthlyCents: settings?.livingMonthlyCents ?? 9_200, items: items, updatedAt: now,
+                              extraLivingByMonth: extra.isEmpty ? nil : extra)
     }
 
-    static func update(expenses: [Expense], settings: BudgetSettings?, now: Date) {
-        let new = snapshot(expenses: expenses, settings: settings, now: now)
+    static func update(expenses: [Expense], settings: BudgetSettings?, incomes: [Income], now: Date) {
+        let new = snapshot(expenses: expenses, settings: settings, incomes: incomes, now: now)
         var old = WidgetSnapshot.load()
         old?.updatedAt = new.updatedAt
         guard old != new else { return }  // nothing changed: don't spend the widget's reload budget
@@ -68,7 +71,7 @@ enum ReminderScheduler {
         }
     }
 
-    static func refresh(expenses: [Expense], settings: BudgetSettings?, bills: [Bill], now: Date,
+    static func refresh(expenses: [Expense], settings: BudgetSettings?, incomes: [Income], bills: [Bill], now: Date,
                         calendar: Calendar = .current) {
         let center = UNUserNotificationCenter.current()
         center.removeAllPendingNotificationRequests()
@@ -81,7 +84,7 @@ enum ReminderScheduler {
                                                          month: $0, isPaid: bill.isPaid(in: $0)) }
         }
         let plan = ReminderPlanner.plan(now: now, settings: prefs,
-                                        calculator: BudgetCalculator(expenses: expenses, settings: settings),
+                                        calculator: BudgetCalculator(expenses: expenses, settings: settings, incomes: incomes),
                                         loggedToday: loggedToday, bills: dues,
                                         planMonths: settings?.planMonths ?? [])
         for r in plan {

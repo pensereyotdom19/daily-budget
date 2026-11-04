@@ -245,7 +245,9 @@ struct SyncCard: View {
         switch sync.status {
         case .syncing: return "Syncing…"
         case .failed: return "Not synced · tap for details"
-        default: return SyncStatusText.lastSynced(sync.lastSyncedAt)
+        default: 
+            let last = SyncStatusText.lastSynced(sync.lastSyncedAt)
+            return sync.pending > 0 ? last + " · " + String(localized: "\(sync.pending) waiting") : last
         }
     }
 }

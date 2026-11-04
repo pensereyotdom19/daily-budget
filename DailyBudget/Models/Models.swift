@@ -65,6 +65,69 @@ final class BudgetSettings {
     var engagementCents: Int = 150_000
     /// When the app was first opened. The on-budget streak never counts days before this.
     var firstOpenedAt: Date? = nil
+    /// First month shown in History. Set when a new plan starts, so earlier months stay visible.
+    var historyStartMonth: String? = nil
+    /// Emergency savings carried over from earlier plans.
+    var savedBeforeCents: Int = 0
 
     init() {}
+}
+
+/// Where extra money goes when it comes in.
+enum IncomeTarget: String, CaseIterable, Codable, Identifiable {
+    case living, savings, engagement
+    var id: String { rawValue }
+}
+
+/// Extra money you received (a gift, a side job). Amount in cents.
+@Model
+final class Income {
+    var id: UUID = UUID()
+    var amountCents: Int = 0
+    var note: String = ""
+    var date: Date = Date()
+    var targetRaw: String = IncomeTarget.living.rawValue
+
+    init(amountCents: Int, target: IncomeTarget, note: String = "", date: Date = .now) {
+        self.id = UUID()
+        self.amountCents = amountCents
+        self.targetRaw = target.rawValue
+        self.note = note
+        self.date = date
+    }
+
+    var target: IncomeTarget {
+        get { IncomeTarget(rawValue: targetRaw) ?? .living }
+        set { targetRaw = newValue.rawValue }
+    }
+}
+
+/// An expense that repeats every month on the same day (not a bill), e.g. a phone top-up.
+@Model
+final class RecurringExpense {
+    var id: UUID = UUID()
+    var amountCents: Int = 0
+    var categoryRaw: String = Category.other.rawValue
+    var note: String = ""
+    /// 1–31. Short months use their last day.
+    var dayOfMonth: Int = 1
+    /// First month it applies to ("2026-11").
+    var startMonth: String = ""
+    /// The last month it was added for, so it is never added twice.
+    var lastAddedMonth: String? = nil
+    var isActive: Bool = true
+
+    init(amountCents: Int, category: Category, note: String, dayOfMonth: Int, startMonth: String) {
+        self.id = UUID()
+        self.amountCents = amountCents
+        self.categoryRaw = category.rawValue
+        self.note = note
+        self.dayOfMonth = dayOfMonth
+        self.startMonth = startMonth
+    }
+
+    var category: Category {
+        get { Category(rawValue: categoryRaw) ?? .other }
+        set { categoryRaw = newValue.rawValue }
+    }
 }

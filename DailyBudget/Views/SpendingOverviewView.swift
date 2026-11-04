@@ -9,6 +9,7 @@ struct SpendingRoute: Hashable {}
 struct SpendingOverviewView: View {
     @Environment(\.modelContext) private var context
     @Query(sort: \Expense.date, order: .reverse) private var allExpenses: [Expense]
+    @Query private var incomes: [Income]
     @Query private var settingsList: [BudgetSettings]
     @Query(sort: \Bill.sortOrder) private var bills: [Bill]
     @State private var editing: Expense?
@@ -17,7 +18,7 @@ struct SpendingOverviewView: View {
     private var settings: BudgetSettings? { settingsList.first }
     private var currentMonth: String { MonthKey.key(for: .now) }
     private var monthsSoFar: [String] { (settings?.planMonths ?? [currentMonth]).filter { $0 <= currentMonth } }
-    private var calc: BudgetCalculator { BudgetCalculator(expenses: allExpenses, settings: settings) }
+    private var calc: BudgetCalculator { BudgetCalculator(expenses: allExpenses, settings: settings, incomes: incomes) }
 
     /// Expenses inside the plan months so far.
     private var expenses: [Expense] {
@@ -80,7 +81,7 @@ struct SpendingOverviewView: View {
     private var totalCard: some View {
         let diff = plannedSoFar - total
         let fraction = plannedSoFar > 0 ? min(1, Double(total) / Double(plannedSoFar)) : 0
-        let saved = calc.emergencySavingsCents(planMonths: settings?.planMonths ?? [], today: .now)
+        let saved = settings?.savingsCents(calc, incomes: incomes) ?? 0
         return VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .firstTextBaseline) {
                 Text(Money.format(total, alwaysShowCents: true)).font(Theme.rounded(38))

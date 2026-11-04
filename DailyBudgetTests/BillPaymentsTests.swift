@@ -8,7 +8,7 @@ final class BillPaymentsTests: XCTestCase {
     private var context: ModelContext { container.mainContext }
 
     override func setUpWithError() throws {
-        container = try ModelContainer(for: Expense.self, Bill.self, BudgetSettings.self,
+        container = try ModelContainer(for: Expense.self, Bill.self, BudgetSettings.self, Income.self, RecurringExpense.self,
                                        configurations: ModelConfiguration(isStoredInMemoryOnly: true))
     }
 

@@ -13,13 +13,16 @@ struct WidgetSnapshot: Codable, Equatable {
     /// Everyday (living) expenses from the start of the current month onward.
     var items: [Item]
     var updatedAt: Date
+    /// Extra income added to living money, by month key. Optional so older snapshots still load.
+    var extraLivingByMonth: [String: Int]? = nil
 
     static let appGroup = "group.com.pensereyotdom19.dailybudget"
     static let key = "widgetSnapshot.v1"
 
     func calculator(calendar: Calendar = .current) -> BudgetCalculator {
         BudgetCalculator(entries: items.map { .init(date: $0.date, cents: $0.cents, countsAsLiving: true) },
-                         livingMonthlyCents: livingMonthlyCents, calendar: calendar)
+                         livingMonthlyCents: livingMonthlyCents, calendar: calendar,
+                         extraLivingByMonth: extraLivingByMonth ?? [:])
     }
 
     static func load(from defaults: UserDefaults? = UserDefaults(suiteName: appGroup)) -> WidgetSnapshot? {

@@ -14,6 +14,7 @@ struct MonthDetailView: View {
 
     @Environment(\.modelContext) private var context
     @Query(sort: \Expense.date, order: .reverse) private var allExpenses: [Expense]
+    @Query private var incomes: [Income]
     @Query private var settingsList: [BudgetSettings]
     @Query(sort: \Bill.sortOrder) private var bills: [Bill]
     @State private var editing: Expense?
@@ -37,7 +38,7 @@ struct MonthDetailView: View {
     }
 
     private var spending: BudgetCalculator.MonthSpending {
-        BudgetCalculator(expenses: allExpenses, settings: settings)
+        BudgetCalculator(expenses: allExpenses, settings: settings, incomes: incomes)
             .monthlySpending(months: [monthKey]).first ?? BudgetCalculator.MonthSpending(monthKey: monthKey)
     }
 

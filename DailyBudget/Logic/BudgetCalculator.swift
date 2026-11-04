@@ -8,6 +8,7 @@ import Foundation
 /// 2. Only everyday categories count against living money (not Bills or Engagement).
 /// 3. A day is "over" when its living spending is more than its limit.
 /// 4. Living money left at the end of a finished month goes to emergency savings.
+/// 5. Extra income can go to a month's living money (raising its daily limits), to savings, or to Engagement.
 struct BudgetCalculator {
     struct Entry {
         var date: Date
@@ -39,6 +40,8 @@ struct BudgetCalculator {
     var entries: [Entry]
     var livingMonthlyCents: Int
     var calendar: Calendar = .current
+    /// Extra income added to a month's living money, by month key ("2026-11").
+    var extraLivingByMonth: [String: Int] = [:]
 
     // MARK: - Basic sums
 
@@ -57,8 +60,13 @@ struct BudgetCalculator {
         return livingSpent(from: m.start, to: m.end)
     }
 
+    /// Living money for the month containing `date`: the monthly amount plus extra income put there.
+    func livingBudget(inMonthOf date: Date) -> Int {
+        livingMonthlyCents + (extraLivingByMonth[MonthKey.key(for: date, calendar: calendar)] ?? 0)
+    }
+
     func monthLeftCents(inMonthOf date: Date) -> Int {
-        livingMonthlyCents - livingSpent(inMonthOf: date)
+        livingBudget(inMonthOf: date) - livingSpent(inMonthOf: date)
     }
 
     // MARK: - Daily limit
@@ -67,7 +75,7 @@ struct BudgetCalculator {
         let dayStart = calendar.startOfDay(for: date)
         let month = monthInterval(containing: date)
         let spentBefore = livingSpent(from: month.start, to: dayStart)
-        let remainingMoney = max(0, livingMonthlyCents - spentBefore)
+        let remainingMoney = max(0, livingBudget(inMonthOf: date) - spentBefore)
         let daysInMonth = calendar.range(of: .day, in: .month, for: date)?.count ?? 30
         let dayOfMonth = calendar.component(.day, from: date)
         let daysLeft = max(1, daysInMonth - dayOfMonth + 1)
@@ -156,13 +164,111 @@ struct BudgetCalculator {
         return max(planStart, firstOpened)
     }
 
-    /// Sum of leftover living money from plan months that have fully ended before `today`.
-    func emergencySavingsCents(planMonths: [String], today: Date) -> Int {
+    /// Emergency savings: what earlier plans saved, plus leftover living money from plan months that
+    /// have fully ended before `today`, plus extra income put into savings up to this month.
+    func emergencySavingsCents(planMonths: [String], today: Date,
+                               savingsIncomeByMonth: [String: Int] = [:], savedBeforeCents: Int = 0) -> Int {
+        savingsByMonth(planMonths: planMonths, today: today, savingsIncomeByMonth: savingsIncomeByMonth)
+            .reduce(savedBeforeCents) { $0 + $1.totalCents }
+    }
+
+    struct SavingsMonth: Identifiable, Equatable {
+        var monthKey: String
+        /// Living money left when the month ended (0 until it ends, never negative).
+        var leftoverCents: Int
+        var incomeCents: Int
+        var id: String { monthKey }
+        var totalCents: Int { leftoverCents + incomeCents }
+    }
+
+    /// How savings grew, month by month, oldest first: plan months up to now, and any other month
+    /// where income went to savings.
+    func savingsByMonth(planMonths: [String], today: Date, savingsIncomeByMonth: [String: Int] = [:]) -> [SavingsMonth] {
         let currentKey = MonthKey.key(for: today, calendar: calendar)
-        return planMonths
-            .filter { $0 < currentKey }
-            .compactMap { MonthKey.firstDay(of: $0, calendar: calendar) }
-            .map { max(0, monthLeftCents(inMonthOf: $0)) }
-            .reduce(0, +)
+        let months = Set(planMonths.filter { $0 <= currentKey })
+            // Income from before this plan is already in `savedBeforeCents`.
+            .union(savingsIncomeByMonth.keys.filter { $0 <= currentKey && $0 >= (planMonths.first ?? "") })
+        return months.sorted().map { key in
+            let finished = key < currentKey && planMonths.contains(key)
+            let leftover = finished ? MonthKey.firstDay(of: key, calendar: calendar).map { max(0, monthLeftCents(inMonthOf: $0)) } ?? 0 : 0
+            return SavingsMonth(monthKey: key, leftoverCents: leftover, incomeCents: savingsIncomeByMonth[key] ?? 0)
+        }
+    }
+
+    // MARK: - Can I afford it?
+
+    struct WhatIf: Equatable {
+        var leftTodayAfter: Int
+        var tomorrowLimitNow: Int
+        var tomorrowLimitAfter: Int
+        var monthLeftAfter: Int
+        /// False on the last day of the month: tomorrow starts a fresh month, so today's spending doesn't change it.
+        var tomorrowInSameMonth: Bool
+        var fitsToday: Bool { leftTodayAfter >= 0 }
+    }
+
+    /// What spending `cents` of living money on `date` would do to today, tomorrow and the month.
+    func whatIf(spending cents: Int, on date: Date) -> WhatIf {
+        var after = self
+        after.entries.append(Entry(date: date, cents: cents, countsAsLiving: true))
+        let tomorrow = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: date))!
+        return WhatIf(leftTodayAfter: after.summary(on: date).leftCents,
+                      tomorrowLimitNow: limitCents(on: tomorrow),
+                      tomorrowLimitAfter: after.limitCents(on: tomorrow),
+                      monthLeftAfter: after.monthLeftCents(inMonthOf: date),
+                      tomorrowInSameMonth: calendar.isDate(tomorrow, equalTo: date, toGranularity: .month))
+    }
+
+    // MARK: - Plan summary
+
+    struct PlanSummary: Equatable {
+        var livingPlannedCents = 0
+        var livingSpentCents = 0
+        var billsCents = 0
+        var engagementCents = 0
+        var daysOnBudget = 0
+        var daysCounted = 0
+        /// The finished month with the most living money left over.
+        var bestMonth: String?
+        var totalSpentCents: Int { livingSpentCents + billsCents + engagementCents }
+    }
+
+    /// How the plan went, counting up to `today` (or the plan's last day if it has ended).
+    func planSummary(planMonths: [String], today: Date, streakStart: Date) -> PlanSummary {
+        var out = PlanSummary()
+        let spending = monthlySpending(months: planMonths)
+        let currentKey = MonthKey.key(for: today, calendar: calendar)
+        var best: (key: String, left: Int)?
+        for m in spending where m.monthKey <= currentKey {
+            guard let first = MonthKey.firstDay(of: m.monthKey, calendar: calendar) else { continue }
+            out.livingPlannedCents += livingBudget(inMonthOf: first)
+            out.livingSpentCents += m.livingCents
+            out.billsCents += m.billsCents
+            out.engagementCents += m.engagementCents
+            if m.monthKey < currentKey {
+                let left = monthLeftCents(inMonthOf: first)
+                if best == nil || left > best!.left { best = (m.monthKey, left) }
+            }
+        }
+        out.bestMonth = best?.key
+
+        guard let firstKey = planMonths.first, let lastKey = planMonths.last,
+              let planStart = MonthKey.firstDay(of: firstKey, calendar: calendar),
+              let lastMonthStart = MonthKey.firstDay(of: lastKey, calendar: calendar),
+              let planEnd = calendar.date(byAdding: DateComponents(month: 1, day: -1), to: lastMonthStart) else { return out }
+        var day = calendar.startOfDay(for: max(planStart, streakStart))
+        let last = calendar.startOfDay(for: min(today, planEnd))
+        while day <= last {
+            out.daysCounted += 1
+            if !summary(on: day).isOver { out.daysOnBudget += 1 }
+            day = calendar.date(byAdding: .day, value: 1, to: day)!
+        }
+        return out
+    }
+
+    /// True once every plan month has ended.
+    static func planHasEnded(planMonths: [String], today: Date, calendar: Calendar = .current) -> Bool {
+        guard let last = planMonths.last else { return false }
+        return MonthKey.key(for: today, calendar: calendar) > last
     }
 }

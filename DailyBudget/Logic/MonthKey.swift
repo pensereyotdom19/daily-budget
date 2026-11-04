@@ -49,6 +49,31 @@ enum Money {
         return f.string(from: NSNumber(value: Double(cents) / 100)) ?? "$0"
     }
 
+    /// Default riel per dollar, used until you change the rate.
+    static let defaultRielPerDollar = 4_100
+
+    /// Riel to US cents at the given rate, rounded to the nearest cent: ៛5,000 at 4,100 → 122 ($1.22).
+    static func rielToCents(_ riel: Int, rate: Int) -> Int {
+        guard rate > 0 else { return 0 }
+        return (riel * 100 + rate / 2) / rate
+    }
+
+    /// Parses riel like "5000", "5,000" or "៛5 000" (whole riel only). Nil if empty or not positive.
+    static func parseRiel(_ text: String) -> Int? {
+        let khmer = Array("០១២៣៤៥៦៧៨៩")
+        let ascii = String(text.map { c in khmer.firstIndex(of: c).map { Character(String($0)) } ?? c })
+        let digits = ascii.filter { !",. ៛\u{00A0}".contains($0) }
+        guard !digits.isEmpty, digits.allSatisfy(\.isASCII), let v = Int(digits), v > 0, v < 100_000_000 else { return nil }
+        return v
+    }
+
+    static func formatRiel(_ riel: Int) -> String {
+        let f = NumberFormatter()
+        f.numberStyle = .decimal
+        f.locale = Locale(identifier: "en_US")
+        return "៛" + (f.string(from: NSNumber(value: riel)) ?? "\(riel)")
+    }
+
     /// Parses text like "1.25" or "1,25" into cents. Returns nil for empty or invalid input.
     static func parse(_ text: String) -> Int? {
         let cleaned = text.replacingOccurrences(of: ",", with: ".")

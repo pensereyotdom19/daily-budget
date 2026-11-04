@@ -4,10 +4,12 @@ import SwiftData
 struct PlanView: View {
     @Environment(\.modelContext) private var context
     @Query(sort: \Bill.sortOrder) private var bills: [Bill]
+    @Query private var incomes: [Income]
     @Query private var settingsList: [BudgetSettings]
     @Query(sort: \Expense.date) private var expenses: [Expense]
     @State private var editingBill: Bill?
     @State private var editingSettings = false
+    @State private var startingNewPlan = false
     /// For screenshots during development: launch with `-openAccount YES` to open Backup & sync.
     @State private var path: NavigationPath = {
         var p = NavigationPath()
@@ -35,8 +37,8 @@ struct PlanView: View {
     private var unplanned: Int { total - billsTotal - livingTotal - engagement }
 
     private var savings: Int {
-        BudgetCalculator(expenses: expenses, settings: settings)
-            .emergencySavingsCents(planMonths: months, today: .now)
+        settings?.savingsCents(BudgetCalculator(expenses: expenses, settings: settings, incomes: incomes),
+                               incomes: incomes) ?? 0
     }
 
     var body: some View {
@@ -62,10 +64,12 @@ struct PlanView: View {
                 }
 
                 totalCard
+                planCard
                 thisMonthBills
                 monthByMonth
                 RemindersCard()
                 SyncCard()
+                MoreCard()
 
                 Text("Engagement \(Money.format(engagement)) is set aside on day 1 and kept out of daily spending.")
                     .font(.footnote)
@@ -88,6 +92,10 @@ struct PlanView: View {
         .navigationDestination(for: AccountRoute.self) { _ in
             AccountView()
         }
+        .navigationDestination(for: SavingsRoute.self) { _ in SavingsView() }
+        .navigationDestination(for: PlanSummaryRoute.self) { _ in PlanSummaryView() }
+        .navigationDestination(for: RecurringRoute.self) { _ in RecurringView() }
+        .sheet(isPresented: $startingNewPlan) { NewPlanView() }
         .sheet(item: $editingBill) { bill in
             AmountEditor(title: bill.name, cents: bill.amountCents) { bill.amountCents = $0 }
         }
@@ -135,11 +143,17 @@ struct PlanView: View {
                     }
                 }
             }
-            HStack {
-                Text("Emergency savings").font(.footnote).foregroundStyle(Theme.secondary)
-                Spacer()
-                Text(Money.format(savings, alwaysShowCents: true)).font(Theme.rounded(15))
+            NavigationLink(value: SavingsRoute()) {
+                HStack {
+                    Text("Emergency savings").font(.footnote).foregroundStyle(Theme.secondary)
+                    Spacer()
+                    Text(Money.format(savings, alwaysShowCents: true)).font(Theme.rounded(15))
+                    Image(systemName: "chevron.right").font(.caption2.weight(.bold)).foregroundStyle(Theme.secondary)
+                }
+                .contentShape(Rectangle())
             }
+            .buttonStyle(.pressable)
+            .accessibilityHint("Shows your savings")
             if unplanned != 0 {
                 Text(unplanned > 0 ? "\(Money.format(unplanned)) not planned yet" : "Plan is \(Money.format(-unplanned)) over your total")
                     .font(.footnote.weight(.semibold))
@@ -149,6 +163,46 @@ struct PlanView: View {
         }
         .padding(16)
         .glassCard(radius: 28)
+    }
+
+    /// Summary and new plan. Highlighted in the plan's last month and after it ends.
+    private var planCard: some View {
+        let ended = BudgetCalculator.planHasEnded(planMonths: months, today: .now)
+        let lastMonth = months.last == currentMonth
+        return VStack(alignment: .leading, spacing: 12) {
+            if ended || lastMonth {
+                HStack(spacing: 10) {
+                    Image(systemName: ended ? "flag.checkered" : "hourglass")
+                        .font(.system(size: 18, weight: .bold)).foregroundStyle(Theme.warn)
+                    Text(ended ? "Your plan has ended. Start a new one to keep your daily limit going."
+                               : "This is the last month of your plan. Set up the next one when you're ready.")
+                        .font(.footnote.weight(.semibold))
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+            HStack(spacing: 10) {
+                NavigationLink(value: PlanSummaryRoute()) {
+                    Label("Summary", systemImage: "chart.pie.fill")
+                        .font(.subheadline.weight(.semibold))
+                        .frame(maxWidth: .infinity, minHeight: 44)
+                        .background(Color.white.opacity(0.1), in: Capsule())
+                }
+                .buttonStyle(.pressable)
+                Button { startingNewPlan = true } label: {
+                    Label("New plan", systemImage: "calendar.badge.plus")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(ended || lastMonth ? Theme.base : .white)
+                        .frame(maxWidth: .infinity, minHeight: 44)
+                        .background {
+                            if ended || lastMonth { Capsule().fill(Theme.accentGradient) }
+                            else { Capsule().fill(Color.white.opacity(0.1)) }
+                        }
+                }
+                .buttonStyle(.pressable)
+            }
+        }
+        .padding(14)
+        .glassCard(radius: 24)
     }
 
     private var thisMonthBills: some View {
@@ -193,7 +247,7 @@ struct PlanView: View {
 
     private var monthByMonth: some View {
         let spent = Dictionary(uniqueKeysWithValues:
-            BudgetCalculator(expenses: expenses, settings: settings)
+            BudgetCalculator(expenses: expenses, settings: settings, incomes: incomes)
                 .monthlySpending(months: months).map { ($0.monthKey, $0.totalCents) })
         return VStack(alignment: .leading, spacing: 8) {
             Text("Month by month").font(.title3.weight(.bold)).padding(.horizontal, 4)

@@ -5,16 +5,19 @@ struct TodayView: View {
     var onSeeAll: () -> Void
 
     @Environment(\.modelContext) private var context
+    @Environment(SyncManager.self) private var sync
     @Query(sort: \Expense.date, order: .reverse) private var expenses: [Expense]
+    @Query private var incomes: [Income]
     @Query private var settingsList: [BudgetSettings]
     @Query(sort: \Bill.sortOrder) private var bills: [Bill]
     @State private var editing: Expense?
     @State private var justAdded: Expense?
+    @State private var affording = false
     @State private var addedCount = 0
     @State private var toastTask: Task<Void, Never>?
 
     private var settings: BudgetSettings? { settingsList.first }
-    private var calc: BudgetCalculator { BudgetCalculator(expenses: expenses, settings: settings) }
+    private var calc: BudgetCalculator { BudgetCalculator(expenses: expenses, settings: settings, incomes: incomes) }
 
     /// Today's expenses, without bill payments (those live in History and the month screens).
     private var todaysExpenses: [Expense] {
@@ -61,6 +64,22 @@ struct TodayView: View {
                             .glassCard(radius: 17)
                             .fixedSize()
                     }
+                    if sync.isSignedIn { syncBadge }
+                }
+
+                if BudgetCalculator.planHasEnded(planMonths: settings?.planMonths ?? [], today: .now) {
+                    NavigationLink(value: PlanSummaryRoute()) {
+                        HStack(spacing: 10) {
+                            Image(systemName: "flag.checkered").foregroundStyle(Theme.warn)
+                            Text("Your plan has ended. See how it went and start a new one.")
+                                .font(.footnote.weight(.semibold)).multilineTextAlignment(.leading)
+                            Spacer(minLength: 0)
+                            Image(systemName: "chevron.right").font(.caption2.weight(.bold))
+                        }
+                        .padding(14)
+                        .glassCard(radius: 20)
+                    }
+                    .buttonStyle(.pressable)
                 }
 
                 NavigationLink(value: Calendar.current.startOfDay(for: .now)) {
@@ -73,7 +92,7 @@ struct TodayView: View {
                     NavigationLink(value: MonthRoute(monthKey: MonthKey.key(for: .now))) {
                         statCard(title: "\(MonthKey.title(of: MonthKey.key(for: .now)).uppercased()) LEFT",
                                  value: Money.format(calc.monthLeftCents(inMonthOf: .now), alwaysShowCents: true),
-                                 note: "of \(Money.format(settings?.livingMonthlyCents ?? 0)) living money",
+                                 note: "of \(Money.format(calc.livingBudget(inMonthOf: .now))) living money",
                                  noteColor: Theme.secondary)
                     }
                     .buttonStyle(.pressable)
@@ -92,6 +111,20 @@ struct TodayView: View {
                         .buttonStyle(.pressable)
                     }
                 }
+
+                Button { affording = true } label: {
+                    HStack(spacing: 10) {
+                        Image(systemName: "questionmark.circle.fill").foregroundStyle(Theme.sky)
+                        Text("Can I afford it?")
+                        Spacer()
+                        Image(systemName: "chevron.right").font(.caption2.weight(.bold)).foregroundStyle(Theme.secondary)
+                    }
+                    .font(.subheadline.weight(.semibold))
+                    .padding(.horizontal, 16).frame(height: 46)
+                    .glassCard(radius: 23)
+                }
+                .buttonStyle(.pressable)
+                .accessibilityHint("Check a price before you buy")
 
                 if !quickItems.isEmpty { quickAddRow }
 
@@ -165,6 +198,11 @@ struct TodayView: View {
         .navigationDestination(for: Date.self) { day in
             DayDetailView(day: day)
         }
+        .navigationDestination(for: AccountRoute.self) { _ in AccountView() }
+        .navigationDestination(for: PlanSummaryRoute.self) { _ in PlanSummaryView() }
+        .sheet(isPresented: $affording) {
+            AffordView().presentationBackground(Theme.base)
+        }
         .sheet(item: $editing) { e in
             AddExpenseView(editing: e)
                 .presentationBackground(Theme.base)
@@ -230,6 +268,40 @@ struct TodayView: View {
         toastTask?.cancel()
         withAnimation(.snappy) { justAdded = nil }
         BillPayments.delete(e, in: context)
+    }
+
+    /// Backup status: synced, waiting to upload, syncing or a problem. Tap for details.
+    private var syncBadge: some View {
+        let state: (symbol: String, color: Color, label: String) = {
+            switch sync.status {
+            case .syncing: return ("arrow.triangle.2.circlepath.icloud", Theme.sky, String(localized: "Backing up"))
+            case .failed: return ("exclamationmark.icloud.fill", Theme.warn, String(localized: "Backup problem"))
+            default:
+                return sync.pending > 0
+                    ? ("icloud.fill", Theme.secondary, String(localized: "\(sync.pending) changes waiting to back up"))
+                    : ("checkmark.icloud.fill", Theme.mint, String(localized: "Backed up"))
+            }
+        }()
+        return NavigationLink(value: AccountRoute()) {
+            Image(systemName: state.symbol)
+                .font(.system(size: 15, weight: .bold))
+                .foregroundStyle(state.color)
+                .symbolEffect(.pulse, isActive: sync.status == .syncing)
+                .frame(width: 34, height: 34)
+                .glassCard(radius: 17)
+                .overlay(alignment: .topTrailing) {
+                    if sync.pending > 0 && sync.status != .syncing {
+                        Text("\(min(sync.pending, 99))")
+                            .font(.system(size: 10, weight: .bold, design: .rounded))
+                            .foregroundStyle(Theme.base)
+                            .padding(.horizontal, 4).frame(minWidth: 16, minHeight: 16)
+                            .background(Theme.warn, in: Capsule())
+                            .offset(x: 4, y: -4)
+                    }
+                }
+        }
+        .buttonStyle(.pressable)
+        .accessibilityLabel(state.label)
     }
 
     private func ringCard(_ today: BudgetCalculator.DaySummary) -> some View {
