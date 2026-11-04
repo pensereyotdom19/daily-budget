@@ -7,6 +7,12 @@ struct HistoryView: View {
     @Query(sort: \Expense.date, order: .reverse) private var expenses: [Expense]
     @Query private var settingsList: [BudgetSettings]
     @Query(sort: \Bill.sortOrder) private var bills: [Bill]
+    /// Normally empty. For screenshots during development, launch with `-openSpending YES`.
+    @State private var path: NavigationPath = {
+        var p = NavigationPath()
+        if UserDefaults.standard.bool(forKey: "openSpending") { p.append(SpendingRoute()) }
+        return p
+    }()
 
     private var settings: BudgetSettings? { settingsList.first }
     private var calc: BudgetCalculator { BudgetCalculator(expenses: expenses, settings: settings) }
@@ -20,11 +26,13 @@ struct HistoryView: View {
     }
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
             ScrollView {
                 VStack(spacing: 14) {
                     ScreenHeader(caption: rangeCaption, title: "History")
-                    overviewCard
+                    NavigationLink(value: SpendingRoute()) { overviewCard }
+                        .buttonStyle(.pressable)
+                        .accessibilityHint("Shows where your money went")
                     monthsSection
                     daysSection
                 }
@@ -40,6 +48,9 @@ struct HistoryView: View {
             }
             .navigationDestination(for: MonthRoute.self) { route in
                 MonthDetailView(route: route)
+            }
+            .navigationDestination(for: SpendingRoute.self) { _ in
+                SpendingOverviewView()
             }
         }
     }
@@ -62,7 +73,15 @@ struct HistoryView: View {
         let finishedSpent = calc.monthlySpending(months: finished).reduce(0) { $0 + $1.totalCents }
         return VStack(alignment: .leading, spacing: 14) {
             VStack(alignment: .leading, spacing: 2) {
-                Text("SPENT SO FAR").font(.caption.weight(.semibold)).foregroundStyle(Theme.secondary)
+                HStack {
+                    Text("SPENT SO FAR").font(.caption.weight(.semibold)).foregroundStyle(Theme.secondary)
+                    Spacer()
+                    HStack(spacing: 4) {
+                        Text("Details")
+                        Image(systemName: "chevron.right")
+                    }
+                    .font(.caption.weight(.bold)).foregroundStyle(Theme.secondary)
+                }
                 Text(Money.format(spent, alwaysShowCents: true)).font(Theme.rounded(38))
                 if finished.count >= 2 {
                     Text("About \(Money.format(finishedSpent / finished.count)) per finished month")
