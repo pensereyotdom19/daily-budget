@@ -8,6 +8,12 @@ struct PlanView: View {
     @Query(sort: \Expense.date) private var expenses: [Expense]
     @State private var editingBill: Bill?
     @State private var editingSettings = false
+    /// For screenshots during development: launch with `-openAccount YES` to open Backup & sync.
+    @State private var path: NavigationPath = {
+        var p = NavigationPath()
+        if UserDefaults.standard.bool(forKey: "openAccount") { p.append(AccountRoute()) }
+        return p
+    }()
 
     private var settings: BudgetSettings? { settingsList.first }
     private var months: [String] { settings?.planMonths ?? [] }
@@ -34,7 +40,7 @@ struct PlanView: View {
     }
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
         ScrollView {
             VStack(spacing: 14) {
                 HStack(alignment: .bottom) {
@@ -59,6 +65,7 @@ struct PlanView: View {
                 thisMonthBills
                 monthByMonth
                 RemindersCard()
+                SyncCard()
 
                 Text("Engagement \(Money.format(engagement)) is set aside on day 1 and kept out of daily spending.")
                     .font(.footnote)
@@ -77,6 +84,9 @@ struct PlanView: View {
         .toolbar(.hidden, for: .navigationBar)
         .navigationDestination(for: MonthRoute.self) { route in
             MonthDetailView(route: route)
+        }
+        .navigationDestination(for: AccountRoute.self) { _ in
+            AccountView()
         }
         .sheet(item: $editingBill) { bill in
             AmountEditor(title: bill.name, cents: bill.amountCents) { bill.amountCents = $0 }

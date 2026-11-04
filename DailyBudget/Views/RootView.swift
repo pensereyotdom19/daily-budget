@@ -24,6 +24,7 @@ enum AppTab: String, CaseIterable {
 struct RootView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(SyncManager.self) private var sync
     /// Opens on Today. For screenshots during development, launch with `-startTab history` (or plan).
     @State private var tab: AppTab = AppTab(rawValue: UserDefaults.standard.string(forKey: "startTab") ?? "") ?? .today
     @State private var showingAdd = false
@@ -46,6 +47,8 @@ struct RootView: View {
             FloatingTabBar(tab: $tab, onSelect: switchTo, onAdd: { showingAdd = true })
                 .padding(.horizontal, 18)
                 .padding(.bottom, 8)
+                // Stay at the bottom behind the keyboard instead of riding up over the form.
+                .ignoresSafeArea(.keyboard, edges: .bottom)
         }
         .foregroundStyle(.white)
         .sheet(isPresented: $showingAdd) {
@@ -57,10 +60,14 @@ struct RootView: View {
             Seed.insertIfNeeded(into: context)
             BillPayments.sync(in: context)
             AppRefresh.run(context: context)
+            sync.attach(context)
+            sync.appBecameActive()
         }
         .onChange(of: scenePhase) { _, phase in
-            // Opening or leaving the app updates the widget and reschedules reminders.
+            // Opening or leaving the app updates the widget and reschedules reminders, and backs up changes.
             if phase != .inactive { AppRefresh.run(context: context) }
+            if phase == .active { sync.appBecameActive() }
+            if phase == .background { sync.appWentToBackground() }
         }
     }
 
