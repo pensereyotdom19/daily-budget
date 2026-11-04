@@ -21,7 +21,7 @@ enum AppLanguage: String, CaseIterable, Identifiable {
     /// The name shown in the picker, in its own language.
     var nativeName: String {
         switch self {
-        case .system: return String(localized: "Same as iPhone", bundle: bundle)
+        case .system: return String(localized: "Same as iPhone", bundle: AppLanguage.bundle)
         case .en: return "English"
         case .km: return "ខ្មែរ"
         }
