@@ -30,6 +30,8 @@ enum MonthKey {
     static func title(of key: String, calendar: Calendar = .current) -> String {
         guard let d = firstDay(of: key, calendar: calendar) else { return key }
         let f = DateFormatter()
+        f.locale = AppLanguage.locale
+        f.timeZone = calendar.timeZone  // the 1st at midnight must stay in its own month
         f.calendar = calendar
         f.dateFormat = "MMMM"
         return f.string(from: d)

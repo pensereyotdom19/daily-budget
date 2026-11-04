@@ -9,18 +9,18 @@ enum Category: String, CaseIterable, Codable, Identifiable {
 
     var title: String {
         switch self {
-        case .food: return String(localized: "Food")
-        case .coffee: return String(localized: "Coffee")
-        case .transport: return String(localized: "Transport")
-        case .sport: return String(localized: "Sport")
-        case .skinCare: return String(localized: "Skin care")
-        case .phone: return String(localized: "Phone")
-        case .shopping: return String(localized: "Shopping")
-        case .health: return String(localized: "Health")
-        case .fun: return String(localized: "Fun")
-        case .bills: return String(localized: "Bills")
-        case .engagement: return String(localized: "Engagement")
-        case .other: return String(localized: "Other")
+        case .food: return String(localized: "Food", bundle: AppLanguage.bundle)
+        case .coffee: return String(localized: "Coffee", bundle: AppLanguage.bundle)
+        case .transport: return String(localized: "Transport", bundle: AppLanguage.bundle)
+        case .sport: return String(localized: "Sport", bundle: AppLanguage.bundle)
+        case .skinCare: return String(localized: "Skin care", bundle: AppLanguage.bundle)
+        case .phone: return String(localized: "Phone", bundle: AppLanguage.bundle)
+        case .shopping: return String(localized: "Shopping", bundle: AppLanguage.bundle)
+        case .health: return String(localized: "Health", bundle: AppLanguage.bundle)
+        case .fun: return String(localized: "Fun", bundle: AppLanguage.bundle)
+        case .bills: return String(localized: "Bills", bundle: AppLanguage.bundle)
+        case .engagement: return String(localized: "Engagement", bundle: AppLanguage.bundle)
+        case .other: return String(localized: "Other", bundle: AppLanguage.bundle)
         }
     }
 

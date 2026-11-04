@@ -57,19 +57,19 @@ enum ReminderPlanner {
             if settings.morningOn, let fire = at(day, settings.morningMinutes), fire > now {
                 let isNext = !out.contains { $0.kind == .morning }
                 let body = isNext
-                    ? String(localized: "Today you can spend \(Money.format(calculator.limitCents(on: fire), alwaysShowCents: true)).")
-                    : String(localized: "Open Daily Budget to see today's limit.")
+                    ? String(localized: "Today you can spend \(Money.format(calculator.limitCents(on: fire), alwaysShowCents: true)).", bundle: AppLanguage.bundle)
+                    : String(localized: "Open Daily Budget to see today's limit.", bundle: AppLanguage.bundle)
                 out.append(Reminder(id: "morning-\(dayID(day))", kind: .morning, fireDate: fire,
-                                    title: String(localized: "Good morning"), body: body))
+                                    title: String(localized: "Good morning", bundle: AppLanguage.bundle), body: body))
             }
 
             if settings.eveningOn, let fire = at(day, settings.eveningMinutes), fire > now,
                !(offset == 0 && loggedToday) {
                 let body = offset == 0
-                    ? String(localized: "Nothing logged yet today. You still have \(Money.format(calculator.summary(on: now).leftCents, alwaysShowCents: true)) to spend.")
-                    : String(localized: "Did you spend anything today? Add it before you forget.")
+                    ? String(localized: "Nothing logged yet today. You still have \(Money.format(calculator.summary(on: now).leftCents, alwaysShowCents: true)) to spend.", bundle: AppLanguage.bundle)
+                    : String(localized: "Did you spend anything today? Add it before you forget.", bundle: AppLanguage.bundle)
                 out.append(Reminder(id: "evening-\(dayID(day))", kind: .evening, fireDate: fire,
-                                    title: String(localized: "Log today's spending"), body: body))
+                                    title: String(localized: "Log today's spending", bundle: AppLanguage.bundle), body: body))
             }
         }
 
@@ -83,13 +83,13 @@ enum ReminderPlanner {
                 let name = MonthKey.title(of: month, calendar: cal)
                 if let fire = at(first, Settings.billMinutes), fire > now {
                     out.append(Reminder(id: "bills-due-\(month)", kind: .billsDue, fireDate: fire,
-                                        title: String(localized: "Bills due in \(name)"), body: String(localized: "\(list). Total \(total).")))
+                                        title: String(localized: "Bills due in \(name)", bundle: AppLanguage.bundle), body: String(localized: "\(list). Total \(total).", bundle: AppLanguage.bundle)))
                 }
                 if let d25 = cal.date(byAdding: .day, value: 24, to: first),
                    let fire = at(d25, Settings.billMinutes), fire > now {
                     out.append(Reminder(id: "bills-unpaid-\(month)", kind: .billsUnpaid, fireDate: fire,
-                                        title: String(localized: "Bills not paid yet"),
-                                        body: String(localized: "\(name): \(list). Tick them in Plan once paid.")))
+                                        title: String(localized: "Bills not paid yet", bundle: AppLanguage.bundle),
+                                        body: String(localized: "\(name): \(list). Tick them in Plan once paid.", bundle: AppLanguage.bundle)))
                 }
             }
         }

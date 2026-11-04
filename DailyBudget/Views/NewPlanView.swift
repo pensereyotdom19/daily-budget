@@ -139,7 +139,7 @@ struct NewPlanView: View {
     }
 
     private func monthYear(_ key: String) -> String {
-        MonthKey.firstDay(of: key)?.formatted(.dateTime.month(.wide).year()) ?? key
+        MonthKey.firstDay(of: key)?.formatted(.dateTime.month(.wide).year().locale(AppLanguage.locale)) ?? key
     }
 
     private func load() {

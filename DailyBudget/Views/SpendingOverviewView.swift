@@ -48,7 +48,8 @@ struct SpendingOverviewView: View {
 
     private var rangeCaption: String {
         let start = settings?.planStartDate ?? .now
-        return "\(start.formatted(.dateTime.month(.abbreviated).day())) – today"
+        let from = start.formatted(.dateTime.month(.abbreviated).day().locale(AppLanguage.locale))
+        return String(localized: "\(from) – today", bundle: AppLanguage.bundle)
     }
 
     var body: some View {
@@ -334,7 +335,7 @@ struct SpendingOverviewView: View {
                 CategoryIcon(category: e.category, size: 36, symbol: e.iconSymbol)
                 VStack(alignment: .leading, spacing: 1) {
                     Text(e.note.isEmpty ? e.category.title : e.note).font(.subheadline.weight(.semibold))
-                    Text("\(e.category.title) · \(e.date.formatted(.dateTime.month(.abbreviated).day()))")
+                    Text("\(e.category.title) · \(e.date.formatted(.dateTime.month(.abbreviated).day().locale(AppLanguage.locale)))")
                         .font(.caption).foregroundStyle(Theme.secondary)
                 }
                 Spacer()

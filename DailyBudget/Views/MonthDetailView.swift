@@ -286,7 +286,7 @@ struct MonthDetailView: View {
             ForEach(days, id: \.day) { group in
                 VStack(alignment: .leading, spacing: 6) {
                     HStack {
-                        Text(group.day.formatted(.dateTime.weekday(.abbreviated).month(.abbreviated).day()))
+                        Text(group.day.formatted(.dateTime.weekday(.abbreviated).month(.abbreviated).day().locale(AppLanguage.locale)))
                         Spacer()
                         Text(Money.format(group.items.reduce(0) { $0 + $1.amountCents }, alwaysShowCents: true))
                     }
@@ -319,8 +319,8 @@ struct MonthDetailView: View {
     }
 
     private var emptyText: String {
-        if let categoryFilter { return String(localized: "No \(categoryFilter.title.lowercased()) expenses in \(MonthKey.title(of: monthKey)).") }
+        if let categoryFilter { return String(localized: "No \(categoryFilter.title.lowercased()) expenses in \(MonthKey.title(of: monthKey)).", bundle: AppLanguage.bundle) }
         if isFuture { return "\(MonthKey.title(of: monthKey)) hasn't started yet. The bills above are what's planned." }
-        return String(localized: "No expenses in \(MonthKey.title(of: monthKey)) yet. Tap + to add one.")
+        return String(localized: "No expenses in \(MonthKey.title(of: monthKey)) yet. Tap + to add one.", bundle: AppLanguage.bundle)
     }
 }

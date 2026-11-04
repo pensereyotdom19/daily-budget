@@ -315,6 +315,13 @@ KM = {
     "Total money for the plan": "លុយសរុបសម្រាប់ផែនការ",
     "Engagement (set aside)": "ភ្ជាប់ពាក្យ (ទុកដាច់ដោយឡែក)",
     "Total": "សរុប",
+    "Settings": "ការកំណត់",
+    "Same as iPhone": "ដូច iPhone",
+    "Money and security": "លុយ និងសុវត្ថិភាព",
+    "Your data": "ទិន្នន័យរបស់អ្នក",
+    "Export expenses": "នាំចេញការចំណាយ",
+    "A CSV file for Numbers, Excel or Google Sheets": "ឯកសារ CSV សម្រាប់ Numbers, Excel ឬ Google Sheets",
+    "%@ – today": "%@ – ថ្ងៃនេះ",
     "Bills %@": "វិក្កយបត្រ %@",
     "living %@": "លុយចាយ %@",
 
@@ -349,4 +356,4 @@ KM = {
 }
 
 # Not words (symbols, numbers, placeholders only): keep as they are.
-KEEP = {"%@ · %@", "%@ %@", "%lld", "+%@", "–", "$", "៛", "0", "0.00", "4100", "", "· %lld", "%@, %@, %@"}
+KEEP = {"Daily Budget", "%@ · %@", "%@ %@", "%lld", "+%@", "–", "$", "៛", "0", "0.00", "4100", "", "· %lld", "%@, %@, %@"}

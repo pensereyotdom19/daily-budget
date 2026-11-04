@@ -58,7 +58,7 @@ struct APIClient {
         do {
             return try APIDate.decoder.decode(T.self, from: data)
         } catch {
-            throw APIError.server(status: 0, message: String(localized: "Unexpected reply from the server"))
+            throw APIError.server(status: 0, message: String(localized: "Unexpected reply from the server", bundle: AppLanguage.bundle))
         }
     }
 
@@ -88,7 +88,7 @@ struct APIClient {
         case 401:
             throw APIError.unauthorized(message: ProblemDTO.detail(in: data))
         default:
-            throw APIError.server(status: status, message: ProblemDTO.detail(in: data) ?? String(localized: "Server error \(status)"))
+            throw APIError.server(status: status, message: ProblemDTO.detail(in: data) ?? String(localized: "Server error \(status)", bundle: AppLanguage.bundle))
         }
     }
 }
@@ -100,8 +100,8 @@ enum APIError: Error, Equatable, LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .offline: return String(localized: "Can't reach the server. Check your internet and try again.")
-        case .unauthorized(let message): return message ?? String(localized: "Please sign in again.")
+        case .offline: return String(localized: "Can't reach the server. Check your internet and try again.", bundle: AppLanguage.bundle)
+        case .unauthorized(let message): return message ?? String(localized: "Please sign in again.", bundle: AppLanguage.bundle)
         case .server(_, let message): return message
         }
     }

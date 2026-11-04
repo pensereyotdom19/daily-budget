@@ -111,14 +111,14 @@ struct SavingsView: View {
         let current = MonthKey.key(for: .now)
         var parts: [String] = []
         if m.leftoverCents > 0 {
-            parts.append(String(localized: "\(Money.format(m.leftoverCents, alwaysShowCents: true)) left over"))
+            parts.append(String(localized: "\(Money.format(m.leftoverCents, alwaysShowCents: true)) left over", bundle: AppLanguage.bundle))
         } else if m.monthKey >= current {
-            parts.append(String(localized: "Adds what's left when the month ends"))
+            parts.append(String(localized: "Adds what's left when the month ends", bundle: AppLanguage.bundle))
         } else {
-            parts.append(String(localized: "Nothing left over"))
+            parts.append(String(localized: "Nothing left over", bundle: AppLanguage.bundle))
         }
         if m.incomeCents > 0 {
-            parts.append(String(localized: "\(Money.format(m.incomeCents, alwaysShowCents: true)) extra saved"))
+            parts.append(String(localized: "\(Money.format(m.incomeCents, alwaysShowCents: true)) extra saved", bundle: AppLanguage.bundle))
         }
         return parts.joined(separator: " · ")
     }
@@ -217,9 +217,9 @@ struct IncomeRow: View {
         HStack(spacing: 12) {
             IncomeIcon(target: income.target, size: 40)
             VStack(alignment: .leading, spacing: 1) {
-                Text(income.note.isEmpty ? String(localized: "Extra money") : income.note)
+                Text(income.note.isEmpty ? String(localized: "Extra money", bundle: AppLanguage.bundle) : income.note)
                     .font(.subheadline.weight(.semibold))
-                Text("\(income.target.title) · \(income.date.formatted(date: .abbreviated, time: .omitted))")
+                Text("\(income.target.title) · \(income.date.formatted(Date.FormatStyle(date: .abbreviated, time: .omitted, locale: AppLanguage.locale)))")
                     .font(.caption).foregroundStyle(Theme.secondary).lineLimit(1)
             }
             Spacer()

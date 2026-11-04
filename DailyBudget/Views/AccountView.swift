@@ -181,9 +181,9 @@ struct AccountView: View {
 
     private var statusTitle: String {
         switch sync.status {
-        case .syncing: return String(localized: "Syncing…")
-        case .failed: return String(localized: "Not synced")
-        default: return sync.pending > 0 ? String(localized: "Changes waiting") : String(localized: "Backed up")
+        case .syncing: return String(localized: "Syncing…", bundle: AppLanguage.bundle)
+        case .failed: return String(localized: "Not synced", bundle: AppLanguage.bundle)
+        default: return sync.pending > 0 ? String(localized: "Changes waiting", bundle: AppLanguage.bundle) : String(localized: "Backed up", bundle: AppLanguage.bundle)
         }
     }
 
@@ -241,25 +241,26 @@ struct SyncCard: View {
     }
 
     private var subtitle: String {
-        guard sync.isSignedIn else { return String(localized: "Off · sign in to back up your data") }
+        guard sync.isSignedIn else { return String(localized: "Off · sign in to back up your data", bundle: AppLanguage.bundle) }
         switch sync.status {
-        case .syncing: return String(localized: "Syncing…")
-        case .failed: return String(localized: "Not synced · tap for details")
+        case .syncing: return String(localized: "Syncing…", bundle: AppLanguage.bundle)
+        case .failed: return String(localized: "Not synced · tap for details", bundle: AppLanguage.bundle)
         default: 
             let last = SyncStatusText.lastSynced(sync.lastSyncedAt)
-            return sync.pending > 0 ? last + " · " + String(localized: "\(sync.pending) waiting") : last
+            return sync.pending > 0 ? last + " · " + String(localized: "\(sync.pending) waiting", bundle: AppLanguage.bundle) : last
         }
     }
 }
 
 enum SyncStatusText {
     static func lastSynced(_ date: Date?, now: Date = .now) -> String {
-        guard let date else { return String(localized: "Not synced yet") }
-        if now.timeIntervalSince(date) < 60 { return String(localized: "Synced just now") }
+        guard let date else { return String(localized: "Not synced yet", bundle: AppLanguage.bundle) }
+        if now.timeIntervalSince(date) < 60 { return String(localized: "Synced just now", bundle: AppLanguage.bundle) }
         let f = RelativeDateTimeFormatter()
+        f.locale = AppLanguage.locale
         f.unitsStyle = .full
         let ago = f.localizedString(for: date, relativeTo: now)
-        return String(localized: "Synced \(ago)")
+        return String(localized: "Synced \(ago)", bundle: AppLanguage.bundle)
     }
 }
 

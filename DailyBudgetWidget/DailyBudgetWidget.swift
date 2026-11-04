@@ -3,6 +3,10 @@ import SwiftUI
 
 @main
 struct DailyBudgetWidgets: WidgetBundle {
+    init() {
+        AppLanguage.install()
+    }
+
     var body: some Widget {
         TodayLeftWidget()
     }
@@ -89,7 +93,9 @@ struct TodayLeftView: View {
     private var limit: String { Money.format(entry.limitCents, alwaysShowCents: true) }
 
     var body: some View {
-        content.containerBackground(for: .widget) { background }
+        content
+            .environment(\.locale, AppLanguage.locale)
+            .containerBackground(for: .widget) { background }
     }
 
     @ViewBuilder private var content: some View {
@@ -160,7 +166,7 @@ struct TodayLeftView: View {
             VStack(alignment: .leading, spacing: 8) {
                 stat("DAILY LIMIT", limit)
                 stat("SPENT TODAY", Money.format(entry.spentCents, alwaysShowCents: true))
-                stat("\(entry.date.formatted(.dateTime.month(.wide)).uppercased()) LEFT",
+                stat("\(entry.date.formatted(.dateTime.month(.wide).locale(AppLanguage.locale)).uppercased()) LEFT",
                      Money.format(entry.monthLeftCents, alwaysShowCents: true))
             }
             Spacer(minLength: 0)

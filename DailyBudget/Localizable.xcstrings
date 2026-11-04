@@ -111,6 +111,16 @@
     "%@ · %@": {
       "shouldTranslate": false
     },
+    "%@ – today": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ – ថ្ងៃនេះ"
+          }
+        }
+      }
+    },
     "%@, %@, %@": {
       "shouldTranslate": false
     },
@@ -235,6 +245,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "ម៉ោង ៩ ព្រឹក ថ្ងៃទី ១ និងថ្ងៃទី ២៥ បើមិនទាន់បង់។"
+          }
+        }
+      }
+    },
+    "A CSV file for Numbers, Excel or Google Sheets": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ឯកសារ CSV សម្រាប់ Numbers, Excel ឬ Google Sheets"
           }
         }
       }
@@ -759,6 +779,9 @@
         }
       }
     },
+    "Daily Budget": {
+      "shouldTranslate": false
+    },
     "Daily Budget expenses": {
       "localizations": {
         "km": {
@@ -1009,16 +1032,6 @@
         }
       }
     },
-    "English or ខ្មែរ, in the iPhone Settings app": {
-      "localizations": {
-        "km": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "English ឬ ខ្មែរ នៅក្នុងកម្មវិធី Settings របស់ iPhone"
-          }
-        }
-      }
-    },
     "Every 3 months": {
       "localizations": {
         "km": {
@@ -1129,12 +1142,12 @@
         }
       }
     },
-    "Export expenses as CSV": {
+    "Export expenses": {
       "localizations": {
         "km": {
           "stringUnit": {
             "state": "translated",
-            "value": "នាំចេញការចំណាយជា CSV"
+            "value": "នាំចេញការចំណាយ"
           }
         }
       }
@@ -1505,6 +1518,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "លុយ"
+          }
+        }
+      }
+    },
+    "Money and security": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "លុយ និងសុវត្ថិភាព"
           }
         }
       }
@@ -2209,6 +2232,16 @@
         }
       }
     },
+    "Same as iPhone": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ដូច iPhone"
+          }
+        }
+      }
+    },
     "Save": {
       "localizations": {
         "km": {
@@ -2295,6 +2328,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "កំហុសម៉ាស៊ីនមេ %lld"
+          }
+        }
+      }
+    },
+    "Settings": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ការកំណត់"
           }
         }
       }
@@ -2925,6 +2968,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "ដែនកំណត់ប្រចាំថ្ងៃកើនឡើងសម្រាប់ពេលនៅសល់នៃខែ។"
+          }
+        }
+      }
+    },
+    "Your data": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ទិន្នន័យរបស់អ្នក"
           }
         }
       }

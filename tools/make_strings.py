@@ -18,7 +18,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BUILD = os.path.join(ROOT, "build/DD/Build/Intermediates.noindex")
 # Strings passed into our own view initializers aren't listed by Xcode, so they are named here.
 EXTRA = ["6-month plan", "Spent so far", "Savings", "Money kept aside", "SPENT TODAY", "Today", "History",
-         "Summary", "Plan finished", "Plan so far", "Every month", "Recurring", "Account", "Backup & sync"]
+         "Summary", "Plan finished", "Plan so far", "Every month", "Recurring", "Account", "Backup & sync", "Settings", "Daily Budget"]
 
 keys = []
 for f in sorted(glob.glob(f"{BUILD}/DailyBudget.build/*/DailyBudget*.build/Objects-normal/*/*.stringsdata")):

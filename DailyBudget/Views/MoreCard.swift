@@ -1,9 +1,8 @@
 import SwiftUI
 
-/// Settings on the Plan screen: recurring expenses, Face ID lock, riel rate and language.
+/// Recurring expenses, Face ID lock and riel rate (in Settings).
 struct MoreCard: View {
     @Environment(AppLock.self) private var lock
-    @Environment(\.openURL) private var openURL
     @AppStorage(AppLock.enabledKey) private var lockOn = false
     @AppStorage("currency.rielPerDollar") private var rielPerDollar = Money.defaultRielPerDollar
     @State private var editingRate = false
@@ -31,15 +30,6 @@ struct MoreCard: View {
                 }
             }
             .buttonStyle(.pressable)
-            divider
-            Button {
-                if let url = URL(string: UIApplication.openSettingsURLString) { openURL(url) }
-            } label: {
-                row("globe", Theme.sky, "Language", "English or ខ្មែរ, in the iPhone Settings app") {
-                    Image(systemName: "arrow.up.forward").font(.caption.weight(.bold)).foregroundStyle(Theme.secondary)
-                }
-            }
-            .buttonStyle(.pressable)
         }
         .padding(.horizontal, 16).padding(.vertical, 6)
         .glassCard(radius: 28)
@@ -57,8 +47,8 @@ struct MoreCard: View {
     /// Turning the lock on or off asks for Face ID first, so nobody else can switch it.
     private func setLock(_ on: Bool) {
         Task {
-            let ok = await AppLock.verify(reason: on ? String(localized: "Turn on the app lock")
-                                                      : String(localized: "Turn off the app lock"))
+            let ok = await AppLock.verify(reason: on ? String(localized: "Turn on the app lock", bundle: AppLanguage.bundle)
+                                                      : String(localized: "Turn off the app lock", bundle: AppLanguage.bundle))
             lockFailed = !ok
             if ok { lockOn = on }
         }

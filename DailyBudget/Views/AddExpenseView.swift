@@ -391,17 +391,17 @@ struct AddExpenseView: View {
 extension IncomeTarget {
     var title: String {
         switch self {
-        case .living: return String(localized: "This month's everyday money")
-        case .savings: return String(localized: "Emergency savings")
-        case .engagement: return String(localized: "Engagement")
+        case .living: return String(localized: "This month's everyday money", bundle: AppLanguage.bundle)
+        case .savings: return String(localized: "Emergency savings", bundle: AppLanguage.bundle)
+        case .engagement: return String(localized: "Engagement", bundle: AppLanguage.bundle)
         }
     }
 
     var detail: String {
         switch self {
-        case .living: return String(localized: "Your daily limit goes up for the rest of the month.")
-        case .savings: return String(localized: "Kept safe. The daily limit doesn't change.")
-        case .engagement: return String(localized: "Adds to the money set aside for the engagement.")
+        case .living: return String(localized: "Your daily limit goes up for the rest of the month.", bundle: AppLanguage.bundle)
+        case .savings: return String(localized: "Kept safe. The daily limit doesn't change.", bundle: AppLanguage.bundle)
+        case .engagement: return String(localized: "Adds to the money set aside for the engagement.", bundle: AppLanguage.bundle)
         }
     }
 

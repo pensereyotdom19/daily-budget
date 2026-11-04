@@ -55,7 +55,7 @@ struct TodayView: View {
         ScrollView {
             VStack(spacing: 14) {
                 HStack(alignment: .bottom) {
-                    ScreenHeader(caption: Date.now.formatted(.dateTime.weekday(.wide).month(.abbreviated).day()), title: "Today")
+                    ScreenHeader(caption: Date.now.formatted(.dateTime.weekday(.wide).month(.abbreviated).day().locale(AppLanguage.locale)), title: "Today")
                     if streak > 0 {
                         Label("\(streak) day\(streak == 1 ? "" : "s") on budget", systemImage: "checkmark")
                             .font(.footnote.weight(.semibold))
@@ -106,7 +106,7 @@ struct TodayView: View {
                         .buttonStyle(.pressable)
                     } else {
                         NavigationLink(value: MonthRoute(monthKey: MonthKey.key(for: .now))) {
-                            statCard(title: "NEXT BILL", value: String(localized: "None"), note: "All bills paid", noteColor: Theme.secondary)
+                            statCard(title: "NEXT BILL", value: String(localized: "None", bundle: AppLanguage.bundle), note: "All bills paid", noteColor: Theme.secondary)
                         }
                         .buttonStyle(.pressable)
                     }
@@ -274,12 +274,12 @@ struct TodayView: View {
     private var syncBadge: some View {
         let state: (symbol: String, color: Color, label: String) = {
             switch sync.status {
-            case .syncing: return ("arrow.triangle.2.circlepath.icloud", Theme.sky, String(localized: "Backing up"))
-            case .failed: return ("exclamationmark.icloud.fill", Theme.warn, String(localized: "Backup problem"))
+            case .syncing: return ("arrow.triangle.2.circlepath.icloud", Theme.sky, String(localized: "Backing up", bundle: AppLanguage.bundle))
+            case .failed: return ("exclamationmark.icloud.fill", Theme.warn, String(localized: "Backup problem", bundle: AppLanguage.bundle))
             default:
                 return sync.pending > 0
-                    ? ("icloud.fill", Theme.secondary, String(localized: "\(sync.pending) changes waiting to back up"))
-                    : ("checkmark.icloud.fill", Theme.mint, String(localized: "Backed up"))
+                    ? ("icloud.fill", Theme.secondary, String(localized: "\(sync.pending) changes waiting to back up", bundle: AppLanguage.bundle))
+                    : ("checkmark.icloud.fill", Theme.mint, String(localized: "Backed up", bundle: AppLanguage.bundle))
             }
         }()
         return NavigationLink(value: AccountRoute()) {
@@ -402,7 +402,7 @@ struct ExpenseRow: View {
             VStack(alignment: .leading, spacing: 1) {
                 Text(expense.note.isEmpty ? expense.category.title : expense.note)
                     .font(.subheadline.weight(.semibold))
-                Text("\(expense.category.title) · \(expense.date.formatted(date: .omitted, time: .shortened))")
+                Text("\(expense.category.title) · \(expense.date.formatted(Date.FormatStyle(date: .omitted, time: .shortened, locale: AppLanguage.locale)))")
                     .font(.caption).foregroundStyle(Theme.secondary)
             }
             Spacer()

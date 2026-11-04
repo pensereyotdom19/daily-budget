@@ -2,13 +2,14 @@ import SwiftUI
 import SwiftData
 
 enum AppTab: String, CaseIterable {
-    case today, history, plan
+    case today, history, plan, settings
 
     var title: String {
         switch self {
-        case .today: return String(localized: "Today")
-        case .history: return String(localized: "History")
-        case .plan: return String(localized: "Plan")
+        case .today: return String(localized: "Today", bundle: AppLanguage.bundle)
+        case .history: return String(localized: "History", bundle: AppLanguage.bundle)
+        case .plan: return String(localized: "Plan", bundle: AppLanguage.bundle)
+        case .settings: return String(localized: "Settings", bundle: AppLanguage.bundle)
         }
     }
 
@@ -17,6 +18,7 @@ enum AppTab: String, CaseIterable {
         case .today: return "clock"
         case .history: return "list.bullet"
         case .plan: return "chart.bar"
+        case .settings: return "gearshape"
         }
     }
 }
@@ -26,8 +28,8 @@ struct RootView: View {
     @Environment(\.scenePhase) private var scenePhase
     @Environment(SyncManager.self) private var sync
     @Environment(AppLock.self) private var lock
-    /// Opens on Today. For screenshots during development, launch with `-startTab history` (or plan).
-    @State private var tab: AppTab = AppTab(rawValue: UserDefaults.standard.string(forKey: "startTab") ?? "") ?? .today
+    /// Kept by the app, so switching language (which redraws everything) stays on the same tab.
+    @Binding var tab: AppTab
     @State private var showingAdd = false
 
     var body: some View {
@@ -42,6 +44,8 @@ struct RootView: View {
                     .tabLayer(isActive: tab == .history)
                 PlanView()
                     .tabLayer(isActive: tab == .plan)
+                SettingsView()
+                    .tabLayer(isActive: tab == .settings)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
 
@@ -110,7 +114,7 @@ struct FloatingTabBar: View {
                     } label: {
                         VStack(spacing: 2) {
                             Image(systemName: item.symbol).font(.system(size: 19, weight: .semibold))
-                            Text(item.title).font(.caption2.weight(.semibold))
+                            Text(item.title).font(.caption2.weight(.semibold)).lineLimit(1).minimumScaleFactor(0.7)
                         }
                         .frame(maxWidth: .infinity, minHeight: 52)
                         .foregroundStyle(tab == item ? Color.white : Color.white.opacity(0.7))

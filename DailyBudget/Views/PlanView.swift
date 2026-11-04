@@ -48,11 +48,6 @@ struct PlanView: View {
                 HStack(alignment: .bottom) {
                     ScreenHeader(caption: rangeCaption, title: "6-month plan")
                     HStack(spacing: 4) {
-                        ShareLink(item: CSVExport.make(expenses: expenses),
-                                  preview: SharePreview("Daily Budget expenses")) {
-                            Image(systemName: "square.and.arrow.up").frame(width: 40, height: 40)
-                        }
-                        .accessibilityLabel("Export expenses as CSV")
                         Button { editingSettings = true } label: {
                             Image(systemName: "slider.horizontal.3").frame(width: 40, height: 40)
                         }
@@ -67,9 +62,6 @@ struct PlanView: View {
                 planCard
                 thisMonthBills
                 monthByMonth
-                RemindersCard()
-                SyncCard()
-                MoreCard()
 
                 Text("Engagement \(Money.format(engagement)) is set aside on day 1 and kept out of daily spending.")
                     .font(.footnote)
@@ -89,12 +81,8 @@ struct PlanView: View {
         .navigationDestination(for: MonthRoute.self) { route in
             MonthDetailView(route: route)
         }
-        .navigationDestination(for: AccountRoute.self) { _ in
-            AccountView()
-        }
         .navigationDestination(for: SavingsRoute.self) { _ in SavingsView() }
         .navigationDestination(for: PlanSummaryRoute.self) { _ in PlanSummaryView() }
-        .navigationDestination(for: RecurringRoute.self) { _ in RecurringView() }
         .sheet(isPresented: $startingNewPlan) { NewPlanView() }
         .sheet(item: $editingBill) { bill in
             AmountEditor(title: bill.name, cents: bill.amountCents) { bill.amountCents = $0 }
@@ -108,15 +96,15 @@ struct PlanView: View {
     private var rangeCaption: String {
         guard let first = months.first, let last = months.last,
               let a = MonthKey.firstDay(of: first), let b = MonthKey.firstDay(of: last) else { return "" }
-        return "\(a.formatted(.dateTime.month(.abbreviated).year())) – \(b.formatted(.dateTime.month(.abbreviated).year()))"
+        return "\(a.formatted(.dateTime.month(.abbreviated).year().locale(AppLanguage.locale))) – \(b.formatted(.dateTime.month(.abbreviated).year().locale(AppLanguage.locale)))"
     }
 
     private var totalCard: some View {
         let parts: [PlanPart] = [
-            PlanPart(name: String(localized: "Bills"), cents: regularBillsTotal, color: Color(hex: 0xB6A4FF)),
-            PlanPart(name: String(localized: "Engagement"), cents: engagement, color: Color(hex: 0xFF9BC0)),
-            PlanPart(name: String(localized: "Credit card"), cents: creditCardTotal, color: Color(hex: 0xFFC27A)),
-            PlanPart(name: String(localized: "Living"), cents: livingTotal, color: Theme.mint),
+            PlanPart(name: String(localized: "Bills", bundle: AppLanguage.bundle), cents: regularBillsTotal, color: Color(hex: 0xB6A4FF)),
+            PlanPart(name: String(localized: "Engagement", bundle: AppLanguage.bundle), cents: engagement, color: Color(hex: 0xFF9BC0)),
+            PlanPart(name: String(localized: "Credit card", bundle: AppLanguage.bundle), cents: creditCardTotal, color: Color(hex: 0xFFC27A)),
+            PlanPart(name: String(localized: "Living", bundle: AppLanguage.bundle), cents: livingTotal, color: Theme.mint),
         ]
         let denominator = Double(max(total, 1))
         return VStack(spacing: 12) {
@@ -300,11 +288,11 @@ struct PlanView: View {
     private func breakdown(due: [Bill], living: Int) -> String {
         let monthly = due.filter { $0.dueMonths.count == months.count }.reduce(0) { $0 + $1.amountCents }
         var parts: [String] = []
-        if monthly > 0 { parts.append(String(localized: "Bills \(Money.format(monthly))")) }
+        if monthly > 0 { parts.append(String(localized: "Bills \(Money.format(monthly))", bundle: AppLanguage.bundle)) }
         for b in due where b.dueMonths.count != months.count {
             parts.append("\(b.name.lowercased()) \(Money.format(b.amountCents))")
         }
-        parts.append(String(localized: "living \(Money.format(living))"))
+        parts.append(String(localized: "living \(Money.format(living))", bundle: AppLanguage.bundle))
         return parts.joined(separator: " + ")
     }
 }

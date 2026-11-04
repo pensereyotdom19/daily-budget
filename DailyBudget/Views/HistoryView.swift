@@ -61,7 +61,7 @@ struct HistoryView: View {
     private var rangeCaption: String {
         guard let first = planMonths.first, let last = planMonths.last,
               let a = MonthKey.firstDay(of: first), let b = MonthKey.firstDay(of: last) else { return "" }
-        return "\(a.formatted(.dateTime.month(.abbreviated).year())) – \(b.formatted(.dateTime.month(.abbreviated).year()))"
+        return "\(a.formatted(.dateTime.month(.abbreviated).year().locale(AppLanguage.locale))) – \(b.formatted(.dateTime.month(.abbreviated).year().locale(AppLanguage.locale)))"
     }
 
     // MARK: - Overview
@@ -179,7 +179,7 @@ struct HistoryView: View {
                 NavigationLink(value: day.day) {
                     HStack(spacing: 12) {
                         VStack(alignment: .leading, spacing: 2) {
-                            Text(day.day.formatted(.dateTime.weekday(.abbreviated).month(.abbreviated).day()))
+                            Text(day.day.formatted(.dateTime.weekday(.abbreviated).month(.abbreviated).day().locale(AppLanguage.locale)))
                                 .font(.subheadline.weight(.bold))
                             Text(daySubtitle(items))
                                 .font(.caption).foregroundStyle(Theme.secondary).lineLimit(1)
@@ -210,7 +210,7 @@ struct HistoryView: View {
         var parts = seen.isEmpty ? [] : [seen.map(\.title).joined(separator: ", ")]
         let billCount = items.filter { $0.billID != nil }.count
         if billCount > 0 { parts.append("\(billCount) bill\(billCount == 1 ? "" : "s") paid") }
-        return parts.isEmpty ? String(localized: "No expenses") : parts.joined(separator: " · ")
+        return parts.isEmpty ? String(localized: "No expenses", bundle: AppLanguage.bundle) : parts.joined(separator: " · ")
     }
 }
 
@@ -294,14 +294,14 @@ private struct MonthRow: View {
 
     private var leftText: String {
         switch stage {
-        case .upcoming: return specialBills ?? String(localized: "Regular bills + everyday money")
-        case .now, .finished: return String(localized: "of \(Money.format(plannedCents)) planned")
+        case .upcoming: return specialBills ?? String(localized: "Regular bills + everyday money", bundle: AppLanguage.bundle)
+        case .now, .finished: return String(localized: "of \(Money.format(plannedCents)) planned", bundle: AppLanguage.bundle)
         }
     }
 
     private var rightText: String {
         switch stage {
-        case .upcoming: return String(localized: "Coming up")
+        case .upcoming: return String(localized: "Coming up", bundle: AppLanguage.bundle)
         case .now: return diff >= 0 ? "\(Money.format(diff, alwaysShowCents: true)) left" : "\(Money.format(-diff, alwaysShowCents: true)) over"
         case .finished: return diff >= 0 ? "\(Money.format(diff, alwaysShowCents: true)) under" : "\(Money.format(-diff, alwaysShowCents: true)) over"
         }
@@ -363,7 +363,7 @@ struct DayDetailView: View {
         }
         .scrollContentBackground(.hidden)
         .background(GlowBackground())
-        .navigationTitle(day.formatted(.dateTime.weekday(.wide).month(.abbreviated).day()))
+        .navigationTitle(day.formatted(.dateTime.weekday(.wide).month(.abbreviated).day().locale(AppLanguage.locale)))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.visible, for: .navigationBar)
         .safeAreaInset(edge: .bottom) { Color.clear.frame(height: 90) }
