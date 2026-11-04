@@ -40,4 +40,5 @@ jobs:
         run: |
           set -o pipefail
           xcodebuild test -scheme DailyBudget -destination "id=$SIMULATOR" \
-            CODE_SIGNING_ALLOWED=NO 2>&1 | tail -60
+            CODE_SIGNING_ALLOWED=NO 2>&1 \
+            | grep -E "error:|warning:|Test Case .* failed|Executed|\*\* (TEST|BUILD)" 
