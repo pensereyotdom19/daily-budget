@@ -13,6 +13,18 @@ struct BudgetCalculator {
         var date: Date
         var cents: Int
         var countsAsLiving: Bool
+        /// Only used to split non-living spending into bills vs engagement.
+        var isEngagement: Bool = false
+    }
+
+    /// What was actually spent in one month, split into the three money groups.
+    struct MonthSpending: Identifiable {
+        var monthKey: String
+        var livingCents = 0
+        var billsCents = 0
+        var engagementCents = 0
+        var id: String { monthKey }
+        var totalCents: Int { livingCents + billsCents + engagementCents }
     }
 
     struct DaySummary: Identifiable {
@@ -101,6 +113,33 @@ struct BudgetCalculator {
         }
         return count
     }
+
+    // MARK: - Month by month
+
+    /// Spending per month for the given month keys, in the same order. Entries outside them are ignored.
+    func monthlySpending(months: [String]) -> [MonthSpending] {
+        var byMonth = Dictionary(uniqueKeysWithValues: months.map { ($0, MonthSpending(monthKey: $0)) })
+        for e in entries {
+            let key = MonthKey.key(for: e.date, calendar: calendar)
+            guard byMonth[key] != nil else { continue }
+            if e.countsAsLiving {
+                byMonth[key]!.livingCents += e.cents
+            } else if e.isEngagement {
+                byMonth[key]!.engagementCents += e.cents
+            } else {
+                byMonth[key]!.billsCents += e.cents
+            }
+        }
+        return months.compactMap { byMonth[$0] }
+    }
+
+    /// Planned spending for a month: living money plus every bill due that month.
+    /// (Engagement is a one-off amount set aside, so it isn't part of any single month's plan.)
+    static func plannedCents(month: String, livingMonthlyCents: Int, bills: [(cents: Int, dueMonths: [String])]) -> Int {
+        bills.filter { $0.dueMonths.contains(month) }.reduce(livingMonthlyCents) { $0 + $1.cents }
+    }
+
+    // MARK: - Streak start
 
     /// The streak counts from the later of the plan start and the first time the app was opened,
     /// so days before you started using the app don't count as "on budget".

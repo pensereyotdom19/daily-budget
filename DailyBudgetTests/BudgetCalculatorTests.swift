@@ -66,6 +66,33 @@ final class BudgetCalculatorTests: XCTestCase {
         XCTAssertEqual(c.emergencySavingsCents(planMonths: months, today: day(2026, 12, 5)), 8_200)
     }
 
+    func testMonthlySpendingSplitsGroupsPerMonth() {
+        let c = calc([
+            .init(date: day(2026, 11, 3), cents: 300, countsAsLiving: true),
+            .init(date: day(2026, 11, 5), cents: 20_000, countsAsLiving: false),                       // bill
+            .init(date: day(2026, 11, 6), cents: 150_000, countsAsLiving: false, isEngagement: true),  // engagement
+            .init(date: day(2026, 12, 1), cents: 450, countsAsLiving: true),
+            .init(date: day(2026, 10, 31), cents: 999, countsAsLiving: true),                          // before plan
+        ])
+        let m = c.monthlySpending(months: ["2026-11", "2026-12", "2027-01"])
+        XCTAssertEqual(m.map(\.monthKey), ["2026-11", "2026-12", "2027-01"])
+        XCTAssertEqual(m[0].livingCents, 300)
+        XCTAssertEqual(m[0].billsCents, 20_000)
+        XCTAssertEqual(m[0].engagementCents, 150_000)
+        XCTAssertEqual(m[0].totalCents, 170_300)
+        XCTAssertEqual(m[1].totalCents, 450)
+        XCTAssertEqual(m[2].totalCents, 0)
+    }
+
+    func testPlannedPerMonthIsLivingPlusBillsDue() {
+        let bills: [(cents: Int, dueMonths: [String])] = [
+            (20_000, ["2026-11", "2026-12"]),  // Bank, monthly
+            (70_000, ["2026-12"]),             // Credit card, December only
+        ]
+        XCTAssertEqual(BudgetCalculator.plannedCents(month: "2026-11", livingMonthlyCents: 9_200, bills: bills), 29_200)
+        XCTAssertEqual(BudgetCalculator.plannedCents(month: "2026-12", livingMonthlyCents: 9_200, bills: bills), 99_200)
+    }
+
     func testMonthRangeCrossesYear() {
         XCTAssertEqual(MonthKey.range(start: "2026-11", count: 6),
                        ["2026-11", "2026-12", "2027-01", "2027-02", "2027-03", "2027-04"])
