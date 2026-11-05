@@ -3417,6 +3417,16 @@
         }
       }
     },
+    "Tap a day to see its expenses. Tap an expense to edit it, press and hold to delete.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ចុចលើថ្ងៃដើម្បីមើលការចំណាយ។ ចុចលើការចំណាយដើម្បីកែ ចុចឱ្យជាប់ដើម្បីលុប។"
+          }
+        }
+      }
+    },
     "Tap a day to see what you spent.": {
       "localizations": {
         "km": {
@@ -3983,6 +3993,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "សប្ដាហ៍របស់អ្នក"
+          }
+        }
+      }
+    },
+    "^[%lld item](inflect: true)": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld មុខ"
           }
         }
       }

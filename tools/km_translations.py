@@ -315,6 +315,8 @@ KM = {
     "Total money for the plan": "លុយសរុបសម្រាប់ផែនការ",
     "Engagement (set aside)": "ភ្ជាប់ពាក្យ (ទុកដាច់ដោយឡែក)",
     "Total": "សរុប",
+    "Tap a day to see its expenses. Tap an expense to edit it, press and hold to delete.": "ចុចលើថ្ងៃដើម្បីមើលការចំណាយ។ ចុចលើការចំណាយដើម្បីកែ ចុចឱ្យជាប់ដើម្បីលុប។",
+    "^[%lld item](inflect: true)": "%lld មុខ",
 
     # History day by day
     "%@ over the limit": "លើសដែនកំណត់ %@",

@@ -19,6 +19,8 @@ struct MonthDetailView: View {
     @Query private var settingsList: [BudgetSettings]
     @Query(sort: \Bill.sortOrder) private var bills: [Bill]
     @State private var editing: Expense?
+    /// The day opened in the list (one at a time).
+    @State private var openDay: Date?
     @State private var categoryFilter: Category?
 
     init(route: MonthRoute) {
@@ -36,6 +38,10 @@ struct MonthDetailView: View {
 
     private var monthExpenses: [Expense] {
         allExpenses.filter { MonthKey.key(for: $0.date) == monthKey }
+    }
+
+    private var calculator: BudgetCalculator {
+        BudgetCalculator(expenses: allExpenses, settings: settings, incomes: incomes)
     }
 
     private var spending: BudgetCalculator.MonthSpending {
@@ -291,37 +297,76 @@ struct MonthDetailView: View {
                     .padding(20)
                     .glassCard()
             }
-            ForEach(days, id: \.day) { group in
-                VStack(alignment: .leading, spacing: 6) {
-                    HStack {
-                        Text(group.day.formatted(.dateTime.weekday(.abbreviated).month(.abbreviated).day().locale(AppLanguage.locale)))
-                        Spacer()
-                        Text(Money.format(group.items.reduce(0) { $0 + $1.amountCents }, alwaysShowCents: true))
+            if !days.isEmpty {
+                VStack(spacing: 0) {
+                    ForEach(days, id: \.day) { group in
+                        dayRow(group)
+                        if group.day != days.last?.day { Divider().overlay(Color.white.opacity(0.12)) }
                     }
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(Theme.secondary)
-                    .padding(.horizontal, 6)
-                    VStack(spacing: 0) {
-                        ForEach(group.items) { e in
-                            Button { editing = e } label: { ExpenseRow(expense: e) }
-                                .buttonStyle(.pressable)
-                                .contextMenu {
-                                    Button("Edit", systemImage: "pencil") { editing = e }
-                                    Button("Delete", systemImage: "trash", role: .destructive) {
-                                        BillPayments.delete(e, in: context)
-                                    }
-                                }
-                            if e.id != group.items.last?.id { Divider().overlay(Color.white.opacity(0.14)) }
-                        }
-                    }
-                    .padding(.horizontal, 14).padding(.vertical, 2)
-                    .glassCard(radius: 22)
                 }
+                .padding(.horizontal, 14).padding(.vertical, 4)
+                .glassCard(radius: 22)
             }
             if !days.isEmpty {
-                Text("Tap an expense to edit it. Press and hold to delete.")
+                Text("Tap a day to see its expenses. Tap an expense to edit it, press and hold to delete.")
                     .font(.caption).foregroundStyle(Theme.secondary)
                     .frame(maxWidth: .infinity)
+            }
+        }
+    }
+
+    /// One line per day; tap to show that day's expenses underneath.
+    private func dayRow(_ group: (day: Date, items: [Expense])) -> some View {
+        let isOpen = openDay == group.day
+        let summary = categoryFilter == nil ? calculator.summary(on: group.day) : nil
+        let total = group.items.reduce(0) { $0 + $1.amountCents }
+        return VStack(spacing: 0) {
+            Button {
+                withAnimation(.snappy) { openDay = isOpen ? nil : group.day }
+            } label: {
+                HStack(spacing: 10) {
+                    if let summary {
+                        Circle().fill(summary.isOver ? Theme.warn : Theme.mint).frame(width: 8, height: 8)
+                    }
+                    Text(group.day.formatted(.dateTime.weekday(.abbreviated).day().locale(AppLanguage.locale)))
+                        .font(.subheadline.weight(.semibold))
+                    Text("^[\(group.items.count) item](inflect: true)").font(.caption).foregroundStyle(Theme.secondary)
+                    Spacer()
+                    Text(Money.format(total, alwaysShowCents: true)).font(Theme.rounded(16))
+                    Image(systemName: "chevron.down")
+                        .font(.caption2.weight(.bold)).foregroundStyle(Theme.secondary)
+                        .rotationEffect(.degrees(isOpen ? 180 : 0))
+                }
+                .padding(.vertical, 12)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.pressable)
+            .accessibilityHint(Text(isOpen ? "Hides this day's expenses" : "Shows this day's expenses"))
+
+            if isOpen {
+                VStack(spacing: 0) {
+                    ForEach(group.items.sorted { $0.date < $1.date }) { e in
+                        Button { editing = e } label: { ExpenseRow(expense: e) }
+                            .buttonStyle(.pressable)
+                            .contextMenu {
+                                Button("Edit", systemImage: "pencil") { editing = e }
+                                Button("Delete", systemImage: "trash", role: .destructive) {
+                                    BillPayments.delete(e, in: context)
+                                }
+                            }
+                    }
+                    if let summary, !summary.isOver, summary.spentCents > 0 {
+                        Text("\(Money.format(summary.leftCents, alwaysShowCents: true)) under the limit")
+                            .font(.caption.weight(.semibold)).foregroundStyle(Theme.mint)
+                            .frame(maxWidth: .infinity, alignment: .leading).padding(.bottom, 10)
+                    } else if let summary, summary.isOver {
+                        Text("\(Money.format(summary.spentCents - summary.limitCents, alwaysShowCents: true)) over the limit")
+                            .font(.caption.weight(.semibold)).foregroundStyle(Theme.warn)
+                            .frame(maxWidth: .infinity, alignment: .leading).padding(.bottom, 10)
+                    }
+                }
+                .padding(.leading, 18)
+                .transition(.opacity.combined(with: .move(edge: .top)))
             }
         }
     }
