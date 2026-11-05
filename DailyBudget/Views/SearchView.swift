@@ -47,7 +47,7 @@ struct SearchView: View {
                         ForEach(results.prefix(200)) { e in
                             Button { editing = e } label: {
                                 HStack(spacing: 12) {
-                                    CategoryIcon(category: e.category, size: 40, symbol: e.iconSymbol)
+                                    ExpenseIcon(expense: e, size: 40)
                                     VStack(alignment: .leading, spacing: 1) {
                                         Text(e.note.isEmpty ? e.category.title : e.note).font(.subheadline.weight(.semibold))
                                         Text("\(e.category.title) · \(e.date.formatted(.dateTime.day().month(.abbreviated).year().locale(AppLanguage.locale)))")

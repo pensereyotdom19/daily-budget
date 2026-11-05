@@ -12,11 +12,15 @@ struct SubscriptionsCard: View {
     var body: some View {
         NavigationLink(value: SubscriptionsRoute()) {
             HStack(spacing: 12) {
-                Image(systemName: "repeat.circle.fill")
-                    .font(.system(size: 18, weight: .bold))
-                    .foregroundStyle(Theme.sky)
-                    .frame(width: 38, height: 38)
-                    .background(Theme.sky.opacity(0.16), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                if let next = active.first {
+                    ServiceIcon(name: next.name, size: 38)
+                } else {
+                    Image(systemName: "repeat.circle.fill")
+                        .font(.system(size: 18, weight: .bold))
+                        .foregroundStyle(Theme.sky)
+                        .frame(width: 38, height: 38)
+                        .background(Theme.sky.opacity(0.16), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                }
                 VStack(alignment: .leading, spacing: 1) {
                     Text("Subscriptions").font(.subheadline.weight(.semibold))
                     if let next = active.first {
@@ -47,7 +51,8 @@ struct SubscriptionsView: View {
     @Environment(\.modelContext) private var context
     @Query(sort: \Subscription.nextRenewal) private var subscriptions: [Subscription]
     @State private var editing: Subscription?
-    @State private var adding = false
+    /// For screenshots during development: launch with `-openSubscriptions YES -addSubscription YES`.
+    @State private var adding = UserDefaults.standard.bool(forKey: "addSubscription")
 
     private var active: [Subscription] { subscriptions.filter(\.isActive) }
     private var stopped: [Subscription] { subscriptions.filter { !$0.isActive } }
@@ -122,7 +127,7 @@ struct SubscriptionsView: View {
 
     private func row(_ s: Subscription) -> some View {
         HStack(spacing: 12) {
-            CategoryIcon(category: .bills, size: 40, symbol: s.symbol)
+            ServiceIcon(name: s.name, size: 40)
             VStack(alignment: .leading, spacing: 1) {
                 Text(s.name).font(.subheadline.weight(.semibold))
                 Text(s.isActive
@@ -165,9 +170,35 @@ struct SubscriptionEditor: View {
     var body: some View {
         NavigationStack {
             Form {
+                if item == nil {
+                    Section {
+                        ScrollView(.horizontal) {
+                            HStack(spacing: 10) {
+                                ForEach(ServiceBrand.all) { brand in
+                                    Button {
+                                        withAnimation(.snappy) { name = brand.name }
+                                    } label: {
+                                        VStack(spacing: 5) {
+                                            BrandTile(brand: brand, size: 44)
+                                            Text(verbatim: brand.shortName).font(.caption2).lineLimit(1).minimumScaleFactor(0.8).frame(width: 64)
+                                        }
+                                    }
+                                    .buttonStyle(.pressable)
+                                    .accessibilityLabel(Text(verbatim: brand.name))
+                                }
+                            }
+                            .padding(.vertical, 6)
+                        }
+                        .scrollIndicators(.hidden)
+                    } header: { Text("Popular") }
+                }
                 Section {
-                    TextField("Name, e.g. Netflix", text: $name)
-                        .onChange(of: name) { _, new in if new.count > 60 { name = String(new.prefix(60)) } }
+                    HStack(spacing: 12) {
+                        ServiceIcon(name: name, size: 34)
+                            .animation(.snappy, value: ServiceBrand.match(name)?.id)
+                        TextField("Name, e.g. Netflix", text: $name)
+                            .onChange(of: name) { _, new in if new.count > 60 { name = String(new.prefix(60)) } }
+                    }
                     LabeledContent("Price") {
                         TextField("0.00", text: $amountText).keyboardType(.decimalPad).multilineTextAlignment(.trailing)
                     }

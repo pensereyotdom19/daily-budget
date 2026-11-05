@@ -15,6 +15,7 @@ struct PlanView: View {
     @State private var path: NavigationPath = {
         var p = NavigationPath()
         if UserDefaults.standard.bool(forKey: "openAccount") { p.append(AccountRoute()) }
+        if UserDefaults.standard.bool(forKey: "openSubscriptions") { p.append(SubscriptionsRoute()) }
         return p
     }()
 

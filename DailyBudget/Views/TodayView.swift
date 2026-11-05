@@ -446,7 +446,7 @@ struct ExpenseRow: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            CategoryIcon(category: expense.category, size: 40, symbol: expense.iconSymbol)
+            ExpenseIcon(expense: expense, size: 40)
             VStack(alignment: .leading, spacing: 1) {
                 Text(expense.note.isEmpty ? expense.category.title : expense.note)
                     .font(.subheadline.weight(.semibold))

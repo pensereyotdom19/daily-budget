@@ -334,7 +334,7 @@ struct SpendingOverviewView: View {
     private func expenseButton(_ e: Expense, showDate: Bool) -> some View {
         Button { editing = e } label: {
             HStack(spacing: 12) {
-                CategoryIcon(category: e.category, size: 36, symbol: e.iconSymbol)
+                ExpenseIcon(expense: e, size: 36)
                 VStack(alignment: .leading, spacing: 1) {
                     Text(e.note.isEmpty ? e.category.title : e.note).font(.subheadline.weight(.semibold))
                     Text("\(e.category.title) · \(e.date.formatted(.dateTime.month(.abbreviated).day().locale(AppLanguage.locale)))")

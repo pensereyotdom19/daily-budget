@@ -2637,6 +2637,16 @@
         }
       }
     },
+    "Popular": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ពេញនិយម"
+          }
+        }
+      }
+    },
     "Price": {
       "localizations": {
         "km": {

@@ -338,6 +338,7 @@ KM = {
     "Paid like bills": "បង់ដូចវិក្កយបត្រ",
     "Stopped": "បានឈប់",
     "Subscriptions": "ការជាវ",
+    "Popular": "ពេញនិយម",
     "The payment is added as a Bills expense on this date, then the date moves to the next month or year. Turn Active off when you cancel.":
         "ការបង់ប្រាក់ត្រូវបានបន្ថែមជាការចំណាយវិក្កយបត្រនៅថ្ងៃនេះ បន្ទាប់មកកាលបរិច្ឆេទផ្លាស់ទៅខែ ឬឆ្នាំបន្ទាប់។ បិទ កំពុងប្រើ ពេលអ្នកបោះបង់។",
     "Two days before each renewal, so you can cancel in time.": "ពីរថ្ងៃមុនការបន្តនីមួយៗ ដើម្បីអាចបោះបង់ទាន់ពេល។",
