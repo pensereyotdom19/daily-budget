@@ -10,6 +10,7 @@ struct SpendingOverviewView: View {
     @Environment(\.modelContext) private var context
     @Query(sort: \Expense.date, order: .reverse) private var allExpenses: [Expense]
     @Query private var incomes: [Income]
+    @Query private var subscriptions: [Subscription]
     @Query private var settingsList: [BudgetSettings]
     @Query(sort: \Bill.sortOrder) private var bills: [Bill]
     @State private var editing: Expense?
@@ -35,7 +36,8 @@ struct SpendingOverviewView: View {
     private var plannedSoFar: Int {
         monthsSoFar.reduce(0) { sum, month in
             sum + BudgetCalculator.plannedCents(month: month, livingMonthlyCents: settings?.livingMonthlyCents ?? 0,
-                                                bills: bills.map { (cents: $0.amountCents, dueMonths: $0.dueMonths) })
+                                                bills: bills.map { (cents: $0.amountCents, dueMonths: $0.dueMonths) }
+                                                    + subscriptions.map { $0.asPlanned(in: [month]) })
         }
     }
 

@@ -5,6 +5,7 @@ struct PlanView: View {
     @Environment(\.modelContext) private var context
     @Query(sort: \Bill.sortOrder) private var bills: [Bill]
     @Query private var incomes: [Income]
+    @Query private var subscriptions: [Subscription]
     @Query private var settingsList: [BudgetSettings]
     @Query(sort: \Expense.date) private var expenses: [Expense]
     @State private var editingBill: Bill?
@@ -31,10 +32,14 @@ struct PlanView: View {
         bills.filter { $0.dueMonths.count == 1 }.reduce(0) { $0 + $1.amountCents }
     }
     private var regularBillsTotal: Int { billsTotal - creditCardTotal }
+    /// Every subscription payment due in the plan's months.
+    private var subscriptionsTotal: Int {
+        subscriptions.reduce(0) { $0 + $1.amountCents * $1.dueMonths(in: months).count }
+    }
     private var livingTotal: Int { (settings?.livingMonthlyCents ?? 0) * months.count }
     private var engagement: Int { settings?.engagementCents ?? 0 }
     private var total: Int { settings?.totalCents ?? 0 }
-    private var unplanned: Int { total - billsTotal - livingTotal - engagement }
+    private var unplanned: Int { total - billsTotal - subscriptionsTotal - livingTotal - engagement }
 
     private var savings: Int {
         settings?.savingsCents(BudgetCalculator(expenses: expenses, settings: settings, incomes: incomes),
@@ -61,6 +66,7 @@ struct PlanView: View {
                 totalCard
                 planCard
                 thisMonthBills
+                SubscriptionsCard()
                 monthByMonth
 
                 Text("Engagement \(Money.format(engagement)) is set aside on day 1 and kept out of daily spending.")
@@ -82,6 +88,7 @@ struct PlanView: View {
             MonthDetailView(route: route)
         }
         .navigationDestination(for: SavingsRoute.self) { _ in SavingsView() }
+        .navigationDestination(for: SubscriptionsRoute.self) { _ in SubscriptionsView() }
         .navigationDestination(for: PlanSummaryRoute.self) { _ in PlanSummaryView() }
         .sheet(isPresented: $startingNewPlan) { NewPlanView() }
         .sheet(item: $editingBill) { bill in
@@ -105,7 +112,9 @@ struct PlanView: View {
             PlanPart(name: String(localized: "Engagement", bundle: AppLanguage.bundle), cents: engagement, color: Color(hex: 0xFF9BC0)),
             PlanPart(name: String(localized: "Credit card", bundle: AppLanguage.bundle), cents: creditCardTotal, color: Color(hex: 0xFFC27A)),
             PlanPart(name: String(localized: "Living", bundle: AppLanguage.bundle), cents: livingTotal, color: Theme.mint),
-        ]
+        ] + (subscriptionsTotal > 0
+             ? [PlanPart(name: String(localized: "Subscriptions", bundle: AppLanguage.bundle), cents: subscriptionsTotal, color: Theme.sky)]
+             : [])
         let denominator = Double(max(total, 1))
         return VStack(spacing: 12) {
             HStack(alignment: .firstTextBaseline) {
@@ -243,7 +252,8 @@ struct PlanView: View {
                 ForEach(months, id: \.self) { month in
                     let due = bills.filter { $0.isDue(in: month) }
                     let living = settings?.livingMonthlyCents ?? 0
-                    let sum = due.reduce(living) { $0 + $1.amountCents }
+                    let subs = subscriptions.filter { !$0.dueMonths(in: [month]).isEmpty }
+                    let sum = due.reduce(living) { $0 + $1.amountCents } + subs.reduce(0) { $0 + $1.amountCents }
                     let isBig = due.contains { $0.dueMonths.count == 1 }
                     let spentHere = spent[month] ?? 0
                     NavigationLink(value: MonthRoute(monthKey: month)) {
@@ -257,7 +267,7 @@ struct PlanView: View {
                                         .background(Theme.mint.opacity(0.25), in: Capsule())
                                 }
                             }
-                            Text(breakdown(due: due, living: living))
+                            Text(breakdown(due: due, subscriptions: subs, living: living))
                                 .font(.caption).foregroundStyle(Theme.secondary).lineLimit(2)
                             if month <= currentMonth {
                                 Text("Spent \(Money.format(spentHere, alwaysShowCents: true))")
@@ -285,12 +295,16 @@ struct PlanView: View {
     }
 
     /// e.g. "Bills $323 + water $5 + living $92"
-    private func breakdown(due: [Bill], living: Int) -> String {
+    private func breakdown(due: [Bill], subscriptions subs: [Subscription], living: Int) -> String {
         let monthly = due.filter { $0.dueMonths.count == months.count }.reduce(0) { $0 + $1.amountCents }
         var parts: [String] = []
         if monthly > 0 { parts.append(String(localized: "Bills \(Money.format(monthly))", bundle: AppLanguage.bundle)) }
         for b in due where b.dueMonths.count != months.count {
             parts.append("\(b.name.lowercased()) \(Money.format(b.amountCents))")
+        }
+        let subsTotal = subs.reduce(0) { $0 + $1.amountCents }
+        if subsTotal > 0 {
+            parts.append(String(localized: "subscriptions \(Money.format(subsTotal, alwaysShowCents: subsTotal % 100 != 0))", bundle: AppLanguage.bundle))
         }
         parts.append(String(localized: "living \(Money.format(living))", bundle: AppLanguage.bundle))
         return parts.joined(separator: " + ")

@@ -21,11 +21,11 @@ struct TodayView: View {
 
     /// Today's expenses, without bill payments (those live in History and the month screens).
     private var todaysExpenses: [Expense] {
-        expenses.filter { Calendar.current.isDateInToday($0.date) && $0.billID == nil }
+        expenses.filter { Calendar.current.isDateInToday($0.date) && $0.category != .bills }
     }
 
     private var billsPaidTodayCents: Int {
-        expenses.filter { Calendar.current.isDateInToday($0.date) && $0.billID != nil }
+        expenses.filter { Calendar.current.isDateInToday($0.date) && $0.category == .bills }
             .reduce(0) { $0 + $1.amountCents }
     }
 

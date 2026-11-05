@@ -27,7 +27,7 @@ final class SyncTests: XCTestCase {
     }
 
     private func makeContainer() throws -> ModelContainer {
-        let container = try ModelContainer(for: Expense.self, Bill.self, BudgetSettings.self, Income.self, RecurringExpense.self,
+        let container = try ModelContainer(for: Expense.self, Bill.self, BudgetSettings.self, Income.self, RecurringExpense.self, Subscription.self,
                                            configurations: ModelConfiguration(isStoredInMemoryOnly: true))
         containers.append(container)
         return container
@@ -289,6 +289,25 @@ final class SyncTests: XCTestCase {
         XCTAssertEqual(server.lastSince, "2026-11-04T10:00:05.000Z")
     }
 
+    func testSubscriptionsAreBackedUpAndRestoredWithoutPayingTwice() async throws {
+        let oldPhone = try makeContainer().mainContext
+        let netflix = Subscription(name: "Netflix", amountCents: 999, cycle: .monthly, nextRenewal: date("2026-11-03T02:00:00Z"))
+        oldPhone.insert(netflix)
+        try oldPhone.save()
+        SubscriptionRunner.addDue(in: oldPhone, now: date("2026-11-04T05:00:00Z"))  // November paid, next is December
+        var oldState = SyncState()
+        _ = try await engine(oldPhone).run(state: &oldState)
+        XCTAssertEqual(server.subscriptions.values.first?.dto.name, "Netflix")
+
+        let newPhone = try makeContainer().mainContext
+        var newState = SyncState()
+        _ = try await engine(newPhone).run(state: &newState)
+        let restored = try XCTUnwrap(try newPhone.fetch(FetchDescriptor<Subscription>()).first)
+        XCTAssertEqual(restored.nextRenewal, netflix.nextRenewal)
+        XCTAssertEqual(SubscriptionRunner.addDue(in: newPhone, now: date("2026-11-04T06:00:00Z")), 0)
+        XCTAssertEqual(try newPhone.fetch(FetchDescriptor<Expense>()).filter { $0.note == "Netflix" }.count, 1)
+    }
+
     func testAnExpiredSignInStopsTheSync() async throws {
         let context = try makeContainer().mainContext
         var state = SyncState()
@@ -334,6 +353,7 @@ final class FakeServer {
     var expenses: [UUID: Stored<ExpenseDTO>] = [:]
     var incomes: [UUID: Stored<IncomeDTO>] = [:]
     var recurring: [UUID: Stored<RecurringDTO>] = [:]
+    var subscriptions: [UUID: Stored<SubscriptionDTO>] = [:]
     var requests: [String] = []
     var lastSince: String?
     /// Makes DELETE fail with 409, to leave a delete waiting on the phone.
@@ -364,6 +384,7 @@ final class FakeServer {
         var expenses: [ExpenseDTO]
         var incomes: [IncomeDTO]
         var recurring: [RecurringDTO]
+        var subscriptions: [SubscriptionDTO]
     }
 
     func handle(_ request: URLRequest, body: Data?) -> (Int, Data) {
@@ -387,7 +408,8 @@ final class FakeServer {
                                 bills: bills.values.filter { newer($0.updated) }.map(\.dto),
                                 expenses: expenses.values.filter { newer($0.updated) }.map(\.dto),
                                 incomes: incomes.values.filter { newer($0.updated) }.map(\.dto),
-                                recurring: recurring.values.filter { newer($0.updated) }.map(\.dto))
+                                recurring: recurring.values.filter { newer($0.updated) }.map(\.dto),
+                                subscriptions: subscriptions.values.filter { newer($0.updated) }.map(\.dto))
             return (200, try! APIDate.encoder.encode(reply))
 
         case ("PUT", "settings"):
@@ -422,6 +444,17 @@ final class FakeServer {
             r.id = id!; r.deleted = false
             tick += 1; recurring[id!] = Stored(dto: r, updated: tick)
             return (200, try! APIDate.encoder.encode(r))
+
+        case ("PUT", "subscriptions"):
+            var x = try! APIDate.decoder.decode(SubscriptionDTO.self, from: body!)
+            x.id = id!; x.name = x.name.trimmingCharacters(in: .whitespaces); x.deleted = false
+            tick += 1; subscriptions[id!] = Stored(dto: x, updated: tick)
+            return (200, try! APIDate.encoder.encode(x))
+
+        case ("DELETE", "subscriptions"):
+            guard subscriptions[id!] != nil else { return (404, Data()) }
+            tick += 1; subscriptions[id!]!.dto.deleted = true; subscriptions[id!]!.updated = tick
+            return (204, Data())
 
         case ("DELETE", "incomes"):
             guard incomes[id!] != nil else { return (404, Data()) }

@@ -78,12 +78,32 @@
         }
       }
     },
+    "%@ on %@. Cancel before then if you don't need it.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ នៅ %2$@។ បោះបង់មុនពេលនោះ បើអ្នកលែងត្រូវការ។"
+          }
+        }
+      }
+    },
     "%@ over today": {
       "localizations": {
         "km": {
           "stringUnit": {
             "state": "translated",
             "value": "លើស %@ ថ្ងៃនេះ"
+          }
+        }
+      }
+    },
+    "%@ renews soon": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ នឹងបន្តឆាប់ៗ"
           }
         }
       }
@@ -140,6 +160,16 @@
     },
     "%@ · %@": {
       "shouldTranslate": false
+    },
+    "%@ · renews %@": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · បន្តនៅ %2$@"
+          }
+        }
+      }
     },
     "%@ – today": {
       "localizations": {
@@ -421,6 +451,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "បន្ថែមចំណាយប្រចាំខែ"
+          }
+        }
+      }
+    },
+    "Add subscription": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បន្ថែមការជាវ"
           }
         }
       }
@@ -1098,6 +1138,26 @@
         }
       }
     },
+    "EVERY MONTH": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "រៀងរាល់ខែ"
+          }
+        }
+      }
+    },
+    "EVERY YEAR": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "រៀងរាល់ឆ្នាំ"
+          }
+        }
+      }
+    },
     "Edit": {
       "localizations": {
         "km": {
@@ -1154,6 +1214,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "កែចំណាយប្រចាំខែ"
+          }
+        }
+      }
+    },
+    "Edit subscription": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "កែការជាវ"
           }
         }
       }
@@ -1224,6 +1294,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "លុយភ្ជាប់ពាក្យ (សរុប)"
+          }
+        }
+      }
+    },
+    "Every": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "រៀងរាល់"
           }
         }
       }
@@ -1851,6 +1931,16 @@
         }
       }
     },
+    "Monthly": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ប្រចាំខែ"
+          }
+        }
+      }
+    },
     "Monthly bills carry over from your current plan. Swipe left to remove one.": {
       "localizations": {
         "km": {
@@ -1911,6 +2001,26 @@
         }
       }
     },
+    "Name, e.g. Netflix": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ឈ្មោះ ឧ. Netflix"
+          }
+        }
+      }
+    },
+    "Netflix, Spotify, iCloud… add yours": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Netflix, Spotify, iCloud… បន្ថែមរបស់អ្នក"
+          }
+        }
+      }
+    },
     "New expense": {
       "localizations": {
         "km": {
@@ -1950,6 +2060,36 @@
           "stringUnit": {
             "state": "translated",
             "value": "ចំណាយប្រចាំខែថ្មី"
+          }
+        }
+      }
+    },
+    "New subscription": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ការជាវថ្មី"
+          }
+        }
+      }
+    },
+    "Next renewal": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ការបន្តបន្ទាប់"
+          }
+        }
+      }
+    },
+    "Next: %@ %@ · %@": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បន្ទាប់៖ %1$@ %2$@ · %3$@"
           }
         }
       }
@@ -2234,6 +2374,16 @@
         }
       }
     },
+    "On each renewal date the payment is added as a Bills expense, so it doesn't lower your daily limit. Tap one to edit. Press and hold to delete.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "នៅថ្ងៃបន្តនីមួយៗ ការបង់ប្រាក់ត្រូវបានបន្ថែមជាការចំណាយវិក្កយបត្រ ដូច្នេះវាមិនកាត់ដែនកំណត់ប្រចាំថ្ងៃទេ។ ចុចដើម្បីកែ។ ចុចឱ្យជាប់ដើម្បីលុប។"
+          }
+        }
+      }
+    },
     "Once": {
       "localizations": {
         "km": {
@@ -2360,6 +2510,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "បង់ពីថវិកា %@ មិនមែនលុយប្រចាំថ្ងៃទេ"
+          }
+        }
+      }
+    },
+    "Paid like bills": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បង់ដូចវិក្កយបត្រ"
           }
         }
       }
@@ -3017,6 +3177,26 @@
         }
       }
     },
+    "Stopped": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បានឈប់"
+          }
+        }
+      }
+    },
+    "Subscriptions": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ការជាវ"
+          }
+        }
+      }
+    },
     "Summary": {
       "localizations": {
         "km": {
@@ -3153,6 +3333,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "ម៉ាស៊ីនមេឥតគិតថ្លៃអាចចំណាយពេលរហូតដល់មួយនាទីដើម្បីភ្ញាក់។"
+          }
+        }
+      }
+    },
+    "The payment is added as a Bills expense on this date, then the date moves to the next month or year. Turn Active off when you cancel.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ការបង់ប្រាក់ត្រូវបានបន្ថែមជាការចំណាយវិក្កយបត្រនៅថ្ងៃនេះ បន្ទាប់មកកាលបរិច្ឆេទផ្លាស់ទៅខែ ឬឆ្នាំបន្ទាប់។ បិទ កំពុងប្រើ ពេលអ្នកបោះបង់។"
           }
         }
       }
@@ -3327,6 +3517,16 @@
         }
       }
     },
+    "Two days before each renewal, so you can cancel in time.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ពីរថ្ងៃមុនការបន្តនីមួយៗ ដើម្បីអាចបោះបង់ទាន់ពេល។"
+          }
+        }
+      }
+    },
     "Type a note, a category or an amount.": {
       "localizations": {
         "km": {
@@ -3493,6 +3693,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "ប្រើបានរហូតដល់ %@"
+          }
+        }
+      }
+    },
+    "Year": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ឆ្នាំ"
+          }
+        }
+      }
+    },
+    "Yearly": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ប្រចាំឆ្នាំ"
           }
         }
       }
@@ -3758,6 +3978,16 @@
         }
       }
     },
+    "per month": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ក្នុងមួយខែ"
+          }
+        }
+      }
+    },
     "petrol": {
       "shouldTranslate": false
     },
@@ -3787,6 +4017,16 @@
     },
     "something else": {
       "shouldTranslate": false
+    },
+    "subscriptions %@": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ការជាវ %@"
+          }
+        }
+      }
     },
     "taxi": {
       "shouldTranslate": false

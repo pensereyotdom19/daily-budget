@@ -13,7 +13,9 @@ enum AppRefresh {
         let bills = (try? context.fetch(FetchDescriptor<Bill>())) ?? []
         let incomes = (try? context.fetch(FetchDescriptor<Income>())) ?? []
         WidgetSync.update(expenses: expenses, settings: settings, incomes: incomes, now: now)
-        ReminderScheduler.refresh(expenses: expenses, settings: settings, incomes: incomes, bills: bills, now: now)
+        let subscriptions = (try? context.fetch(FetchDescriptor<Subscription>())) ?? []
+        ReminderScheduler.refresh(expenses: expenses, settings: settings, incomes: incomes, bills: bills,
+                                  subscriptions: subscriptions, now: now)
     }
 }
 
@@ -53,6 +55,7 @@ enum ReminderPrefs {
     static let billsOn = "remind.billsOn"
     static let weeklyOn = "remind.weeklyOn"
     static let expiryOn = "remind.expiryOn"
+    static let subscriptionsOn = "remind.subscriptionsOn"
 
     static func current(_ d: UserDefaults = .standard) -> ReminderPlanner.Settings {
         var s = ReminderPlanner.Settings()
@@ -61,6 +64,7 @@ enum ReminderPrefs {
         s.billsOn = d.bool(forKey: billsOn)
         s.weeklyOn = d.bool(forKey: weeklyOn)
         s.expiryOn = d.bool(forKey: expiryOn)
+        s.subscriptionsOn = d.bool(forKey: subscriptionsOn)
         if d.object(forKey: morningMinutes) != nil { s.morningMinutes = d.integer(forKey: morningMinutes) }
         if d.object(forKey: eveningMinutes) != nil { s.eveningMinutes = d.integer(forKey: eveningMinutes) }
         return s
@@ -79,7 +83,8 @@ enum ReminderScheduler {
         }
     }
 
-    static func refresh(expenses: [Expense], settings: BudgetSettings?, incomes: [Income], bills: [Bill], now: Date,
+    static func refresh(expenses: [Expense], settings: BudgetSettings?, incomes: [Income], bills: [Bill],
+                        subscriptions: [Subscription] = [], now: Date,
                         calendar: Calendar = .current) {
         let center = UNUserNotificationCenter.current()
         center.removeAllPendingNotificationRequests()
@@ -97,7 +102,10 @@ enum ReminderScheduler {
                                         planMonths: settings?.planMonths ?? [],
                                         appExpiresAt: AppExpiry.date,
                                         streakStart: settings?.streakStartDate ?? .distantPast,
-                                        categoryTitle: { (Category(rawValue: $0) ?? .other).title })
+                                        categoryTitle: { (Category(rawValue: $0) ?? .other).title },
+                                        renewals: subscriptions.filter(\.isActive).map {
+                                            .init(id: $0.id, name: $0.name, cents: $0.amountCents, date: $0.nextRenewal)
+                                        })
         for r in plan {
             let content = UNMutableNotificationContent()
             content.title = r.title

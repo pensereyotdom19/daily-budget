@@ -65,6 +65,7 @@ struct RootView: View {
             Seed.insertIfNeeded(into: context)
             BillPayments.sync(in: context)
             RecurringRunner.addDue(in: context)
+            SubscriptionRunner.addDue(in: context)
             QuickAddImporter.run(in: context)
             if QuickAddImporter.takeOpenAddRequest() { showingAdd = true }
             lock.sceneChanged(to: .active)
@@ -85,6 +86,7 @@ struct RootView: View {
             lock.sceneChanged(to: phase)
             if phase == .active {
                 RecurringRunner.addDue(in: context)
+                SubscriptionRunner.addDue(in: context)
                 QuickAddImporter.run(in: context)
                 if QuickAddImporter.takeOpenAddRequest() { showingAdd = true }
             }

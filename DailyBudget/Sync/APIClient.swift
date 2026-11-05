@@ -51,6 +51,12 @@ struct APIClient {
         try await send("PUT", "api/recurring/\(r.id.uuidString.lowercased())", body: r)
     }
 
+    func putSubscription(_ s: SubscriptionDTO) async throws -> SubscriptionDTO {
+        try await send("PUT", "api/subscriptions/\(s.id.uuidString.lowercased())", body: s)
+    }
+
+    func deleteSubscription(_ id: UUID) async throws { try await delete("api/subscriptions/\(id.uuidString.lowercased())") }
+
     func deleteIncome(_ id: UUID) async throws { try await delete("api/incomes/\(id.uuidString.lowercased())") }
     func deleteRecurring(_ id: UUID) async throws { try await delete("api/recurring/\(id.uuidString.lowercased())") }
 
@@ -189,6 +195,18 @@ struct RecurringDTO: Codable, Equatable {
     var deleted: Bool? = nil
 }
 
+struct SubscriptionDTO: Codable, Equatable {
+    var id: UUID
+    var name: String
+    var amountCents: Int
+    var cycle: String
+    var nextRenewal: Date
+    var anchorDay: Int
+    var startMonth: String
+    var active: Bool
+    var deleted: Bool? = nil
+}
+
 struct ChangesDTO: Decodable {
     /// Kept exactly as the server sent it, and sent back as `since` next time.
     var serverTime: String
@@ -197,6 +215,7 @@ struct ChangesDTO: Decodable {
     var expenses: [ExpenseDTO]
     var incomes: [IncomeDTO]? = nil
     var recurring: [RecurringDTO]? = nil
+    var subscriptions: [SubscriptionDTO]? = nil
 }
 
 /// Spring's error body: {"title": "...", "detail": "Wrong email or password", "status": 401}

@@ -6,6 +6,7 @@ import SwiftData
 struct HistoryView: View {
     @Query(sort: \Expense.date, order: .reverse) private var expenses: [Expense]
     @Query private var incomes: [Income]
+    @Query private var subscriptions: [Subscription]
     @Query private var settingsList: [BudgetSettings]
     @Query(sort: \Bill.sortOrder) private var bills: [Bill]
     /// Normally empty. For screenshots during development, launch with `-openSpending YES`.
@@ -25,7 +26,8 @@ struct HistoryView: View {
 
     private func planned(_ month: String) -> Int {
         BudgetCalculator.plannedCents(month: month, livingMonthlyCents: living,
-                                      bills: bills.map { (cents: $0.amountCents, dueMonths: $0.dueMonths) })
+                                      bills: bills.map { (cents: $0.amountCents, dueMonths: $0.dueMonths) }
+                                          + subscriptions.map { $0.asPlanned(in: [month]) })
     }
 
     var body: some View {

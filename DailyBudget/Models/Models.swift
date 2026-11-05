@@ -133,3 +133,41 @@ final class RecurringExpense {
         set { categoryRaw = newValue.rawValue }
     }
 }
+
+/// A service you pay for regularly (Netflix, Spotify, iCloud…). Paid from planned money like a bill;
+/// the app adds the payment as a Bills expense on each renewal date.
+@Model
+final class Subscription {
+    var id: UUID = UUID()
+    var name: String = ""
+    var amountCents: Int = 0
+    /// "monthly" or "yearly".
+    var cycleRaw: String = SubscriptionCycle.monthly.rawValue
+    /// The next date it renews (and gets added as an expense).
+    var nextRenewal: Date = Date()
+    /// Day of the month it renews on (kept so Jan 31 → Feb 28 → Mar 31).
+    var anchorDay: Int = 1
+    /// First month it costs money ("2026-11").
+    var startMonth: String = ""
+    var isActive: Bool = true
+
+    init(name: String, amountCents: Int, cycle: SubscriptionCycle, nextRenewal: Date, calendar: Calendar = .current) {
+        self.id = UUID()
+        self.name = name
+        self.amountCents = amountCents
+        self.cycleRaw = cycle.rawValue
+        self.nextRenewal = nextRenewal
+        self.anchorDay = calendar.component(.day, from: nextRenewal)
+        self.startMonth = MonthKey.key(for: nextRenewal, calendar: calendar)
+    }
+
+    var cycle: SubscriptionCycle {
+        get { SubscriptionCycle(rawValue: cycleRaw) ?? .monthly }
+        set { cycleRaw = newValue.rawValue }
+    }
+}
+
+enum SubscriptionCycle: String, CaseIterable, Codable, Identifiable {
+    case monthly, yearly
+    var id: String { rawValue }
+}

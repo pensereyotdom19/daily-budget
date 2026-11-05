@@ -315,6 +315,34 @@ KM = {
     "Total money for the plan": "លុយសរុបសម្រាប់ផែនការ",
     "Engagement (set aside)": "ភ្ជាប់ពាក្យ (ទុកដាច់ដោយឡែក)",
     "Total": "សរុប",
+
+    # Subscriptions
+    "%@ on %@. Cancel before then if you don't need it.": "%1$@ នៅ %2$@។ បោះបង់មុនពេលនោះ បើអ្នកលែងត្រូវការ។",
+    "%@ renews soon": "%@ នឹងបន្តឆាប់ៗ",
+    "%@ · renews %@": "%1$@ · បន្តនៅ %2$@",
+    "Add subscription": "បន្ថែមការជាវ",
+    "EVERY MONTH": "រៀងរាល់ខែ",
+    "EVERY YEAR": "រៀងរាល់ឆ្នាំ",
+    "Edit subscription": "កែការជាវ",
+    "Every": "រៀងរាល់",
+    "Monthly": "ប្រចាំខែ",
+    "Yearly": "ប្រចាំឆ្នាំ",
+    "Year": "ឆ្នាំ",
+    "Name, e.g. Netflix": "ឈ្មោះ ឧ. Netflix",
+    "Netflix, Spotify, iCloud… add yours": "Netflix, Spotify, iCloud… បន្ថែមរបស់អ្នក",
+    "New subscription": "ការជាវថ្មី",
+    "Next renewal": "ការបន្តបន្ទាប់",
+    "Next: %@ %@ · %@": "បន្ទាប់៖ %1$@ %2$@ · %3$@",
+    "On each renewal date the payment is added as a Bills expense, so it doesn't lower your daily limit. Tap one to edit. Press and hold to delete.":
+        "នៅថ្ងៃបន្តនីមួយៗ ការបង់ប្រាក់ត្រូវបានបន្ថែមជាការចំណាយវិក្កយបត្រ ដូច្នេះវាមិនកាត់ដែនកំណត់ប្រចាំថ្ងៃទេ។ ចុចដើម្បីកែ។ ចុចឱ្យជាប់ដើម្បីលុប។",
+    "Paid like bills": "បង់ដូចវិក្កយបត្រ",
+    "Stopped": "បានឈប់",
+    "Subscriptions": "ការជាវ",
+    "The payment is added as a Bills expense on this date, then the date moves to the next month or year. Turn Active off when you cancel.":
+        "ការបង់ប្រាក់ត្រូវបានបន្ថែមជាការចំណាយវិក្កយបត្រនៅថ្ងៃនេះ បន្ទាប់មកកាលបរិច្ឆេទផ្លាស់ទៅខែ ឬឆ្នាំបន្ទាប់។ បិទ កំពុងប្រើ ពេលអ្នកបោះបង់។",
+    "Two days before each renewal, so you can cancel in time.": "ពីរថ្ងៃមុនការបន្តនីមួយៗ ដើម្បីអាចបោះបង់ទាន់ពេល។",
+    "per month": "ក្នុងមួយខែ",
+    "subscriptions %@": "ការជាវ %@",
     "General": "ទូទៅ",
 
     # Daily habits

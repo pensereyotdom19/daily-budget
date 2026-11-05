@@ -38,7 +38,10 @@ struct SyncEngine {
         let settings = (try? context.fetch(FetchDescriptor<BudgetSettings>()))?.first
         let incomes = (try? context.fetch(FetchDescriptor<Income>())) ?? []
         let recurring = (try? context.fetch(FetchDescriptor<RecurringExpense>())) ?? []
+        let subscriptions = (try? context.fetch(FetchDescriptor<Subscription>())) ?? []
         var count = 0
+        count += subscriptions.filter { state.subscriptions[$0.id] != Fingerprint.of($0) }.count
+        count += Set(state.subscriptions.keys).subtracting(subscriptions.map(\.id)).count
         count += incomes.filter { state.incomes[$0.id] != Fingerprint.of($0) }.count
         count += recurring.filter { state.recurring[$0.id] != Fingerprint.of($0) }.count
         count += Set(state.incomes.keys).subtracting(incomes.map(\.id)).count
@@ -150,6 +153,22 @@ struct SyncEngine {
             try await attempt("Deleted recurring expense", report: &report) {
                 try await api.deleteRecurring(id)
                 state.recurring[id] = nil
+            }
+        }
+
+        let subscriptions = try context.fetch(FetchDescriptor<Subscription>())
+        for sub in subscriptions {
+            let fp = Fingerprint.of(sub)
+            guard state.subscriptions[sub.id] != fp else { continue }
+            try await attempt(sub.name, report: &report) {
+                _ = try await api.putSubscription(DTO.subscription(sub))
+                state.subscriptions[sub.id] = fp
+            }
+        }
+        for id in Set(state.subscriptions.keys).subtracting(subscriptions.map(\.id)) {
+            try await attempt("Deleted subscription", report: &report) {
+                try await api.deleteSubscription(id)
+                state.subscriptions[id] = nil
             }
         }
     }
@@ -308,6 +327,34 @@ struct SyncEngine {
             target.isActive = remote.active
             state.recurring[remote.id] = Fingerprint.of(remote)
         }
+
+        let localSubs = Dictionary(((try? context.fetch(FetchDescriptor<Subscription>())) ?? []).map { ($0.id, $0) },
+                                   uniquingKeysWith: { a, _ in a })
+        for remote in changes.subscriptions ?? [] {
+            let local = localSubs[remote.id]
+            if let local, !force, state.subscriptions[remote.id] != Fingerprint.of(local) { continue }
+            if local == nil, !force, state.subscriptions[remote.id] != nil, remote.deleted != true { continue }
+            if remote.deleted == true {
+                if let local { context.delete(local); report.downloaded += 1 }
+                state.subscriptions[remote.id] = nil
+                continue
+            }
+            let target = local ?? {
+                let s = Subscription(name: remote.name, amountCents: remote.amountCents, cycle: .monthly, nextRenewal: remote.nextRenewal)
+                s.id = remote.id
+                context.insert(s)
+                return s
+            }()
+            if local == nil || Fingerprint.of(target) != Fingerprint.of(remote) { report.downloaded += 1 }
+            target.name = remote.name
+            target.amountCents = remote.amountCents
+            target.cycleRaw = SubscriptionCycle(rawValue: remote.cycle)?.rawValue ?? SubscriptionCycle.monthly.rawValue
+            target.nextRenewal = remote.nextRenewal
+            target.anchorDay = remote.anchorDay
+            target.startMonth = remote.startMonth
+            target.isActive = remote.active
+            state.subscriptions[remote.id] = Fingerprint.of(remote)
+        }
     }
 }
 
@@ -322,6 +369,11 @@ enum DTO {
 
     static func income(_ i: Income) -> IncomeDTO {
         IncomeDTO(id: i.id, amountCents: i.amountCents, target: i.targetRaw, note: i.note, receivedAt: i.date)
+    }
+
+    static func subscription(_ s: Subscription) -> SubscriptionDTO {
+        SubscriptionDTO(id: s.id, name: s.name, amountCents: s.amountCents, cycle: s.cycleRaw, nextRenewal: s.nextRenewal,
+                        anchorDay: s.anchorDay, startMonth: s.startMonth, active: s.isActive)
     }
 
     static func recurring(_ r: RecurringExpense) -> RecurringDTO {
@@ -357,6 +409,11 @@ enum Fingerprint {
     static func of(_ i: Income) -> String { of(DTO.income(i)) }
     static func of(_ i: IncomeDTO) -> String {
         join(["\(i.amountCents)", i.target, i.note, ms(i.receivedAt)])
+    }
+
+    static func of(_ s: Subscription) -> String { of(DTO.subscription(s)) }
+    static func of(_ s: SubscriptionDTO) -> String {
+        join([s.name, "\(s.amountCents)", s.cycle, ms(s.nextRenewal), "\(s.anchorDay)", s.startMonth, s.active ? "1" : "0"])
     }
 
     static func of(_ r: RecurringExpense) -> String { of(DTO.recurring(r)) }

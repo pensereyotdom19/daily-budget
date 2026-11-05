@@ -17,9 +17,10 @@ enum ReminderPlanner {
         var billsOn = false
         var weeklyOn = false
         var expiryOn = false
+        var subscriptionsOn = false
         static let billMinutes = 9 * 60
         static let weeklyMinutes = 19 * 60
-        var anyOn: Bool { morningOn || eveningOn || billsOn || weeklyOn || expiryOn }
+        var anyOn: Bool { morningOn || eveningOn || billsOn || weeklyOn || expiryOn || subscriptionsOn }
     }
 
     struct BillDue {
@@ -29,7 +30,14 @@ enum ReminderPlanner {
         var isPaid: Bool
     }
 
-    enum Kind: String { case morning, evening, billsDue, billsUnpaid, weekly, expiry }
+    enum Kind: String { case morning, evening, billsDue, billsUnpaid, weekly, expiry, renewal }
+
+    struct Renewal {
+        var id: UUID
+        var name: String
+        var cents: Int
+        var date: Date
+    }
 
     struct Reminder: Equatable {
         var id: String
@@ -42,7 +50,8 @@ enum ReminderPlanner {
     static func plan(now: Date, settings: Settings, calculator: BudgetCalculator, loggedToday: Bool,
                      bills: [BillDue], planMonths: [String], days: Int = 7,
                      appExpiresAt: Date? = nil, streakStart: Date = .distantPast,
-                     categoryTitle: (String) -> String = { $0 }) -> [Reminder] {
+                     categoryTitle: (String) -> String = { $0 },
+                     renewals: [Renewal] = []) -> [Reminder] {
         let cal = calculator.calendar
         let today = cal.startOfDay(for: now)
         var out: [Reminder] = []
@@ -130,6 +139,19 @@ enum ReminderPlanner {
                 out.append(Reminder(id: "expiry-today", kind: .expiry, fireDate: fire,
                                     title: String(localized: "Daily Budget stops opening today", bundle: AppLanguage.bundle),
                                     body: String(localized: "At \(time). Run it from Xcode on your Mac to get 7 more days. Your data stays.", bundle: AppLanguage.bundle)))
+            }
+        }
+
+        // Subscriptions: 9 AM two days before each renewal in the next 5 weeks, so there's time to cancel.
+        if settings.subscriptionsOn {
+            let horizon = cal.date(byAdding: .day, value: 35, to: now) ?? now
+            for r in renewals where r.date > now && r.date < horizon {
+                guard let twoBefore = cal.date(byAdding: .day, value: -2, to: cal.startOfDay(for: r.date)),
+                      let fire = at(twoBefore, Settings.billMinutes), fire > now else { continue }
+                let when = r.date.formatted(.dateTime.weekday(.wide).month(.abbreviated).day().locale(AppLanguage.locale))
+                out.append(Reminder(id: "renewal-\(r.id.uuidString)-\(dayID(r.date))", kind: .renewal, fireDate: fire,
+                                    title: String(localized: "\(r.name) renews soon", bundle: AppLanguage.bundle),
+                                    body: String(localized: "\(Money.format(r.cents, alwaysShowCents: true)) on \(when). Cancel before then if you don't need it.", bundle: AppLanguage.bundle)))
             }
         }
 

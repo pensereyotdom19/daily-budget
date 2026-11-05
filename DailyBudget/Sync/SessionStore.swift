@@ -62,6 +62,7 @@ struct SyncState: Codable, Equatable {
     var expenses: [UUID: String] = [:]
     var incomes: [UUID: String] = [:]
     var recurring: [UUID: String] = [:]
+    var subscriptions: [UUID: String] = [:]
 
     init(userID: UUID? = nil) {
         self.userID = userID
@@ -78,6 +79,7 @@ struct SyncState: Codable, Equatable {
         expenses = try c.decodeIfPresent([UUID: String].self, forKey: .expenses) ?? [:]
         incomes = try c.decodeIfPresent([UUID: String].self, forKey: .incomes) ?? [:]
         recurring = try c.decodeIfPresent([UUID: String].self, forKey: .recurring) ?? [:]
+        subscriptions = try c.decodeIfPresent([UUID: String].self, forKey: .subscriptions) ?? [:]
     }
 
     private static var fileURL: URL {

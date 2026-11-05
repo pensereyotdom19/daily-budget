@@ -23,6 +23,6 @@ struct DailyBudgetApp: App {
                 .id(language)
                 .preferredColorScheme(.dark)
         }
-        .modelContainer(for: [Expense.self, Bill.self, BudgetSettings.self, Income.self, RecurringExpense.self])
+        .modelContainer(for: [Expense.self, Bill.self, BudgetSettings.self, Income.self, RecurringExpense.self, Subscription.self])
     }
 }
