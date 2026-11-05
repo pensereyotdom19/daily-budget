@@ -98,6 +98,16 @@
         }
       }
     },
+    "%@ over the limit": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "លើសដែនកំណត់ %@"
+          }
+        }
+      }
+    },
     "%@ over today": {
       "localizations": {
         "km": {
@@ -164,6 +174,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$@ ខែនេះ៖ %2$@ ក្នុងចំណោម %3$@"
+          }
+        }
+      }
+    },
+    "%@ under the limit": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ក្រោមដែនកំណត់ %@"
           }
         }
       }
@@ -791,6 +811,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "វិក្កយបត្រមិនទាន់បង់"
+          }
+        }
+      }
+    },
+    "Bills paid": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "វិក្កយបត្របានបង់"
           }
         }
       }
@@ -1581,6 +1611,16 @@
         }
       }
     },
+    "Hides this day's expenses": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "លាក់ការចំណាយថ្ងៃនេះ"
+          }
+        }
+      }
+    },
     "History": {
       "localizations": {
         "km": {
@@ -2154,16 +2194,6 @@
         }
       }
     },
-    "No expenses": {
-      "localizations": {
-        "km": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "គ្មានការចំណាយ"
-          }
-        }
-      }
-    },
     "No expenses in %@ yet. Tap + to add one.": {
       "localizations": {
         "km": {
@@ -2300,6 +2330,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "ថ្ងៃនេះមិនទាន់កត់ត្រាអ្វីទេ។ អ្នកនៅមាន %@ សម្រាប់ចាយ។"
+          }
+        }
+      }
+    },
+    "Nothing spent this day.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "មិនបានចាយអ្វីនៅថ្ងៃនេះទេ។"
           }
         }
       }
@@ -2987,6 +3027,16 @@
         }
       }
     },
+    "See day": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "មើលថ្ងៃ"
+          }
+        }
+      }
+    },
     "Server error %lld": {
       "localizations": {
         "km": {
@@ -3043,6 +3093,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "បង្ហាញការចំណាយភ្ជាប់ពាក្យ"
+          }
+        }
+      }
+    },
+    "Shows this day's expenses": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បង្ហាញការចំណាយថ្ងៃនេះ"
           }
         }
       }
@@ -3353,6 +3413,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "កំពុងធ្វើសមកាលកម្ម…"
+          }
+        }
+      }
+    },
+    "Tap a day to see what you spent.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ចុចលើថ្ងៃមួយដើម្បីមើលអ្វីដែលអ្នកបានចាយ។"
           }
         }
       }

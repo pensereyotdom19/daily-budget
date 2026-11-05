@@ -316,6 +316,16 @@ KM = {
     "Engagement (set aside)": "ភ្ជាប់ពាក្យ (ទុកដាច់ដោយឡែក)",
     "Total": "សរុប",
 
+    # History day by day
+    "%@ over the limit": "លើសដែនកំណត់ %@",
+    "%@ under the limit": "ក្រោមដែនកំណត់ %@",
+    "Bills paid": "វិក្កយបត្របានបង់",
+    "Hides this day's expenses": "លាក់ការចំណាយថ្ងៃនេះ",
+    "Shows this day's expenses": "បង្ហាញការចំណាយថ្ងៃនេះ",
+    "Nothing spent this day.": "មិនបានចាយអ្វីនៅថ្ងៃនេះទេ។",
+    "See day": "មើលថ្ងៃ",
+    "Tap a day to see what you spent.": "ចុចលើថ្ងៃមួយដើម្បីមើលអ្វីដែលអ្នកបានចាយ។",
+
     # Bills paid automatically
     "%@ is due tomorrow": "%@ ត្រូវបង់ថ្ងៃស្អែក",
     "%@ will be marked paid on %@. Make sure the money is ready.": "%1$@ នឹងត្រូវសម្គាល់ថាបានបង់នៅ %2$@។ សូមត្រៀមលុយឱ្យរួច។",

@@ -30,6 +30,9 @@ struct HistoryView: View {
                                           + subscriptions.map { $0.asPlanned(in: [month]) })
     }
 
+    /// The day opened in "day by day" (only one at a time).
+    @State private var openDay: Date?
+
     var body: some View {
         NavigationStack(path: $path) {
             ScrollView {
@@ -190,44 +193,23 @@ struct HistoryView: View {
             }
             .padding(.horizontal, 4)
             .padding(.top, 6)
-            ForEach(days) { day in
-                let items = expenses.filter { Calendar.current.isDate($0.date, inSameDayAs: day.day) }
-                NavigationLink(value: day.day) {
-                    HStack(spacing: 12) {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(day.day.formatted(.dateTime.weekday(.abbreviated).month(.abbreviated).day().locale(AppLanguage.locale)))
-                                .font(.subheadline.weight(.bold))
-                            Text(daySubtitle(items))
-                                .font(.caption).foregroundStyle(Theme.secondary).lineLimit(1)
-                        }
-                        Spacer()
-                        VStack(alignment: .trailing, spacing: 4) {
-                            HStack(alignment: .firstTextBaseline, spacing: 4) {
-                                Text(Money.format(day.spentCents, alwaysShowCents: true)).font(Theme.rounded(17))
-                                Text("of \(Money.format(day.limitCents, alwaysShowCents: true))")
-                                    .font(.caption2).foregroundStyle(Theme.secondary)
-                            }
-                            StatusBadge(isOver: day.isOver, overBy: day.spentCents - day.limitCents)
-                        }
-                        Image(systemName: "chevron.right")
-                            .font(.caption2.weight(.bold)).foregroundStyle(Theme.secondary)
+            VStack(spacing: 0) {
+                ForEach(days) { day in
+                    DaySummaryRow(day: day,
+                                  items: expenses.filter { Calendar.current.isDate($0.date, inSameDayAs: day.day) },
+                                  isOpen: openDay == day.day) {
+                        withAnimation(.snappy) { openDay = openDay == day.day ? nil : day.day }
                     }
-                    .padding(.horizontal, 16).padding(.vertical, 12)
-                    .glassCard(radius: 22)
+                    if day.id != days.last?.id { Divider().overlay(Color.white.opacity(0.12)) }
                 }
-                .buttonStyle(.pressable)
             }
+            .padding(.horizontal, 14).padding(.vertical, 4)
+            .glassCard(radius: 22)
+            Text("Tap a day to see what you spent.")
+                .font(.caption).foregroundStyle(Theme.secondary).padding(.horizontal, 4)
         }
     }
 
-    private func daySubtitle(_ items: [Expense]) -> String {
-        var seen: [Category] = []
-        for e in items where e.billID == nil && !seen.contains(e.category) { seen.append(e.category) }
-        var parts = seen.isEmpty ? [] : [seen.map(\.title).joined(separator: ", ")]
-        let billCount = items.filter { $0.billID != nil }.count
-        if billCount > 0 { parts.append("\(billCount) bill\(billCount == 1 ? "" : "s") paid") }
-        return parts.isEmpty ? String(localized: "No expenses", bundle: AppLanguage.bundle) : parts.joined(separator: " · ")
-    }
 }
 
 /// One month in "Month by month": spent vs planned with a bar split into everyday, bills and engagement.
@@ -387,5 +369,87 @@ struct DayDetailView: View {
             AddExpenseView(editing: e)
                 .presentationBackground(Theme.base)
         }
+    }
+}
+
+/// One day in History: a one-line summary; tap to show that day's expenses underneath.
+private struct DaySummaryRow: View {
+    let day: BudgetCalculator.DaySummary
+    let items: [Expense]
+    let isOpen: Bool
+    let toggle: () -> Void
+
+    private var everyday: [Expense] { items.filter { $0.category.countsAsLiving }.sorted { $0.date < $1.date } }
+    private var other: [Expense] { items.filter { !$0.category.countsAsLiving }.sorted { $0.date < $1.date } }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            Button(action: toggle) {
+                HStack(spacing: 10) {
+                    Circle()
+                        .fill(items.isEmpty ? Color.white.opacity(0.25) : day.isOver ? Theme.warn : Theme.mint)
+                        .frame(width: 8, height: 8)
+                    Text(day.day.formatted(.dateTime.weekday(.abbreviated).day().locale(AppLanguage.locale)))
+                        .font(.subheadline.weight(.semibold))
+                    if !other.isEmpty {
+                        Image(systemName: "doc.text.fill").font(.caption2).foregroundStyle(Category.bills.color)
+                            .accessibilityLabel(Text("Bills paid"))
+                    }
+                    Spacer()
+                    Text(Money.format(day.spentCents, alwaysShowCents: true))
+                        .font(Theme.rounded(16))
+                        .foregroundStyle(day.isOver ? Theme.warn : .white)
+                    Text("of \(Money.format(day.limitCents, alwaysShowCents: true))")
+                        .font(.caption2).foregroundStyle(Theme.secondary)
+                    Image(systemName: "chevron.down")
+                        .font(.caption2.weight(.bold)).foregroundStyle(Theme.secondary)
+                        .rotationEffect(.degrees(isOpen ? 180 : 0))
+                }
+                .padding(.vertical, 12)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.pressable)
+            .accessibilityHint(Text(isOpen ? "Hides this day's expenses" : "Shows this day's expenses"))
+
+            if isOpen { details.transition(.opacity.combined(with: .move(edge: .top))) }
+        }
+    }
+
+    private var details: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            if items.isEmpty {
+                Text("Nothing spent this day.").font(.caption).foregroundStyle(Theme.secondary)
+            }
+            ForEach(everyday + other) { e in
+                HStack(spacing: 10) {
+                    ExpenseIcon(expense: e, size: 28)
+                    Text(e.note.isEmpty ? e.category.title : e.note).font(.footnote.weight(.semibold)).lineLimit(1)
+                    Spacer()
+                    Text(Money.format(e.amountCents, alwaysShowCents: true))
+                        .font(Theme.rounded(14))
+                        .foregroundStyle(e.category.countsAsLiving ? .white : Theme.secondary)
+                }
+            }
+            HStack {
+                if day.isOver {
+                    Text("\(Money.format(day.spentCents - day.limitCents, alwaysShowCents: true)) over the limit")
+                        .font(.caption.weight(.semibold)).foregroundStyle(Theme.warn)
+                } else if !items.isEmpty {
+                    Text("\(Money.format(day.leftCents, alwaysShowCents: true)) under the limit")
+                        .font(.caption.weight(.semibold)).foregroundStyle(Theme.mint)
+                }
+                Spacer()
+                NavigationLink(value: day.day) {
+                    HStack(spacing: 3) {
+                        Text("See day")
+                        Image(systemName: "chevron.right").font(.caption2.weight(.bold))
+                    }
+                    .font(.caption.weight(.semibold)).foregroundStyle(Theme.sky)
+                }
+                .buttonStyle(.pressable)
+            }
+            .padding(.top, 2)
+        }
+        .padding(.leading, 18).padding(.bottom, 12)
     }
 }
