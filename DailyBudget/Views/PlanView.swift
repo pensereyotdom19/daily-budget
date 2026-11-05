@@ -89,6 +89,7 @@ struct PlanView: View {
             MonthDetailView(route: route)
         }
         .navigationDestination(for: SavingsRoute.self) { _ in SavingsView() }
+        .navigationDestination(for: Date.self) { day in DayDetailView(day: day) }
         .navigationDestination(for: SubscriptionsRoute.self) { _ in SubscriptionsView() }
         .navigationDestination(for: PlanSummaryRoute.self) { _ in PlanSummaryView() }
         .sheet(isPresented: $startingNewPlan) { NewPlanView() }

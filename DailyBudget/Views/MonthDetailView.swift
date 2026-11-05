@@ -40,6 +40,16 @@ struct MonthDetailView: View {
         allExpenses.filter { MonthKey.key(for: $0.date) == monthKey }
     }
 
+    /// Each day of this month up to today (from the first day you used the app), newest first.
+    private var daySummaries: [BudgetCalculator.DaySummary] {
+        guard let first = MonthKey.firstDay(of: monthKey),
+              let last = Calendar.current.date(byAdding: DateComponents(month: 1, day: -1), to: first) else { return [] }
+        let end = min(last, Date.now)
+        guard end >= first else { return [] }
+        let start = Calendar.current.startOfDay(for: settings?.streakStartDate ?? first)
+        return calculator.daySummaries(inMonthOf: end).filter { $0.day >= start }
+    }
+
     private var calculator: BudgetCalculator {
         BudgetCalculator(expenses: allExpenses, settings: settings, incomes: incomes)
     }
@@ -290,14 +300,28 @@ struct MonthDetailView: View {
             }
             .padding(.horizontal, 4)
 
-            if days.isEmpty {
+            if days.isEmpty && (categoryFilter != nil || daySummaries.isEmpty) {
                 Text(emptyText)
                     .font(.subheadline).foregroundStyle(Theme.secondary)
                     .frame(maxWidth: .infinity)
                     .padding(20)
                     .glassCard()
             }
-            if !days.isEmpty {
+            if categoryFilter == nil, !daySummaries.isEmpty {
+                // Same as History's "day by day": every day, spent of its limit; tap to see the expenses.
+                VStack(spacing: 0) {
+                    ForEach(daySummaries) { day in
+                        DaySummaryRow(day: day,
+                                      items: monthExpenses.filter { Calendar.current.isDate($0.date, inSameDayAs: day.day) },
+                                      isOpen: openDay == day.day) {
+                            withAnimation(.snappy) { openDay = openDay == day.day ? nil : day.day }
+                        }
+                        if day.id != daySummaries.last?.id { Divider().overlay(Color.white.opacity(0.12)) }
+                    }
+                }
+                .padding(.horizontal, 14).padding(.vertical, 4)
+                .glassCard(radius: 22)
+            } else if !days.isEmpty {
                 VStack(spacing: 0) {
                     ForEach(days, id: \.day) { group in
                         dayRow(group)
@@ -308,7 +332,7 @@ struct MonthDetailView: View {
                 .glassCard(radius: 22)
             }
             if !days.isEmpty {
-                Text("Tap a day to see its expenses. Tap an expense to edit it, press and hold to delete.")
+                Text(categoryFilter == nil ? "Tap a day to see what you spent." : "Tap a day to see its expenses. Tap an expense to edit it, press and hold to delete.")
                     .font(.caption).foregroundStyle(Theme.secondary)
                     .frame(maxWidth: .infinity)
             }
