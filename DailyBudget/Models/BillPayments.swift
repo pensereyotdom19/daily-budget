@@ -12,11 +12,13 @@ enum BillPayments {
         setPaid(!bill.isPaid(in: month), bill: bill, month: month, in: context, now: now)
     }
 
-    static func setPaid(_ paid: Bool, bill: Bill, month: String, in context: ModelContext, now: Date = .now) {
+    /// `date` is when it was paid; by default today (or the 1st, for another month).
+    static func setPaid(_ paid: Bool, bill: Bill, month: String, in context: ModelContext, now: Date = .now,
+                        date: Date? = nil) {
         if paid {
             if !bill.paidMonths.contains(month) { bill.paidMonths.append(month) }
             if linkedExpenses(bill: bill, month: month, in: context).isEmpty {
-                context.insert(makeExpense(bill: bill, month: month, now: now))
+                context.insert(makeExpense(bill: bill, month: month, now: now, date: date))
             }
         } else {
             bill.paidMonths.removeAll { $0 == month }
@@ -55,9 +57,10 @@ enum BillPayments {
         return all.filter { $0.billID == billID && $0.billMonth == month }
     }
 
-    private static func makeExpense(bill: Bill, month: String, now: Date) -> Expense {
-        let e = Expense(amountCents: bill.amountCents, category: .bills, note: bill.name,
-                        date: BudgetCalculator.billPaymentDate(month: month, now: now))
+    private static func makeExpense(bill: Bill, month: String, now: Date, date: Date? = nil) -> Expense {
+        let paidOn = date ?? bill.dueDay.flatMap { BillSchedule.dueDate(month: month, day: $0) }
+            .map { min($0, now) } ?? BudgetCalculator.billPaymentDate(month: month, now: now)
+        let e = Expense(amountCents: bill.amountCents, category: .bills, note: bill.name, date: paidOn)
         e.billID = bill.id
         e.billMonth = month
         return e

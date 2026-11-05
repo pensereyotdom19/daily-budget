@@ -160,6 +160,8 @@ struct BillDTO: Codable, Equatable {
     var sortOrder: Int
     var dueMonths: [String]
     var paidMonths: [String]
+    var dueDay: Int? = nil
+    var lastAutoMonth: String? = nil
     var deleted: Bool? = nil
 }
 

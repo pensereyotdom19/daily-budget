@@ -94,7 +94,7 @@ enum ReminderScheduler {
         let loggedToday = expenses.contains { calendar.isDate($0.date, inSameDayAs: now) && $0.billID == nil }
         let dues = bills.flatMap { bill in
             bill.dueMonths.map { ReminderPlanner.BillDue(name: bill.name, cents: bill.amountCents,
-                                                         month: $0, isPaid: bill.isPaid(in: $0)) }
+                                                         month: $0, isPaid: bill.isPaid(in: $0), dueDay: bill.dueDay) }
         }
         let plan = ReminderPlanner.plan(now: now, settings: prefs,
                                         calculator: BudgetCalculator(expenses: expenses, settings: settings, incomes: incomes),

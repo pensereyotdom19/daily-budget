@@ -40,6 +40,10 @@ final class Bill {
     var dueMonths: [String] = []
     var paidMonths: [String] = []
     var sortOrder: Int = 0
+    /// Day of the month it is paid automatically (1–31). Nil: you tick it paid yourself.
+    var dueDay: Int? = nil
+    /// The last month the app paid it automatically, so unticking by hand sticks.
+    var lastAutoMonth: String? = nil
 
     init(name: String, amountCents: Int, dueMonths: [String], sortOrder: Int) {
         self.id = UUID()

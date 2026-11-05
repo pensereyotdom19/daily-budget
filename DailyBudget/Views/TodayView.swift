@@ -40,8 +40,16 @@ struct TodayView: View {
         let current = MonthKey.key(for: .now)
         let months = (settings?.planMonths ?? []).filter { $0 >= current }
         for month in months {
+            // Bills with a due day come in date order; the rest after them, biggest first.
             let due = bills.filter { $0.isDue(in: month) && !$0.isPaid(in: month) }
-                .sorted { $0.amountCents > $1.amountCents }
+                .sorted { a, b in
+                    switch (a.dueDay, b.dueDay) {
+                    case let (x?, y?): return x < y
+                    case (_?, nil): return true
+                    case (nil, _?): return false
+                    default: return a.amountCents > b.amountCents
+                    }
+                }
             if let b = due.first { return (b, month) }
         }
         return nil
@@ -114,7 +122,7 @@ struct TodayView: View {
                         NavigationLink(value: MonthRoute(monthKey: next.month)) {
                             statCard(title: "NEXT BILL",
                                      value: Money.format(next.bill.amountCents),
-                                     note: "\(next.bill.name) · \(MonthKey.title(of: next.month))",
+                                     note: "\(next.bill.name) · \(next.bill.dueDay.flatMap { BillSchedule.dueDate(month: next.month, day: $0) }.map { $0.formatted(.dateTime.month(.abbreviated).day().locale(AppLanguage.locale)) } ?? MonthKey.title(of: next.month))",
                                      noteColor: Theme.warn)
                         }
                         .buttonStyle(.pressable)

@@ -171,8 +171,14 @@ struct MonthDetailView: View {
                             VStack(alignment: .leading, spacing: 1) {
                                 Text(bill.name).font(.subheadline.weight(.semibold))
                                     .strikethrough(paid, color: .white.opacity(0.6))
-                                Text(paid ? "Paid · counted as spent" : "Tap to mark paid")
-                                    .font(.caption).foregroundStyle(Theme.secondary)
+                                if let day = bill.dueDay, !paid,
+                                   let due = BillSchedule.dueDate(month: monthKey, day: day) {
+                                    Text("Paid automatically on \(due.formatted(.dateTime.month(.abbreviated).day().locale(AppLanguage.locale)))")
+                                        .font(.caption).foregroundStyle(Theme.sky)
+                                } else {
+                                    Text(paid ? "Paid · counted as spent" : "Tap to mark paid")
+                                        .font(.caption).foregroundStyle(Theme.secondary)
+                                }
                             }
                             Spacer()
                             Text(Money.format(bill.amountCents)).font(Theme.rounded(16))

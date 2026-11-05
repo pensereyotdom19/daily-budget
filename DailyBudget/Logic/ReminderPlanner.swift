@@ -28,6 +28,8 @@ enum ReminderPlanner {
         var cents: Int
         var month: String
         var isPaid: Bool
+        /// Paid automatically on this day; such bills get a reminder the day before instead.
+        var dueDay: Int? = nil
     }
 
     enum Kind: String { case morning, evening, billsDue, billsUnpaid, weekly, expiry, renewal }
@@ -90,7 +92,17 @@ enum ReminderPlanner {
         if settings.billsOn {
             let current = MonthKey.key(for: now, calendar: cal)
             for month in planMonths.filter({ $0 >= current }).prefix(3) {
-                let unpaid = bills.filter { $0.month == month && !$0.isPaid }
+                // Bills paid automatically: the day before their date.
+                for b in bills where b.month == month && !b.isPaid {
+                    guard let day = b.dueDay, let due = BillSchedule.dueDate(month: month, day: day, calendar: cal),
+                          let before = cal.date(byAdding: .day, value: -1, to: cal.startOfDay(for: due)),
+                          let fire = at(before, Settings.billMinutes), fire > now else { continue }
+                    let when = due.formatted(.dateTime.weekday(.wide).month(.abbreviated).day().locale(AppLanguage.locale))
+                    out.append(Reminder(id: "bill-day-\(b.name)-\(month)", kind: .billsDue, fireDate: fire,
+                                        title: String(localized: "\(b.name) is due tomorrow", bundle: AppLanguage.bundle),
+                                        body: String(localized: "\(Money.format(b.cents)) will be marked paid on \(when). Make sure the money is ready.", bundle: AppLanguage.bundle)))
+                }
+                let unpaid = bills.filter { $0.month == month && !$0.isPaid && $0.dueDay == nil }
                 guard !unpaid.isEmpty, let first = MonthKey.firstDay(of: month, calendar: cal) else { continue }
                 let list = unpaid.map { "\($0.name) \(Money.format($0.cents))" }.joined(separator: ", ")
                 let total = Money.format(unpaid.reduce(0) { $0 + $1.cents })

@@ -93,7 +93,7 @@ struct PlanView: View {
         .navigationDestination(for: PlanSummaryRoute.self) { _ in PlanSummaryView() }
         .sheet(isPresented: $startingNewPlan) { NewPlanView() }
         .sheet(item: $editingBill) { bill in
-            AmountEditor(title: bill.name, cents: bill.amountCents) { bill.amountCents = $0 }
+            BillEditor(bill: bill)
         }
         .sheet(isPresented: $editingSettings) {
             if let s = settings { SettingsEditor(settings: s) }
@@ -226,8 +226,14 @@ struct PlanView: View {
                         .accessibilityLabel(paid ? "Mark \(bill.name) unpaid" : "Mark \(bill.name) paid")
                         Button { editingBill = bill } label: {
                             HStack {
-                                Text(bill.name).font(.subheadline.weight(.semibold))
-                                    .strikethrough(paid, color: .white.opacity(0.6))
+                                VStack(alignment: .leading, spacing: 1) {
+                                    Text(bill.name).font(.subheadline.weight(.semibold))
+                                        .strikethrough(paid, color: .white.opacity(0.6))
+                                    if let day = bill.dueDay {
+                                        Text(paid ? "Paid on the \(BillSchedule.ordinal(day))" : "Paid automatically on the \(BillSchedule.ordinal(day))")
+                                            .font(.caption).foregroundStyle(paid ? Theme.secondary : Theme.sky)
+                                    }
+                                }
                                 Spacer()
                                 Text(Money.format(bill.amountCents)).font(Theme.rounded(16))
                             }

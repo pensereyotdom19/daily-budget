@@ -38,6 +38,16 @@
         }
       }
     },
+    "%@ is due tomorrow": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ត្រូវបង់ថ្ងៃស្អែក"
+          }
+        }
+      }
+    },
     "%@ left over": {
       "localizations": {
         "km": {
@@ -154,6 +164,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$@ ខែនេះ៖ %2$@ ក្នុងចំណោម %3$@"
+          }
+        }
+      }
+    },
+    "%@ will be marked paid on %@. Make sure the money is ready.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ នឹងត្រូវសម្គាល់ថាបានបង់នៅ %2$@។ សូមត្រៀមលុយឱ្យរួច។"
           }
         }
       }
@@ -1174,6 +1194,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "កែចំនួន"
+          }
+        }
+      }
+    },
+    "Edit bill": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "កែវិក្កយបត្រ"
           }
         }
       }
@@ -2364,12 +2394,42 @@
         }
       }
     },
+    "Off, I tick it": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បិទ ខ្ញុំសម្គាល់ខ្លួនឯង"
+          }
+        }
+      }
+    },
     "On each renewal date the payment is added as a Bills expense, so it doesn't lower your daily limit. Tap one to edit. Press and hold to delete.": {
       "localizations": {
         "km": {
           "stringUnit": {
             "state": "translated",
             "value": "នៅថ្ងៃបន្តនីមួយៗ ការបង់ប្រាក់ត្រូវបានបន្ថែមជាការចំណាយវិក្កយបត្រ ដូច្នេះវាមិនកាត់ដែនកំណត់ប្រចាំថ្ងៃទេ។ ចុចដើម្បីកែ។ ចុចឱ្យជាប់ដើម្បីលុប។"
+          }
+        }
+      }
+    },
+    "On the %@": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "នៅថ្ងៃទី %@"
+          }
+        }
+      }
+    },
+    "On this day of each month it's due, the bill is marked paid and added as a Bills expense. Days 29–31 use the last day in shorter months. You can still untick it.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "នៅថ្ងៃនេះនៃខែនីមួយៗដែលត្រូវបង់ វិក្កយបត្រនឹងត្រូវសម្គាល់ថាបានបង់ ហើយបន្ថែមជាការចំណាយវិក្កយបត្រ។ ថ្ងៃទី ២៩–៣១ ប្រើថ្ងៃចុងក្រោយក្នុងខែខ្លី។ អ្នកនៅតែអាចដកការសម្គាល់បាន។"
           }
         }
       }
@@ -2494,6 +2554,36 @@
         }
       }
     },
+    "Paid automatically": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បង់ដោយស្វ័យប្រវត្តិ"
+          }
+        }
+      }
+    },
+    "Paid automatically on %@": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បង់ដោយស្វ័យប្រវត្តិនៅ %@"
+          }
+        }
+      }
+    },
+    "Paid automatically on the %@": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បង់ដោយស្វ័យប្រវត្តិនៅថ្ងៃទី %@"
+          }
+        }
+      }
+    },
     "Paid from the %@ budget, not daily money": {
       "localizations": {
         "km": {
@@ -2510,6 +2600,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "បង់ដូចវិក្កយបត្រ"
+          }
+        }
+      }
+    },
+    "Paid on the %@": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បានបង់នៅថ្ងៃទី %@"
           }
         }
       }
@@ -3723,6 +3823,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "បាន! វានៅក្នុងលុយថ្ងៃនេះ។"
+          }
+        }
+      }
+    },
+    "You mark it paid yourself on the Plan screen.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "អ្នកសម្គាល់ថាបានបង់ដោយខ្លួនឯងនៅទំព័រ ផែនការ។"
           }
         }
       }

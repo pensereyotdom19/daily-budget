@@ -243,6 +243,8 @@ struct SyncEngine {
             target.sortOrder = remote.sortOrder
             target.dueMonths = remote.dueMonths.sorted()
             target.paidMonths = remote.paidMonths.sorted()
+            target.dueDay = remote.dueDay
+            target.lastAutoMonth = remote.lastAutoMonth
             state.bills[remote.id] = Fingerprint.of(remote)
         }
 
@@ -384,7 +386,8 @@ enum DTO {
 
     static func bill(_ b: Bill) -> BillDTO {
         BillDTO(id: b.id, name: b.name, amountCents: b.amountCents, sortOrder: b.sortOrder,
-                dueMonths: b.dueMonths.sorted(), paidMonths: b.paidMonths.sorted())
+                dueMonths: b.dueMonths.sorted(), paidMonths: b.paidMonths.sorted(),
+                dueDay: b.dueDay, lastAutoMonth: b.lastAutoMonth)
     }
 
     static func expense(_ e: Expense) -> ExpenseDTO {
@@ -425,7 +428,8 @@ enum Fingerprint {
     static func of(_ b: Bill) -> String { of(DTO.bill(b)) }
     static func of(_ b: BillDTO) -> String {
         join([b.name, "\(b.amountCents)", "\(b.sortOrder)",
-              b.dueMonths.sorted().joined(separator: ","), b.paidMonths.sorted().joined(separator: ",")])
+              b.dueMonths.sorted().joined(separator: ","), b.paidMonths.sorted().joined(separator: ","),
+              b.dueDay.map(String.init) ?? "", b.lastAutoMonth ?? ""])
     }
 
     static func of(_ e: Expense) -> String { of(DTO.expense(e)) }

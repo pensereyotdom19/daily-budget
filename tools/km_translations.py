@@ -316,6 +316,20 @@ KM = {
     "Engagement (set aside)": "ភ្ជាប់ពាក្យ (ទុកដាច់ដោយឡែក)",
     "Total": "សរុប",
 
+    # Bills paid automatically
+    "%@ is due tomorrow": "%@ ត្រូវបង់ថ្ងៃស្អែក",
+    "%@ will be marked paid on %@. Make sure the money is ready.": "%1$@ នឹងត្រូវសម្គាល់ថាបានបង់នៅ %2$@។ សូមត្រៀមលុយឱ្យរួច។",
+    "Edit bill": "កែវិក្កយបត្រ",
+    "Off, I tick it": "បិទ ខ្ញុំសម្គាល់ខ្លួនឯង",
+    "On the %@": "នៅថ្ងៃទី %@",
+    "On this day of each month it's due, the bill is marked paid and added as a Bills expense. Days 29–31 use the last day in shorter months. You can still untick it.":
+        "នៅថ្ងៃនេះនៃខែនីមួយៗដែលត្រូវបង់ វិក្កយបត្រនឹងត្រូវសម្គាល់ថាបានបង់ ហើយបន្ថែមជាការចំណាយវិក្កយបត្រ។ ថ្ងៃទី ២៩–៣១ ប្រើថ្ងៃចុងក្រោយក្នុងខែខ្លី។ អ្នកនៅតែអាចដកការសម្គាល់បាន។",
+    "Paid automatically": "បង់ដោយស្វ័យប្រវត្តិ",
+    "Paid automatically on %@": "បង់ដោយស្វ័យប្រវត្តិនៅ %@",
+    "Paid automatically on the %@": "បង់ដោយស្វ័យប្រវត្តិនៅថ្ងៃទី %@",
+    "Paid on the %@": "បានបង់នៅថ្ងៃទី %@",
+    "You mark it paid yourself on the Plan screen.": "អ្នកសម្គាល់ថាបានបង់ដោយខ្លួនឯងនៅទំព័រ ផែនការ។",
+
     # Subscriptions
     "%@ on %@. Cancel before then if you don't need it.": "%1$@ នៅ %2$@។ បោះបង់មុនពេលនោះ បើអ្នកលែងត្រូវការ។",
     "%@ renews soon": "%@ នឹងបន្តឆាប់ៗ",

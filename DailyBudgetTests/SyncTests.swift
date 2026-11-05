@@ -308,6 +308,26 @@ final class SyncTests: XCTestCase {
         XCTAssertEqual(try newPhone.fetch(FetchDescriptor<Expense>()).filter { $0.note == "Netflix" }.count, 1)
     }
 
+    func testBillDueDaysAreBackedUp() async throws {
+        let oldPhone = try makeContainer().mainContext
+        Seed.insertIfNeeded(into: oldPhone)
+        let wifi = try oldPhone.fetch(FetchDescriptor<Bill>()).first { $0.name == "Wifi" }!
+        wifi.dueDay = 10
+        wifi.lastAutoMonth = "2026-10"
+        try oldPhone.save()
+        var state = SyncState()
+        _ = try await engine(oldPhone).run(state: &state)
+        XCTAssertEqual(server.bills[wifi.id]?.dto.dueDay, 10)
+
+        let newPhone = try makeContainer().mainContext
+        Seed.insertIfNeeded(into: newPhone)
+        var newState = SyncState()
+        _ = try await engine(newPhone).run(state: &newState)
+        let restored = try newPhone.fetch(FetchDescriptor<Bill>()).first { $0.name == "Wifi" }
+        XCTAssertEqual(restored?.dueDay, 10)
+        XCTAssertEqual(restored?.lastAutoMonth, "2026-10")
+    }
+
     func testAnExpiredSignInStopsTheSync() async throws {
         let context = try makeContainer().mainContext
         var state = SyncState()
