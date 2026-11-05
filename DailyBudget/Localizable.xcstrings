@@ -2001,22 +2001,12 @@
         }
       }
     },
-    "Name, e.g. Netflix": {
+    "Name, e.g. YouTube": {
       "localizations": {
         "km": {
           "stringUnit": {
             "state": "translated",
-            "value": "ឈ្មោះ ឧ. Netflix"
-          }
-        }
-      }
-    },
-    "Netflix, Spotify, iCloud… add yours": {
-      "localizations": {
-        "km": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Netflix, Spotify, iCloud… បន្ថែមរបស់អ្នក"
+            "value": "ឈ្មោះ ឧ. YouTube"
           }
         }
       }
@@ -3733,6 +3723,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "បាន! វានៅក្នុងលុយថ្ងៃនេះ។"
+          }
+        }
+      }
+    },
+    "YouTube, ChatGPT, iCloud… add yours": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "YouTube, ChatGPT, iCloud… បន្ថែមរបស់អ្នក"
           }
         }
       }

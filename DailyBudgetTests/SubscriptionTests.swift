@@ -46,15 +46,15 @@ final class SubscriptionTests: XCTestCase {
     }
 
     func testPopularServicesGetTheirOwnIcon() {
+        XCTAssertEqual(ServiceBrand.all.map(\.shortName), ["YouTube", "ChatGPT", "Claude", "iCloud+", "Foodpanda", "Cursor"])
         XCTAssertEqual(ServiceBrand.match("YouTube Premium Family")?.name, "YouTube Premium")
-        XCTAssertEqual(ServiceBrand.match("youtube music")?.name, "YouTube Premium")
-        XCTAssertEqual(ServiceBrand.match("Claude Pro")?.name, "Claude Pro")
         XCTAssertEqual(ServiceBrand.match("ChatGPT")?.name, "ChatGPT Plus")
-        XCTAssertEqual(ServiceBrand.match("NETFLIX")?.name, "Netflix")
-        XCTAssertEqual(ServiceBrand.match("Apple Music")?.name, "Apple Music")
-        XCTAssertNil(ServiceBrand.match("My gym"))
+        XCTAssertEqual(ServiceBrand.match("claude max")?.name, "Claude Pro")
+        XCTAssertEqual(ServiceBrand.match("iCloud 200GB")?.name, "iCloud+")
+        XCTAssertEqual(ServiceBrand.match("pandapro")?.name, "Foodpanda")
+        XCTAssertEqual(ServiceBrand.match("Cursor Pro")?.name, "Cursor")
+        XCTAssertNil(ServiceBrand.match("Netflix"))
         XCTAssertNil(ServiceBrand.match(""))
-        // Every quick-pick name finds itself.
         for brand in ServiceBrand.all { XCTAssertEqual(ServiceBrand.match(brand.name)?.name, brand.name) }
     }
 

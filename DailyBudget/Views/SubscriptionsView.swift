@@ -27,7 +27,7 @@ struct SubscriptionsCard: View {
                         Text("Next: \(next.name) \(Money.format(next.amountCents, alwaysShowCents: true)) · \(next.nextRenewal.formatted(.dateTime.month(.abbreviated).day().locale(AppLanguage.locale)))")
                             .font(.caption).foregroundStyle(Theme.secondary).lineLimit(1)
                     } else {
-                        Text("Netflix, Spotify, iCloud… add yours").font(.caption).foregroundStyle(Theme.secondary)
+                        Text("YouTube, ChatGPT, iCloud… add yours").font(.caption).foregroundStyle(Theme.secondary)
                     }
                 }
                 Spacer(minLength: 4)
@@ -172,31 +172,29 @@ struct SubscriptionEditor: View {
             Form {
                 if item == nil {
                     Section {
-                        ScrollView(.horizontal) {
-                            HStack(spacing: 10) {
-                                ForEach(ServiceBrand.all) { brand in
-                                    Button {
-                                        withAnimation(.snappy) { name = brand.name }
-                                    } label: {
-                                        VStack(spacing: 5) {
-                                            BrandTile(brand: brand, size: 44)
-                                            Text(verbatim: brand.shortName).font(.caption2).lineLimit(1).minimumScaleFactor(0.8).frame(width: 64)
-                                        }
+                        LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 3), spacing: 12) {
+                            ForEach(ServiceBrand.all) { brand in
+                                Button {
+                                    withAnimation(.snappy) { name = brand.name }
+                                } label: {
+                                    VStack(spacing: 5) {
+                                        BrandTile(brand: brand, size: 44)
+                                        Text(verbatim: brand.shortName).font(.caption2).lineLimit(1)
                                     }
-                                    .buttonStyle(.pressable)
-                                    .accessibilityLabel(Text(verbatim: brand.name))
+                                    .frame(maxWidth: .infinity)
                                 }
+                                .buttonStyle(.pressable)
+                                .accessibilityLabel(Text(verbatim: brand.name))
                             }
-                            .padding(.vertical, 6)
                         }
-                        .scrollIndicators(.hidden)
+                        .padding(.vertical, 6)
                     } header: { Text("Popular") }
                 }
                 Section {
                     HStack(spacing: 12) {
                         ServiceIcon(name: name, size: 34)
                             .animation(.snappy, value: ServiceBrand.match(name)?.id)
-                        TextField("Name, e.g. Netflix", text: $name)
+                        TextField("Name, e.g. YouTube", text: $name)
                             .onChange(of: name) { _, new in if new.count > 60 { name = String(new.prefix(60)) } }
                     }
                     LabeledContent("Price") {

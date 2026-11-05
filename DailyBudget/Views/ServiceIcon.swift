@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Brand-coloured icons for well-known subscriptions (YouTube, Netflix, Claude, ChatGPT…), drawn with
+/// Brand-coloured icons for your subscriptions (YouTube, ChatGPT, Claude, iCloud, Foodpanda, Cursor), drawn with
 /// SF Symbols and letters in each service's colours, so no logo images are needed.
 struct ServiceBrand: Equatable, Identifiable {
     enum Mark: Equatable {
@@ -21,30 +21,14 @@ struct ServiceBrand: Equatable, Identifiable {
         [" Premium", " Plus", " Pro"].reduce(name) { $0.replacingOccurrences(of: $1, with: "") }
     }
 
-    /// Order matters: "YouTube Music" must match YouTube before "music", "Apple TV" before "tv".
+    /// The services offered in the editor. Order matters when one name contains another's keyword.
     static let all: [ServiceBrand] = [
         ServiceBrand(name: "YouTube Premium", keywords: ["youtube"], background: 0xFF0000, mark: .symbol("play.fill")),
-        ServiceBrand(name: "Netflix", keywords: ["netflix"], background: 0x141414, foreground: 0xE50914, mark: .letters("N")),
-        ServiceBrand(name: "Spotify", keywords: ["spotify"], background: 0x1DB954, foreground: 0x000000, mark: .symbol("waveform")),
         ServiceBrand(name: "ChatGPT Plus", keywords: ["chatgpt", "openai", "gpt"], background: 0x10A37F, mark: .symbol("bubble.left.and.text.bubble.right.fill")),
         ServiceBrand(name: "Claude Pro", keywords: ["claude", "anthropic"], background: 0xD97757, mark: .symbol("asterisk")),
-        ServiceBrand(name: "Gemini", keywords: ["gemini"], background: 0x4285F4, mark: .symbol("sparkle")),
-        ServiceBrand(name: "Perplexity", keywords: ["perplexity"], background: 0x20808D, mark: .symbol("magnifyingglass")),
         ServiceBrand(name: "iCloud+", keywords: ["icloud"], background: 0x3693F3, mark: .symbol("icloud.fill")),
-        ServiceBrand(name: "Apple Music", keywords: ["apple music"], background: 0xFA2D48, mark: .symbol("music.note")),
-        ServiceBrand(name: "Apple TV+", keywords: ["apple tv"], background: 0x000000, mark: .symbol("appletv.fill")),
-        ServiceBrand(name: "Apple One", keywords: ["apple one"], background: 0x1C1C1E, mark: .symbol("apple.logo")),
-        ServiceBrand(name: "Google One", keywords: ["google one", "google drive", "google"], background: 0xFFFFFF, foreground: 0x4285F4, mark: .letters("G")),
-        ServiceBrand(name: "Disney+", keywords: ["disney"], background: 0x113CCF, mark: .letters("D+")),
-        ServiceBrand(name: "Prime Video", keywords: ["prime", "amazon"], background: 0x00A8E1, mark: .symbol("play.tv.fill")),
-        ServiceBrand(name: "Canva Pro", keywords: ["canva"], background: 0x00C4CC, mark: .letters("C")),
-        ServiceBrand(name: "Adobe", keywords: ["adobe", "photoshop", "lightroom"], background: 0xFA0F00, mark: .letters("A")),
-        ServiceBrand(name: "Microsoft 365", keywords: ["microsoft", "office", "365"], background: 0xD83B01, mark: .symbol("square.grid.2x2.fill")),
-        ServiceBrand(name: "Notion", keywords: ["notion"], background: 0xFFFFFF, foreground: 0x000000, mark: .letters("N")),
-        ServiceBrand(name: "Telegram Premium", keywords: ["telegram"], background: 0x2AABEE, mark: .symbol("paperplane.fill")),
-        ServiceBrand(name: "Duolingo", keywords: ["duolingo"], background: 0x58CC02, mark: .symbol("bird.fill")),
-        ServiceBrand(name: "GitHub", keywords: ["github", "copilot"], background: 0x24292E, mark: .symbol("chevron.left.forwardslash.chevron.right")),
-        ServiceBrand(name: "CapCut", keywords: ["capcut"], background: 0x000000, mark: .symbol("scissors")),
+        ServiceBrand(name: "Foodpanda", keywords: ["foodpanda", "pandapro", "panda"], background: 0xD70F64, mark: .symbol("takeoutbag.and.cup.and.straw.fill")),
+        ServiceBrand(name: "Cursor", keywords: ["cursor"], background: 0x0E0E0E, mark: .symbol("cursorarrow")),
     ]
 
     /// The brand whose keyword appears in `name`, if any.
