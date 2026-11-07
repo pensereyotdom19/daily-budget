@@ -165,7 +165,7 @@ struct HistoryView: View {
     private func legendDot(_ name: LocalizedStringKey, _ color: Color) -> some View {
         HStack(spacing: 4) {
             Circle().fill(color).frame(width: 7, height: 7)
-            Text(name).font(.caption2).foregroundStyle(Theme.secondary)
+            Text(name).font(.caption2).foregroundStyle(Theme.secondary).lineLimit(1).fixedSize()
         }
     }
 

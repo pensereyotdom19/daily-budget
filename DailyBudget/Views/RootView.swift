@@ -30,7 +30,8 @@ struct RootView: View {
     @Environment(AppLock.self) private var lock
     /// Kept by the app, so switching language (which redraws everything) stays on the same tab.
     @Binding var tab: AppTab
-    @State private var showingAdd = false
+    /// For screenshots during development: launch with `-openAdd YES` to start on the + screen.
+    @State private var showingAdd = UserDefaults.standard.bool(forKey: "openAdd")
 
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -61,6 +62,9 @@ struct RootView: View {
         }
         .onAppear {
             Seed.insertIfNeeded(into: context)
+            #if DEBUG
+            SampleData.insertIfRequested(into: context)
+            #endif
             BillPayments.sync(in: context)
             BillAutoPay.run(in: context)
             RecurringRunner.addDue(in: context)
