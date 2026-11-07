@@ -315,6 +315,9 @@ KM = {
     "Total money for the plan": "លុយសរុបសម្រាប់ផែនការ",
     "Engagement (set aside)": "ភ្ជាប់ពាក្យ (ទុកដាច់ដោយឡែក)",
     "Total": "សរុប",
+    "Appearance": "រូបរាង",
+    "Light": "ភ្លឺ",
+    "Dark": "ងងឹត",
 
     # Ledger look and everyday ease
     "LEFT TO SPEND TODAY": "នៅសល់សម្រាប់ចាយថ្ងៃនេះ",

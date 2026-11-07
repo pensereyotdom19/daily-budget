@@ -73,11 +73,13 @@ final class AppLock {
             guard let scene = UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).first else { return }
             let w = UIWindow(windowScene: scene)
             w.windowLevel = .alert + 1
+            w.overrideUserInterfaceStyle = AppAppearance.current.interfaceStyle
             let host = UIHostingController(rootView: LockScreen(lock: self))
             host.view.backgroundColor = .clear
             w.rootViewController = host
             window = w
         }
+        window?.overrideUserInterfaceStyle = AppAppearance.current.interfaceStyle
         window?.isHidden = false
     }
 

@@ -715,6 +715,16 @@
         }
       }
     },
+    "Appearance": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "រូបរាង"
+          }
+        }
+      }
+    },
     "Asks every time you open the app": {
       "localizations": {
         "km": {
@@ -1154,6 +1164,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "ដែនកំណត់ប្រចាំថ្ងៃ %1$@ → %2$@"
+          }
+        }
+      }
+    },
+    "Dark": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ងងឹត"
           }
         }
       }
@@ -1877,6 +1897,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "នៅសល់ថ្ងៃនេះ"
+          }
+        }
+      }
+    },
+    "Light": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ភ្លឺ"
           }
         }
       }

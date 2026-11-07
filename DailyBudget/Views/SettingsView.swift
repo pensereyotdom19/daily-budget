@@ -7,6 +7,7 @@ import WidgetKit
 struct SettingsView: View {
     @Query(sort: \Expense.date) private var expenses: [Expense]
     @AppStorage(AppLanguage.key, store: UserDefaults(suiteName: WidgetSnapshot.appGroup)) private var language = AppLanguage.system.rawValue
+    @AppStorage(AppAppearance.key) private var appearance = AppAppearance.system.rawValue
 
     var body: some View {
         NavigationStack {
@@ -15,7 +16,12 @@ struct SettingsView: View {
                     ScreenHeader(caption: "Daily Budget", title: "Settings")
 
                     section("General")
-                    languageCard
+                    VStack(spacing: 0) {
+                        languageCard
+                        Divider().overlay(Theme.rule).padding(.leading, 60)
+                        appearanceCard
+                    }
+                    .glassCard(radius: 22)
 
                     section("Reminders")
                     RemindersCard()
@@ -116,11 +122,40 @@ struct SettingsView: View {
             }
             .padding(.horizontal, 16).padding(.vertical, 12)
             .contentShape(Rectangle())
-            .glassCard(radius: 22)
         }
         .buttonStyle(.pressable)
         .accessibilityLabel(Text("Language"))
         .accessibilityValue(Text(verbatim: current.nativeName))
+    }
+
+    /// Light or dark, or follow the iPhone. Changes straight away.
+    private var appearanceCard: some View {
+        let current = AppAppearance(rawValue: appearance) ?? .system
+        return Menu {
+            Picker("Appearance", selection: Binding(get: { current }, set: { appearance = $0.rawValue })) {
+                ForEach(AppAppearance.allCases) { a in
+                    Label(a.title, systemImage: a.symbol).tag(a)
+                }
+            }
+        } label: {
+            HStack(spacing: 12) {
+                Image(systemName: current.symbol)
+                    .font(.system(size: 15, weight: .bold))
+                    .foregroundStyle(Theme.violet)
+                    .frame(width: 32, height: 32)
+                    .background(Theme.violet.opacity(0.16), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                Text("Appearance").font(.subheadline.weight(.semibold))
+                Spacer(minLength: 8)
+                Text(verbatim: current.title).font(.subheadline).foregroundStyle(Theme.secondary)
+                Image(systemName: "chevron.up.chevron.down")
+                    .font(.caption.weight(.bold)).foregroundStyle(Theme.secondary)
+            }
+            .padding(.horizontal, 16).padding(.vertical, 12)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.pressable)
+        .accessibilityLabel(Text("Appearance"))
+        .accessibilityValue(Text(verbatim: current.title))
     }
 
     private func choose(_ lang: AppLanguage) {
