@@ -89,7 +89,7 @@ struct SavingsView: View {
                                 }
                             }
                             .frame(height: 8)
-                            .background(Color.white.opacity(0.08), in: Capsule())
+                            .background(Theme.ink.opacity(0.08), in: Capsule())
                             Text(note(for: m)).font(.caption).foregroundStyle(Theme.secondary)
                         }
                     }
@@ -150,7 +150,7 @@ struct SavingsView: View {
                         .frame(width: max(0, geo.size.width * fraction))
                 }
                 .frame(height: 10)
-                .background(Color.white.opacity(0.1), in: Capsule())
+                .background(Theme.ink.opacity(0.1), in: Capsule())
                 HStack {
                     stat("Used", spent)
                     Spacer()
@@ -199,7 +199,7 @@ struct SavingsView: View {
                                     try? context.save()
                                 }
                             }
-                        if i.id != incomes.last?.id { Divider().overlay(Color.white.opacity(0.14)) }
+                        if i.id != incomes.last?.id { Divider().overlay(Theme.ink.opacity(0.14)) }
                     }
                 }
                 .padding(.horizontal, 14).padding(.vertical, 4)

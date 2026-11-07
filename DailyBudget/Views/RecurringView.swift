@@ -34,7 +34,7 @@ struct RecurringView: View {
                                         try? context.save()
                                     }
                                 }
-                            if r.id != items.last?.id { Divider().overlay(Color.white.opacity(0.14)) }
+                            if r.id != items.last?.id { Divider().overlay(Theme.ink.opacity(0.14)) }
                         }
                     }
                     .padding(.horizontal, 14).padding(.vertical, 4)
@@ -133,7 +133,7 @@ struct RecurringEditor: View {
                 active = r.isActive
             }
         }
-        .preferredColorScheme(.dark)
+        .preferredColorScheme(.light)
         .presentationDetents([.large])
     }
 

@@ -27,12 +27,12 @@ struct TrendCard: View {
                     // A short marker per month (a line would need two months to show).
                     RectangleMark(x: .value("Month", title), y: .value("Living money", Double(budget(m.monthKey)) / 100),
                                   width: .ratio(0.9), height: 2)
-                        .foregroundStyle(Color.white.opacity(0.7))
+                        .foregroundStyle(Theme.ink.opacity(0.7))
                 }
             }
             .chartYAxis {
                 AxisMarks(position: .leading) { value in
-                    AxisGridLine().foregroundStyle(Color.white.opacity(0.1))
+                    AxisGridLine().foregroundStyle(Theme.ink.opacity(0.1))
                     AxisValueLabel { if let v = value.as(Double.self) { Text(verbatim: "$\(Int(v))") } }
                         .foregroundStyle(Theme.secondary)
                 }
@@ -45,7 +45,7 @@ struct TrendCard: View {
                 legend(Theme.mint, "Spent")
                 legend(Theme.warn, "Over")
                 HStack(spacing: 5) {
-                    Rectangle().fill(Color.white.opacity(0.6)).frame(width: 14, height: 2)
+                    Rectangle().fill(Theme.ink.opacity(0.6)).frame(width: 14, height: 2)
                     Text("Living money").font(.caption2).foregroundStyle(Theme.secondary)
                 }
             }

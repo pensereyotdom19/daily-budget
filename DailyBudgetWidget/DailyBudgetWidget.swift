@@ -75,16 +75,16 @@ struct Provider: TimelineProvider {
 // MARK: - Views
 
 private enum W {
-    static let base = Color(red: 0.016, green: 0.020, blue: 0.035)
-    static let mint = Color(red: 0.486, green: 0.949, blue: 0.627)
-    static let sky = Color(red: 0.373, green: 0.816, blue: 1.0)
-    static let warn = Color(red: 1.0, green: 0.788, blue: 0.682)
-    static let violet = Color(red: 0.482, green: 0.361, blue: 1.0)
-    static let teal = Color(red: 0.071, green: 0.710, blue: 0.635)
-    static let secondary = Color.white.opacity(0.72)
-    static let accent = LinearGradient(colors: [mint, sky], startPoint: .topLeading, endPoint: .bottomTrailing)
+    // Ledger look, same as the app: paper, navy ink, serif figures.
+    static let base = Color(red: 0.969, green: 0.953, blue: 0.918)      // #F7F3EA
+    static let ink = Color(red: 0.118, green: 0.165, blue: 0.227)       // #1E2A3A
+    static let mint = Color(red: 0.184, green: 0.365, blue: 0.290)      // #2F5D4A
+    static let warn = Color(red: 0.541, green: 0.180, blue: 0.180)      // #8A2E2E
+    static let secondary = Color(red: 0.357, green: 0.392, blue: 0.447) // #5B6472
+    static let rule = Color(red: 0.851, green: 0.812, blue: 0.729)      // #D9CFBA
+    static let accent = LinearGradient(colors: [mint, mint], startPoint: .top, endPoint: .bottom)
     static func rounded(_ size: CGFloat, _ weight: Font.Weight = .bold) -> Font {
-        .system(size: size, weight: weight, design: .rounded)
+        .system(size: size, weight: weight == .bold ? .semibold : weight, design: .serif)
     }
 }
 
@@ -105,7 +105,7 @@ struct TodayLeftView: View {
         if !entry.hasData {
             Text("Open Daily Budget once to set up this widget.")
                 .font(.caption.weight(.semibold))
-                .foregroundStyle(.white)
+                .foregroundStyle(W.ink)
                 .multilineTextAlignment(.center)
         } else {
             switch family {
@@ -120,20 +120,14 @@ struct TodayLeftView: View {
 
     @ViewBuilder private var background: some View {
         switch family {
-        case .systemSmall, .systemMedium:
-            ZStack {
-                W.base
-                RadialGradient(colors: [W.violet.opacity(0.35), .clear], center: .topLeading, startRadius: 0, endRadius: 180)
-                RadialGradient(colors: [W.teal.opacity(0.28), .clear], center: .bottomTrailing, startRadius: 0, endRadius: 180)
-            }
-        default:
-            Color.clear
+        case .systemSmall, .systemMedium: W.base
+        default: Color.clear
         }
     }
 
     private func ring(size: CGFloat, line: CGFloat) -> some View {
         ZStack {
-            Circle().stroke(Color.white.opacity(0.16), lineWidth: line)
+            Circle().stroke(W.rule, lineWidth: line)
             Circle()
                 .trim(from: 0, to: entry.fraction)
                 .stroke(W.accent, style: StrokeStyle(lineWidth: line, lineCap: .round))
@@ -146,7 +140,7 @@ struct TodayLeftView: View {
         VStack(spacing: 0) {
             Text(left)
                 .font(W.rounded(20))
-                .foregroundStyle(entry.isOver ? W.warn : .white)
+                .foregroundStyle(entry.isOver ? W.warn : W.ink)
                 .minimumScaleFactor(0.5).lineLimit(1)
             Text(entry.isOver ? "OVER TODAY" : "LEFT TODAY")
                 .font(.system(size: 9, weight: .semibold))
@@ -160,7 +154,7 @@ struct TodayLeftView: View {
             ZStack { ring(size: 104, line: 10); ringLabel }
             Text("Limit \(limit)").font(.caption2.weight(.semibold)).foregroundStyle(W.secondary)
         }
-        .foregroundStyle(.white)
+        .foregroundStyle(W.ink)
     }
 
     private var medium: some View {
@@ -173,7 +167,7 @@ struct TodayLeftView: View {
             }
             if entry.quickItems.isEmpty { stats } else { buttons }
         }
-        .foregroundStyle(.white)
+        .foregroundStyle(W.ink)
     }
 
     /// Tap to log it right away. The app saves it next time it opens.
@@ -193,7 +187,7 @@ struct TodayLeftView: View {
                         Image(systemName: "plus").font(.system(size: 10, weight: .heavy)).foregroundStyle(W.mint)
                     }
                     .padding(.horizontal, 8).frame(height: 32)
-                    .background(Color.white.opacity(0.1), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                    .background(W.ink.opacity(0.1), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
                 }
                 .buttonStyle(.plain)
             }
@@ -210,7 +204,7 @@ struct TodayLeftView: View {
             }
             Spacer(minLength: 0)
         }
-        .foregroundStyle(.white)
+        .foregroundStyle(W.ink)
     }
 
     private func stat(_ title: LocalizedStringKey, _ value: String) -> some View {

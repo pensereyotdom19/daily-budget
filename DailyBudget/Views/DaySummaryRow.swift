@@ -16,7 +16,7 @@ struct DaySummaryRow: View {
             Button(action: toggle) {
                 HStack(spacing: 10) {
                     Circle()
-                        .fill(items.isEmpty ? Color.white.opacity(0.25) : day.isOver ? Theme.warn : Theme.mint)
+                        .fill(items.isEmpty ? Theme.ink.opacity(0.25) : day.isOver ? Theme.warn : Theme.mint)
                         .frame(width: 8, height: 8)
                     Text(day.day.formatted(.dateTime.weekday(.abbreviated).day().locale(AppLanguage.locale)))
                         .font(.subheadline.weight(.semibold))
@@ -27,7 +27,7 @@ struct DaySummaryRow: View {
                     Spacer()
                     Text(Money.format(day.spentCents, alwaysShowCents: true))
                         .font(Theme.rounded(16))
-                        .foregroundStyle(day.isOver ? Theme.warn : .white)
+                        .foregroundStyle(day.isOver ? Theme.warn : Theme.ink)
                     Text("of \(Money.format(day.limitCents, alwaysShowCents: true))")
                         .font(.caption2).foregroundStyle(Theme.secondary)
                     Image(systemName: "chevron.down")
@@ -56,7 +56,7 @@ struct DaySummaryRow: View {
                     Spacer()
                     Text(Money.format(e.amountCents, alwaysShowCents: true))
                         .font(Theme.rounded(14))
-                        .foregroundStyle(e.category.countsAsLiving ? .white : Theme.secondary)
+                        .foregroundStyle(e.category.countsAsLiving ? Theme.ink : Theme.secondary)
                 }
             }
             HStack {

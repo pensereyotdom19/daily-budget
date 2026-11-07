@@ -65,7 +65,7 @@ struct AffordView: View {
             }
             .scrollDismissesKeyboard(.interactively)
         }
-        .foregroundStyle(.white)
+        .foregroundStyle(Theme.ink)
         .onAppear { focused = true }
     }
 
@@ -86,7 +86,7 @@ struct AffordView: View {
 
             VStack(spacing: 0) {
                 change("Left today", from: leftNow, to: w.leftTodayAfter)
-                Divider().overlay(Color.white.opacity(0.14))
+                Divider().overlay(Theme.ink.opacity(0.14))
                 if w.tomorrowInSameMonth {
                     change("Tomorrow's limit", from: w.tomorrowLimitNow, to: w.tomorrowLimitAfter)
                 } else {
@@ -97,7 +97,7 @@ struct AffordView: View {
                     }
                     .padding(.vertical, 12)
                 }
-                Divider().overlay(Color.white.opacity(0.14))
+                Divider().overlay(Theme.ink.opacity(0.14))
                 change("Left this month", from: w.monthLeftAfter + cents, to: w.monthLeftAfter)
             }
             .padding(.horizontal, 16).padding(.vertical, 2)
@@ -112,7 +112,7 @@ struct AffordView: View {
             Text(Money.format(from, alwaysShowCents: true)).font(Theme.rounded(15)).foregroundStyle(Theme.secondary)
             Image(systemName: "arrow.right").font(.caption.weight(.bold)).foregroundStyle(Theme.secondary)
             Text(Money.format(to, alwaysShowCents: true)).font(Theme.rounded(16))
-                .foregroundStyle(to < 0 ? Theme.warn : .white)
+                .foregroundStyle(to < 0 ? Theme.warn : Theme.ink)
         }
         .padding(.vertical, 12)
         .accessibilityElement(children: .combine)

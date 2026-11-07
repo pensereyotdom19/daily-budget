@@ -51,7 +51,7 @@ struct BillEditor: View {
                 dueDay = bill.dueDay ?? 0
             }
         }
-        .preferredColorScheme(.dark)
+        .preferredColorScheme(.light)
         .presentationDetents([.medium, .large])
     }
 }

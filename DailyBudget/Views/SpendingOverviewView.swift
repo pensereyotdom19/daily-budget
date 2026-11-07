@@ -94,7 +94,7 @@ struct SpendingOverviewView: View {
             }
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
-                    Capsule().fill(Color.white.opacity(0.12))
+                    Capsule().fill(Theme.ink.opacity(0.12))
                     Capsule()
                         .fill(diff < 0 ? AnyShapeStyle(Theme.warn) : AnyShapeStyle(Theme.accentGradient))
                         .frame(width: geo.size.width * fraction)
@@ -120,7 +120,7 @@ struct SpendingOverviewView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(10)
-        .background(Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .background(Theme.ink.opacity(0.06), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
         .accessibilityElement(children: .combine)
     }
 
@@ -143,7 +143,7 @@ struct SpendingOverviewView: View {
                     }
                     Spacer(minLength: 0)
                 }
-                .background(Color.white.opacity(0.12))
+                .background(Theme.ink.opacity(0.12))
                 .clipShape(Capsule())
             }
             .frame(height: 12)
@@ -213,7 +213,7 @@ struct SpendingOverviewView: View {
                             }
                             GeometryReader { geo in
                                 ZStack(alignment: .leading) {
-                                    Capsule().fill(Color.white.opacity(0.12))
+                                    Capsule().fill(Theme.ink.opacity(0.12))
                                     Capsule().fill(item.category.color)
                                         .frame(width: max(6, geo.size.width * CGFloat(item.cents) / CGFloat(maxValue)))
                                 }
@@ -222,7 +222,7 @@ struct SpendingOverviewView: View {
                         }
                     }
                     .padding(.vertical, 5).padding(.horizontal, 6)
-                    .background(selected ? Color.white.opacity(0.12) : Color.clear,
+                    .background(selected ? Theme.ink.opacity(0.12) : Color.clear,
                                 in: RoundedRectangle(cornerRadius: 12, style: .continuous))
                     .contentShape(Rectangle())
                 }
@@ -248,7 +248,7 @@ struct SpendingOverviewView: View {
             VStack(spacing: 0) {
                 ForEach(biggest) { e in
                     expenseButton(e, showDate: true)
-                    if e.id != biggest.last?.id { Divider().overlay(Color.white.opacity(0.14)) }
+                    if e.id != biggest.last?.id { Divider().overlay(Theme.ink.opacity(0.14)) }
                 }
             }
             .padding(.horizontal, 14).padding(.vertical, 2)
@@ -315,7 +315,7 @@ struct SpendingOverviewView: View {
                         VStack(spacing: 0) {
                             ForEach(items) { e in
                                 expenseButton(e, showDate: true)
-                                if e.id != items.last?.id { Divider().overlay(Color.white.opacity(0.14)) }
+                                if e.id != items.last?.id { Divider().overlay(Theme.ink.opacity(0.14)) }
                             }
                         }
                         .padding(.horizontal, 14).padding(.vertical, 2)

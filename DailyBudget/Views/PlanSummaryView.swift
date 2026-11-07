@@ -29,9 +29,9 @@ struct PlanSummaryView: View {
                 }
                 VStack(spacing: 0) {
                     row("Everyday", s.livingSpentCents, of: s.livingPlannedCents, Theme.mint)
-                    Divider().overlay(Color.white.opacity(0.14))
+                    Divider().overlay(Theme.ink.opacity(0.14))
                     row("Bills", s.billsCents, of: nil, Category.bills.color)
-                    Divider().overlay(Color.white.opacity(0.14))
+                    Divider().overlay(Theme.ink.opacity(0.14))
                     row("Engagement", s.engagementCents, of: nil, Category.engagement.color)
                 }
                 .padding(.horizontal, 16).padding(.vertical, 4)
@@ -71,7 +71,7 @@ struct PlanSummaryView: View {
         let fraction = s.daysCounted > 0 ? Double(s.daysOnBudget) / Double(s.daysCounted) : 0
         return HStack(spacing: 18) {
             ZStack {
-                Circle().stroke(Color.white.opacity(0.16), lineWidth: 12)
+                Circle().stroke(Theme.ink.opacity(0.16), lineWidth: 12)
                 Circle().trim(from: 0, to: fraction)
                     .stroke(Theme.accentGradient, style: StrokeStyle(lineWidth: 12, lineCap: .round))
                     .rotationEffect(.degrees(-90))

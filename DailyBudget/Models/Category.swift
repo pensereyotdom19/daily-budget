@@ -61,18 +61,18 @@ enum Category: String, CaseIterable, Codable, Identifiable {
     /// The category's colour as 0xRRGGBB (also used by the widget).
     var hex: UInt32 {
         switch self {
-        case .food: return 0xFFC27A
-        case .coffee: return 0xE6B48A
-        case .transport: return 0x7FD8FF
-        case .sport: return 0x9DF7B8
-        case .skinCare: return 0xFF9BD2
-        case .phone: return 0xB6A4FF
-        case .shopping: return 0xFFE08F
-        case .health: return 0xFFA3A3
-        case .fun: return 0xFFE59A
-        case .bills: return 0xC9D2E3
-        case .engagement: return 0xFFB0C8
-        case .other: return 0xE6E6EE
+        case .food: return 0xB5651D
+        case .coffee: return 0x7B4B2A
+        case .transport: return 0x2B6C8F
+        case .sport: return 0x2F7A4F
+        case .skinCare: return 0xA23B72
+        case .phone: return 0x5A4FA0
+        case .shopping: return 0x8C6D0F
+        case .health: return 0xB03A3A
+        case .fun: return 0xA0660C
+        case .bills: return 0x4A5568
+        case .engagement: return 0x9B3D5C
+        case .other: return 0x6B6B6B
         }
     }
 

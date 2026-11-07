@@ -10,46 +10,40 @@ extension Color {
     }
 }
 
+/// "Ledger" look: cream paper, navy ink, serif figures, thin ruled lines.
 enum Theme {
-    static let base = Color(hex: 0x040509)
-    static let violet = Color(hex: 0x7B5CFF)
-    static let pink = Color(hex: 0xFF5E8A)
-    static let teal = Color(hex: 0x12B5A2)
-    static let mint = Color(hex: 0x7CF2A0)
-    static let sky = Color(hex: 0x5FD0FF)
-    static let warn = Color(hex: 0xFFC9AE)
-    static let secondary = Color.white.opacity(0.72)
-    static let accentGradient = LinearGradient(colors: [mint, sky], startPoint: .topLeading, endPoint: .bottomTrailing)
+    /// Paper: the screen background.
+    static let base = Color(hex: 0xF7F3EA)
+    /// Slightly lighter paper for cards and sheets.
+    static let card = Color(hex: 0xFBF8F1)
+    /// Navy ink: text, rules and the main buttons.
+    static let ink = Color(hex: 0x1E2A3A)
+    /// Thin lines between rows and around cards.
+    static let rule = Color(hex: 0xD9CFBA)
+    static let secondary = Color(hex: 0x5B6472)
+    /// Positive (under budget, saved): ledger green.
+    static let mint = Color(hex: 0x2F5D4A)
+    /// Over budget, bills to watch: oxblood.
+    static let warn = Color(hex: 0x8A2E2E)
+    static let sky = Color(hex: 0x2B5A8A)
+    static let teal = Color(hex: 0x2F5D4A)
+    static let pink = Color(hex: 0x9B3D5C)
+    static let violet = Color(hex: 0x4B3F8F)
+    /// Main buttons are solid ink (kept as a gradient type so existing call sites work).
+    static let accentGradient = LinearGradient(colors: [ink, ink], startPoint: .top, endPoint: .bottom)
 
+    /// Figures and titles: serif, like a printed ledger.
     static func rounded(_ size: CGFloat, _ weight: Font.Weight = .bold) -> Font {
-        .system(size: size, weight: weight, design: .rounded)
+        .system(size: size, weight: weight == .bold ? .semibold : weight, design: .serif)
     }
 }
 
-/// Near-black background with faint colored glows behind the glass.
+/// Plain paper background (the name is kept from the earlier glowing look).
 struct GlowBackground: View {
     var body: some View {
-        // The glows sit in an overlay so they never make the screen wider than the phone.
-        // Radial gradients look like the old blurred circles but are far cheaper to draw,
-        // which keeps tab switches and screen pushes smooth.
         Theme.base
-            .overlay {
-                ZStack {
-                    glow(Theme.violet, 0.30, size: 600).offset(x: -150, y: -330)
-                    glow(Theme.pink, 0.18, size: 540).offset(x: 170, y: -60)
-                    glow(Theme.teal, 0.22, size: 620).offset(x: -110, y: 380)
-                }
-            }
-            .clipped()
             .ignoresSafeArea()
-        .allowsHitTesting(false)
-    }
-
-    private func glow(_ color: Color, _ opacity: Double, size: CGFloat) -> some View {
-        Circle()
-            .fill(RadialGradient(colors: [color.opacity(opacity), color.opacity(opacity * 0.55), color.opacity(0)],
-                                 center: .center, startRadius: 0, endRadius: size / 2))
-            .frame(width: size, height: size)
+            .allowsHitTesting(false)
     }
 }
 
@@ -67,29 +61,15 @@ extension ButtonStyle where Self == PressableButtonStyle {
     static var pressable: PressableButtonStyle { PressableButtonStyle() }
 }
 
-/// Frosted glass card. Uses Liquid Glass on iOS 26+, a thin material before that.
+/// A ledger card: lighter paper with a thin ruled border (the name is kept from the glass look).
 struct GlassCard: ViewModifier {
     var radius: CGFloat = 24
 
     func body(content: Content) -> some View {
-        #if compiler(>=6.2)
-        if #available(iOS 26.0, *) {
-            content.glassEffect(.regular, in: RoundedRectangle(cornerRadius: radius, style: .continuous))
-        } else {
-            fallback(content)
-        }
-        #else
-        fallback(content)
-        #endif
-    }
-
-    private func fallback(_ content: Content) -> some View {
+        let shape = RoundedRectangle(cornerRadius: min(radius, 14), style: .continuous)
         content
-            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: radius, style: .continuous))
-            .overlay(
-                RoundedRectangle(cornerRadius: radius, style: .continuous)
-                    .strokeBorder(Color.white.opacity(0.14), lineWidth: 1)
-            )
+            .background(Theme.card, in: shape)
+            .overlay(shape.strokeBorder(Theme.rule, lineWidth: 1))
     }
 }
 
@@ -97,7 +77,7 @@ extension View {
     func glassCard(radius: CGFloat = 24) -> some View { modifier(GlassCard(radius: radius)) }
 }
 
-/// Glossy rounded square in the category's color with a dark symbol (same style as the + button).
+/// A flat tile in the category's colour, like a coloured stamp on the page.
 struct CategoryIcon: View {
     let category: Category
     var size: CGFloat = 38
@@ -105,20 +85,13 @@ struct CategoryIcon: View {
     var symbol: String? = nil
 
     var body: some View {
-        let shape = RoundedRectangle(cornerRadius: size * 0.3, style: .continuous)
+        let shape = RoundedRectangle(cornerRadius: size * 0.26, style: .continuous)
         Image(systemName: symbol ?? category.symbol)
-            .font(.system(size: size * 0.44, weight: .bold))
-            .foregroundStyle(Theme.base.opacity(0.85))
+            .font(.system(size: size * 0.44, weight: .semibold))
+            .foregroundStyle(category.color)
             .frame(width: size, height: size)
-            .background(
-                shape.fill(LinearGradient(colors: [category.color, category.color.opacity(0.62)],
-                                          startPoint: .topLeading, endPoint: .bottomTrailing))
-            )
-            .overlay(
-                shape.strokeBorder(LinearGradient(colors: [Color.white.opacity(0.6), Color.white.opacity(0.05)],
-                                                  startPoint: .top, endPoint: .bottom), lineWidth: 1)
-            )
-            .shadow(color: category.color.opacity(0.35), radius: size * 0.2, y: size * 0.06)
+            .background(shape.fill(category.color.opacity(0.13)))
+            .overlay(shape.strokeBorder(category.color.opacity(0.3), lineWidth: 1))
             .accessibilityHidden(true)
     }
 }
@@ -158,11 +131,11 @@ struct ScreenHeader: View {
         VStack(alignment: .leading, spacing: 2) {
             caption
                 .textCase(.uppercase)
-                .font(.footnote.weight(.semibold))
-                .tracking(0.6)
+                .font(.caption.weight(.semibold))
+                .tracking(1.4)
                 .foregroundStyle(Theme.secondary)
             title
-                .font(.system(size: 34, weight: .bold))
+                .font(.system(size: 38, weight: .medium, design: .serif))
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal, 4)

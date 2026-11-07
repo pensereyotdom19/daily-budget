@@ -61,7 +61,7 @@ struct MoreCard: View {
         }
     }
 
-    private var divider: some View { Divider().overlay(Color.white.opacity(0.14)) }
+    private var divider: some View { Divider().overlay(Theme.ink.opacity(0.14)) }
 
     private func row<Trailing: View>(_ symbol: String, _ color: Color, _ title: LocalizedStringKey, _ detail: LocalizedStringKey,
                                      @ViewBuilder trailing: () -> Trailing) -> some View {

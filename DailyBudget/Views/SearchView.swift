@@ -64,7 +64,7 @@ struct SearchView: View {
                                 Button("Edit", systemImage: "pencil") { editing = e }
                                 Button("Delete", systemImage: "trash", role: .destructive) { BillPayments.delete(e, in: context) }
                             }
-                            if e.id != results.prefix(200).last?.id { Divider().overlay(Color.white.opacity(0.14)) }
+                            if e.id != results.prefix(200).last?.id { Divider().overlay(Theme.ink.opacity(0.14)) }
                         }
                     }
                     .padding(.horizontal, 14).padding(.vertical, 4)

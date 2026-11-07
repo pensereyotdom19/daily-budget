@@ -104,7 +104,7 @@ struct NewPlanView: View {
             }
             .onAppear(perform: load)
         }
-        .preferredColorScheme(.dark)
+        .preferredColorScheme(.light)
     }
 
     private func money(_ label: LocalizedStringKey, _ text: Binding<String>) -> some View {

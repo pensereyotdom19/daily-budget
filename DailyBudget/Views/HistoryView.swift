@@ -125,12 +125,12 @@ struct HistoryView: View {
     private func overviewStat(_ title: LocalizedStringKey, _ value: String, _ color: Color) -> some View {
         VStack(alignment: .leading, spacing: 2) {
             Text(title).font(.caption2.weight(.semibold)).foregroundStyle(Theme.secondary)
-            Text(value).font(Theme.rounded(16)).foregroundStyle(color == Theme.secondary ? .white : color)
+            Text(value).font(Theme.rounded(16)).foregroundStyle(color == Theme.secondary ? Theme.ink : color)
                 .lineLimit(1).minimumScaleFactor(0.7)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(10)
-        .background(Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .background(Theme.ink.opacity(0.06), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
         .accessibilityElement(children: .combine)
     }
 
@@ -200,7 +200,7 @@ struct HistoryView: View {
                                   isOpen: openDay == day.day) {
                         withAnimation(.snappy) { openDay = openDay == day.day ? nil : day.day }
                     }
-                    if day.id != days.last?.id { Divider().overlay(Color.white.opacity(0.12)) }
+                    if day.id != days.last?.id { Divider().overlay(Theme.ink.opacity(0.12)) }
                 }
             }
             .padding(.horizontal, 14).padding(.vertical, 4)
@@ -259,7 +259,7 @@ private struct MonthRow: View {
         case .now:
             chip("NOW", Theme.mint.opacity(0.25))
         case .finished:
-            chip("DONE", Color.white.opacity(0.12))
+            chip("DONE", Theme.ink.opacity(0.12))
         case .upcoming:
             EmptyView()
         }
@@ -275,7 +275,7 @@ private struct MonthRow: View {
         GeometryReader { geo in
             let scale = geo.size.width / CGFloat(max(1, max(plannedCents, total)))
             ZStack(alignment: .leading) {
-                Capsule().fill(Color.white.opacity(stage == .upcoming ? 0.07 : 0.12))
+                Capsule().fill(Theme.ink.opacity(stage == .upcoming ? 0.07 : 0.12))
                 HStack(spacing: 0) {
                     Rectangle().fill(Theme.mint).frame(width: CGFloat(spending.livingCents) * scale)
                     Rectangle().fill(Category.bills.color).frame(width: CGFloat(spending.billsCents) * scale)
@@ -325,8 +325,8 @@ struct StatusBadge: View {
         Text(isOver ? "Over \(Money.format(overBy, alwaysShowCents: true))" : "Under")
             .font(.caption2.weight(.bold))
             .padding(.horizontal, 9).padding(.vertical, 3)
-            .foregroundStyle(isOver ? Color(hex: 0xFFC9AE) : Color(hex: 0xB6FFCB))
-            .background((isOver ? Color(hex: 0xFF8C5A).opacity(0.28) : Theme.mint.opacity(0.22)), in: Capsule())
+            .foregroundStyle(isOver ? Color(hex: 0x8A2E2E) : Color(hex: 0x2F5D4A))
+            .background((isOver ? Color(hex: 0xB5651D).opacity(0.28) : Theme.mint.opacity(0.22)), in: Capsule())
     }
 }
 
@@ -348,7 +348,7 @@ struct DayDetailView: View {
             ForEach(items) { e in
                 Button { editing = e } label: { ExpenseRow(expense: e) }
                     .buttonStyle(.pressable)
-                    .listRowBackground(Color.white.opacity(0.06))
+                    .listRowBackground(Theme.ink.opacity(0.06))
             }
             .onDelete { offsets in
                 let doomed = offsets.map { items[$0] }

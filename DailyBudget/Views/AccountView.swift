@@ -77,7 +77,7 @@ struct AccountView: View {
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
                     .frame(height: 50)
-                Divider().overlay(Color.white.opacity(0.16))
+                Divider().overlay(Theme.ink.opacity(0.16))
                 SecureField("Password", text: $password)
                     .textContentType(.password)
                     .frame(height: 50)
@@ -150,7 +150,7 @@ struct AccountView: View {
                 Spacer(minLength: 0)
             }
 
-            Divider().overlay(Color.white.opacity(0.14))
+            Divider().overlay(Theme.ink.opacity(0.14))
 
             row("Account", session.email)
             row("Waiting to upload", sync.pending == 0 ? String(localized: "Nothing", bundle: AppLanguage.bundle) : "\(sync.pending)")
@@ -252,7 +252,7 @@ struct SyncCard: View {
                     .font(.system(size: 17, weight: .bold))
                     .foregroundStyle(sync.isSignedIn ? Theme.mint : Theme.secondary)
                     .frame(width: 38, height: 38)
-                    .background(Color.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    .background(Theme.ink.opacity(0.08), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
                 VStack(alignment: .leading, spacing: 1) {
                     Text("Backup & sync").font(.subheadline.weight(.semibold))
                     Text(subtitle).font(.caption).foregroundStyle(Theme.secondary).lineLimit(1)

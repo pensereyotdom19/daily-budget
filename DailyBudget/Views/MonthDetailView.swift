@@ -117,7 +117,7 @@ struct MonthDetailView: View {
             }
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
-                    Capsule().fill(Color.white.opacity(0.12))
+                    Capsule().fill(Theme.ink.opacity(0.12))
                     Capsule()
                         .fill(over ? AnyShapeStyle(Theme.warn) : AnyShapeStyle(Theme.accentGradient))
                         .frame(width: max(0, geo.size.width * fraction))
@@ -133,7 +133,7 @@ struct MonthDetailView: View {
             }
 
             if !isFuture {
-                Divider().overlay(Color.white.opacity(0.14))
+                Divider().overlay(Theme.ink.opacity(0.14))
                 HStack {
                     Text(livingLeft < 0 ? "Everyday money over by"
                          : isPast ? "Saved to emergency" : "Everyday money left")
@@ -183,10 +183,10 @@ struct MonthDetailView: View {
                         HStack(spacing: 12) {
                             Image(systemName: paid ? "checkmark.circle.fill" : "circle")
                                 .font(.system(size: 22))
-                                .foregroundStyle(paid ? Theme.mint : .white.opacity(0.5))
+                                .foregroundStyle(paid ? Theme.mint : Theme.ink.opacity(0.5))
                             VStack(alignment: .leading, spacing: 1) {
                                 Text(bill.name).font(.subheadline.weight(.semibold))
-                                    .strikethrough(paid, color: .white.opacity(0.6))
+                                    .strikethrough(paid, color: Theme.ink.opacity(0.6))
                                 if let day = bill.dueDay, !paid,
                                    let due = BillSchedule.dueDate(month: monthKey, day: day) {
                                     Text("Paid automatically on \(due.formatted(.dateTime.month(.abbreviated).day().locale(AppLanguage.locale)))")
@@ -205,7 +205,7 @@ struct MonthDetailView: View {
                     .buttonStyle(.pressable)
                     .accessibilityLabel("\(bill.name), \(Money.format(bill.amountCents)), \(paid ? "paid" : "not paid")")
                     .accessibilityHint(paid ? "Marks it unpaid" : "Marks it paid")
-                    if bill.id != dueBills.last?.id { Divider().overlay(Color.white.opacity(0.14)) }
+                    if bill.id != dueBills.last?.id { Divider().overlay(Theme.ink.opacity(0.14)) }
                 }
             }
             .padding(.horizontal, 14).padding(.vertical, 2)
@@ -242,7 +242,7 @@ struct MonthDetailView: View {
                             .frame(width: 78, alignment: .leading)
                         GeometryReader { geo in
                             ZStack(alignment: .leading) {
-                                Capsule().fill(Color.white.opacity(0.12))
+                                Capsule().fill(Theme.ink.opacity(0.12))
                                 Capsule().fill(item.category.color)
                                     .frame(width: max(6, geo.size.width * CGFloat(item.cents) / CGFloat(maxValue)))
                             }
@@ -252,7 +252,7 @@ struct MonthDetailView: View {
                             .frame(width: 64, alignment: .trailing)
                     }
                     .padding(.vertical, 4).padding(.horizontal, 6)
-                    .background(selected ? Color.white.opacity(0.12) : Color.clear,
+                    .background(selected ? Theme.ink.opacity(0.12) : Color.clear,
                                 in: RoundedRectangle(cornerRadius: 12, style: .continuous))
                     .contentShape(Rectangle())
                 }
@@ -316,7 +316,7 @@ struct MonthDetailView: View {
                                       isOpen: openDay == day.day) {
                             withAnimation(.snappy) { openDay = openDay == day.day ? nil : day.day }
                         }
-                        if day.id != daySummaries.last?.id { Divider().overlay(Color.white.opacity(0.12)) }
+                        if day.id != daySummaries.last?.id { Divider().overlay(Theme.ink.opacity(0.12)) }
                     }
                 }
                 .padding(.horizontal, 14).padding(.vertical, 4)
@@ -325,7 +325,7 @@ struct MonthDetailView: View {
                 VStack(spacing: 0) {
                     ForEach(days, id: \.day) { group in
                         dayRow(group)
-                        if group.day != days.last?.day { Divider().overlay(Color.white.opacity(0.12)) }
+                        if group.day != days.last?.day { Divider().overlay(Theme.ink.opacity(0.12)) }
                     }
                 }
                 .padding(.horizontal, 14).padding(.vertical, 4)

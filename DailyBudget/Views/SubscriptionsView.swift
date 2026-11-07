@@ -118,7 +118,7 @@ struct SubscriptionsView: View {
                             try? context.save()
                         }
                     }
-                if s.id != items.last?.id { Divider().overlay(Color.white.opacity(0.14)) }
+                if s.id != items.last?.id { Divider().overlay(Theme.ink.opacity(0.14)) }
             }
         }
         .padding(.horizontal, 14).padding(.vertical, 4)
@@ -137,7 +137,7 @@ struct SubscriptionsView: View {
             }
             Spacer()
             Text(Money.format(s.amountCents, alwaysShowCents: true)).font(Theme.rounded(16))
-                .foregroundStyle(s.isActive ? .white : Theme.secondary)
+                .foregroundStyle(s.isActive ? Theme.ink : Theme.secondary)
         }
         .padding(.vertical, 10)
         .contentShape(Rectangle())
@@ -230,7 +230,7 @@ struct SubscriptionEditor: View {
                 active = s.isActive
             }
         }
-        .preferredColorScheme(.dark)
+        .preferredColorScheme(.light)
     }
 
     private func save() {

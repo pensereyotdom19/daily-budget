@@ -72,11 +72,11 @@ struct PlanView: View {
 
                 Text("Engagement \(Money.format(engagement)) is set aside on day 1 and kept out of daily spending.")
                     .font(.footnote)
-                    .foregroundStyle(Color(hex: 0xFFE1EC))
+                    .foregroundStyle(Color(hex: 0x6E2A44))
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(14)
-                    .background(Color(hex: 0xFF9BC0).opacity(0.16), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-                    .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(Color(hex: 0xFF9BC0).opacity(0.4)))
+                    .background(Color(hex: 0x9B3D5C).opacity(0.16), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                    .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(Color(hex: 0x9B3D5C).opacity(0.4)))
             }
             .padding(.horizontal, 18)
             .padding(.top, 12)
@@ -110,9 +110,9 @@ struct PlanView: View {
 
     private var totalCard: some View {
         let parts: [PlanPart] = [
-            PlanPart(name: String(localized: "Bills", bundle: AppLanguage.bundle), cents: regularBillsTotal, color: Color(hex: 0xB6A4FF)),
-            PlanPart(name: String(localized: "Engagement", bundle: AppLanguage.bundle), cents: engagement, color: Color(hex: 0xFF9BC0)),
-            PlanPart(name: String(localized: "Credit card", bundle: AppLanguage.bundle), cents: creditCardTotal, color: Color(hex: 0xFFC27A)),
+            PlanPart(name: String(localized: "Bills", bundle: AppLanguage.bundle), cents: regularBillsTotal, color: Color(hex: 0x4B3F8F)),
+            PlanPart(name: String(localized: "Engagement", bundle: AppLanguage.bundle), cents: engagement, color: Color(hex: 0x9B3D5C)),
+            PlanPart(name: String(localized: "Credit card", bundle: AppLanguage.bundle), cents: creditCardTotal, color: Color(hex: 0xA0660C)),
             PlanPart(name: String(localized: "Living", bundle: AppLanguage.bundle), cents: livingTotal, color: Theme.mint),
         ] + (subscriptionsTotal > 0
              ? [PlanPart(name: String(localized: "Subscriptions", bundle: AppLanguage.bundle), cents: subscriptionsTotal, color: Theme.sky)]
@@ -184,17 +184,17 @@ struct PlanView: View {
                     Label("Summary", systemImage: "chart.pie.fill")
                         .font(.subheadline.weight(.semibold))
                         .frame(maxWidth: .infinity, minHeight: 44)
-                        .background(Color.white.opacity(0.1), in: Capsule())
+                        .background(Theme.ink.opacity(0.1), in: Capsule())
                 }
                 .buttonStyle(.pressable)
                 Button { startingNewPlan = true } label: {
                     Label("New plan", systemImage: "calendar.badge.plus")
                         .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(ended || lastMonth ? Theme.base : .white)
+                        .foregroundStyle(ended || lastMonth ? Theme.base : Theme.ink)
                         .frame(maxWidth: .infinity, minHeight: 44)
                         .background {
                             if ended || lastMonth { Capsule().fill(Theme.accentGradient) }
-                            else { Capsule().fill(Color.white.opacity(0.1)) }
+                            else { Capsule().fill(Theme.ink.opacity(0.1)) }
                         }
                 }
                 .buttonStyle(.pressable)
@@ -221,7 +221,7 @@ struct PlanView: View {
                         } label: {
                             Image(systemName: paid ? "checkmark.circle.fill" : "circle")
                                 .font(.system(size: 22))
-                                .foregroundStyle(paid ? Theme.mint : .white.opacity(0.5))
+                                .foregroundStyle(paid ? Theme.mint : Theme.ink.opacity(0.5))
                                 .frame(width: 44, height: 44)
                         }
                         .accessibilityLabel(paid ? "Mark \(bill.name) unpaid" : "Mark \(bill.name) paid")
@@ -229,7 +229,7 @@ struct PlanView: View {
                             HStack {
                                 VStack(alignment: .leading, spacing: 1) {
                                     Text(bill.name).font(.subheadline.weight(.semibold))
-                                        .strikethrough(paid, color: .white.opacity(0.6))
+                                        .strikethrough(paid, color: Theme.ink.opacity(0.6))
                                     if let day = bill.dueDay {
                                         Text(paid ? "Paid on the \(BillSchedule.ordinal(day))" : "Paid automatically on the \(BillSchedule.ordinal(day))")
                                             .font(.caption).foregroundStyle(paid ? Theme.secondary : Theme.sky)
@@ -242,7 +242,7 @@ struct PlanView: View {
                         }
                         .buttonStyle(.pressable)
                     }
-                    if bill.id != due.last?.id { Divider().overlay(Color.white.opacity(0.14)) }
+                    if bill.id != due.last?.id { Divider().overlay(Theme.ink.opacity(0.14)) }
                 }
             }
             .padding(.horizontal, 12).padding(.vertical, 2)
@@ -285,7 +285,7 @@ struct PlanView: View {
                         }
                         Spacer()
                         Text(Money.format(sum)).font(Theme.rounded(16))
-                            .foregroundStyle(isBig ? Theme.warn : .white)
+                            .foregroundStyle(isBig ? Theme.warn : Theme.ink)
                         Image(systemName: "chevron.right")
                             .font(.caption2.weight(.bold)).foregroundStyle(Theme.secondary)
                     }
@@ -294,7 +294,7 @@ struct PlanView: View {
                     }
                     .buttonStyle(.pressable)
                     .accessibilityHint("Opens \(MonthKey.title(of: month))")
-                    if month != months.last { Divider().overlay(Color.white.opacity(0.14)) }
+                    if month != months.last { Divider().overlay(Theme.ink.opacity(0.14)) }
                 }
             }
             .padding(.horizontal, 16).padding(.vertical, 2)

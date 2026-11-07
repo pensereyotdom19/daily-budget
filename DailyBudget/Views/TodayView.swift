@@ -110,9 +110,9 @@ struct TodayView: View {
                 .buttonStyle(.pressable)
                 .accessibilityHint("Shows today's expenses")
 
-                HStack(spacing: 12) {
+                VStack(spacing: 4) {
                     NavigationLink(value: MonthRoute(monthKey: MonthKey.key(for: .now))) {
-                        statCard(title: "\(MonthKey.title(of: MonthKey.key(for: .now)).uppercased()) LEFT",
+                        statCard(title: "\(MonthKey.title(of: MonthKey.key(for: .now))) left",
                                  value: Money.format(calc.monthLeftCents(inMonthOf: .now), alwaysShowCents: true),
                                  note: "of \(Money.format(calc.livingBudget(inMonthOf: .now))) living money",
                                  noteColor: Theme.secondary)
@@ -120,7 +120,7 @@ struct TodayView: View {
                     .buttonStyle(.pressable)
                     if let next = nextBill {
                         NavigationLink(value: MonthRoute(monthKey: next.month)) {
-                            statCard(title: "NEXT BILL",
+                            statCard(title: "Next bill",
                                      value: Money.format(next.bill.amountCents),
                                      note: "\(next.bill.name) · \(next.bill.dueDay.flatMap { BillSchedule.dueDate(month: next.month, day: $0) }.map { $0.formatted(.dateTime.month(.abbreviated).day().locale(AppLanguage.locale)) } ?? MonthKey.title(of: next.month))",
                                      noteColor: Theme.warn)
@@ -128,7 +128,7 @@ struct TodayView: View {
                         .buttonStyle(.pressable)
                     } else {
                         NavigationLink(value: MonthRoute(monthKey: MonthKey.key(for: .now))) {
-                            statCard(title: "NEXT BILL", value: String(localized: "None", bundle: AppLanguage.bundle), note: "All bills paid", noteColor: Theme.secondary)
+                            statCard(title: "Next bill", value: String(localized: "None", bundle: AppLanguage.bundle), note: "All bills paid", noteColor: Theme.secondary)
                         }
                         .buttonStyle(.pressable)
                     }
@@ -158,7 +158,7 @@ struct TodayView: View {
                     Spacer()
                     Button("See all", action: onSeeAll)
                         .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(.white.opacity(0.85))
+                        .foregroundStyle(Theme.ink.opacity(0.85))
                 }
                 .padding(.horizontal, 4).padding(.top, 4)
 
@@ -197,7 +197,7 @@ struct TodayView: View {
                                         BillPayments.delete(e, in: context)
                                     }
                                 }
-                            if e.id != todaysExpenses.last?.id { Divider().overlay(Color.white.opacity(0.14)) }
+                            if e.id != todaysExpenses.last?.id { Divider().overlay(Theme.ink.opacity(0.14)) }
                         }
                     }
                     .padding(.horizontal, 14).padding(.vertical, 4)
@@ -308,13 +308,13 @@ struct TodayView: View {
                                  ? "\(c.title): \(Money.format(-s.leftCents, alwaysShowCents: true)) over this month's limit"
                                  : "\(c.title): \(Money.format(s.leftCents, alwaysShowCents: true)) left of \(Money.format(s.limitCents))")
                                 .font(.footnote.weight(.semibold))
-                                .foregroundStyle(s.level == .over ? Theme.warn : .white)
+                                .foregroundStyle(s.level == .over ? Theme.warn : Theme.ink)
                             GeometryReader { geo in
                                 Capsule().fill(s.level == .over ? Theme.warn : c.color)
                                     .frame(width: geo.size.width * min(1, CGFloat(s.spentCents) / CGFloat(max(1, s.limitCents))))
                             }
                             .frame(height: 5)
-                            .background(Color.white.opacity(0.1), in: Capsule())
+                            .background(Theme.ink.opacity(0.1), in: Capsule())
                         }
                         Image(systemName: "chevron.right").font(.caption2.weight(.bold)).foregroundStyle(Theme.secondary)
                     }
@@ -360,65 +360,64 @@ struct TodayView: View {
         .accessibilityLabel(state.label)
     }
 
+    /// Ledger-style top: what's left today in big serif figures, a thin bar, then limit and spent.
     private func ringCard(_ today: BudgetCalculator.DaySummary) -> some View {
         let fraction = today.limitCents > 0 ? max(0, Double(today.leftCents) / Double(today.limitCents)) : 0
-        return HStack(spacing: 18) {
-            ZStack {
-                Circle().stroke(Color.white.opacity(0.16), lineWidth: 14)
-                Circle()
-                    .trim(from: 0, to: min(1, fraction))
-                    .stroke(Theme.accentGradient, style: StrokeStyle(lineWidth: 14, lineCap: .round))
-                    .rotationEffect(.degrees(-90))
+        return VStack(alignment: .leading, spacing: 14) {
+            Text(today.isOver ? "OVER TODAY" : "LEFT TO SPEND TODAY")
+                .font(.caption.weight(.semibold)).tracking(1.4)
+                .foregroundStyle(Theme.secondary)
+            Text(Money.format(today.isOver ? -today.leftCents : today.leftCents, alwaysShowCents: true))
+                .font(.system(size: 64, weight: .medium, design: .serif))
+                .monospacedDigit()
+                .foregroundStyle(today.isOver ? Theme.warn : Theme.ink)
+                .minimumScaleFactor(0.5).lineLimit(1)
+            GeometryReader { geo in
+                Rectangle().fill(today.isOver ? Theme.warn : Theme.mint)
+                    .frame(width: geo.size.width * min(1, today.isOver ? 1 : fraction))
                     .animation(.snappy, value: fraction)
-                VStack(spacing: 0) {
-                    Text(Money.format(today.leftCents, alwaysShowCents: true))
-                        .font(Theme.rounded(28))
-                        .foregroundStyle(today.isOver ? Theme.warn : .white)
-                        .minimumScaleFactor(0.6)
-                        .lineLimit(1)
-                    Text(today.isOver ? "OVER TODAY" : "LEFT TODAY")
-                        .font(.caption2.weight(.semibold))
-                        .foregroundStyle(Theme.secondary)
-                }
-                .padding(18)
             }
-            .frame(width: 132, height: 132)
-            .accessibilityElement(children: .combine)
-
-            VStack(alignment: .leading, spacing: 10) {
-                labeled("DAILY LIMIT", Money.format(today.limitCents, alwaysShowCents: true))
-                labeled("SPENT", Money.format(today.spentCents, alwaysShowCents: true))
-                Text("Unused money rolls into tomorrow")
-                    .font(.caption).foregroundStyle(Theme.secondary)
+            .frame(height: 4)
+            .background(Theme.rule)
+            HStack(spacing: 0) {
+                labeled("Daily limit", Money.format(today.limitCents, alwaysShowCents: true))
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                Rectangle().fill(Theme.rule).frame(width: 1, height: 40)
+                labeled("Spent", Money.format(today.spentCents, alwaysShowCents: true))
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.leading, 14)
             }
-            Spacer(minLength: 0)
         }
-        .padding(20)
-        .glassCard(radius: 30)
+        .padding(.vertical, 18)
+        .overlay(alignment: .top) { Rectangle().fill(Theme.ink).frame(height: 2) }
+        .overlay(alignment: .bottom) { Rectangle().fill(Theme.ink).frame(height: 1) }
+        .contentShape(Rectangle())
+        .accessibilityElement(children: .combine)
     }
 
     private func labeled(_ title: LocalizedStringKey, _ value: String) -> some View {
-        VStack(alignment: .leading, spacing: 1) {
-            Text(title).font(.caption.weight(.semibold)).foregroundStyle(Theme.secondary)
-            Text(value).font(Theme.rounded(20))
+        VStack(alignment: .leading, spacing: 2) {
+            Text(title).font(.caption).foregroundStyle(Theme.secondary)
+            Text(value).font(Theme.rounded(22, .regular)).monospacedDigit()
         }
     }
 
+    /// A ledger line: label …… value, with a small note under the label.
     private func statCard(title: LocalizedStringKey, value: String, note: LocalizedStringKey, noteColor: Color) -> some View {
-        VStack(alignment: .leading, spacing: 3) {
-            HStack {
-                Text(title).font(.caption.weight(.semibold)).foregroundStyle(Theme.secondary)
-                Spacer(minLength: 4)
-                Image(systemName: "chevron.right")
-                    .font(.caption2.weight(.bold)).foregroundStyle(Theme.secondary)
+        HStack(alignment: .firstTextBaseline, spacing: 8) {
+            VStack(alignment: .leading, spacing: 1) {
+                Text(title).font(.subheadline)
+                Text(note).font(.caption).foregroundStyle(noteColor).lineLimit(1)
             }
-            Text(value).font(Theme.rounded(24))
-            Text(note).font(.caption).foregroundStyle(noteColor).lineLimit(1)
+            Line().stroke(Theme.secondary.opacity(0.6), style: StrokeStyle(lineWidth: 1, dash: [1, 3]))
+                .frame(height: 1)
+            Text(value).font(Theme.rounded(19, .regular)).monospacedDigit()
+            Image(systemName: "chevron.right").font(.caption2.weight(.bold)).foregroundStyle(Theme.secondary)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(14)
-        .glassCard(radius: 22)
+        .padding(.vertical, 6)
+        .contentShape(Rectangle())
     }
+
 }
 
 /// A small glass button: category icon, name and price.
@@ -467,5 +466,15 @@ struct ExpenseRow: View {
         }
         .padding(.vertical, 10)
         .contentShape(Rectangle())
+    }
+}
+
+/// A straight horizontal line across its frame (for dotted leaders).
+struct Line: Shape {
+    func path(in rect: CGRect) -> Path {
+        var p = Path()
+        p.move(to: CGPoint(x: rect.minX, y: rect.midY))
+        p.addLine(to: CGPoint(x: rect.maxX, y: rect.midY))
+        return p
     }
 }

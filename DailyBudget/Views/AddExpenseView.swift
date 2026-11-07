@@ -69,7 +69,7 @@ struct AddExpenseView: View {
             }
             .scrollDismissesKeyboard(.interactively)
         }
-        .foregroundStyle(.white)
+        .foregroundStyle(Theme.ink)
         .onAppear(perform: load)
         .alert("Riel per dollar", isPresented: $editingRate) {
             TextField("4100", text: $rateText).keyboardType(.numberPad)
@@ -139,8 +139,8 @@ struct AddExpenseView: View {
             Label(label, systemImage: symbol)
                 .font(.subheadline.weight(.semibold))
                 .frame(maxWidth: .infinity, minHeight: 40)
-                .background(kind == k ? Color.white.opacity(0.16) : .clear, in: Capsule())
-                .foregroundStyle(kind == k ? .white : Theme.secondary)
+                .background(kind == k ? Theme.ink.opacity(0.16) : .clear, in: Capsule())
+                .foregroundStyle(kind == k ? Theme.ink : Theme.secondary)
         }
         .buttonStyle(.pressable)
         .accessibilityAddTraits(kind == k ? .isSelected : [])
@@ -231,7 +231,7 @@ struct AddExpenseView: View {
     private func pill(_ text: LocalizedStringKey, warn: Bool) -> some View {
         Text(text)
             .font(.footnote.weight(.semibold))
-            .foregroundStyle(warn ? Theme.warn : .white)
+            .foregroundStyle(warn ? Theme.warn : Theme.ink)
             .multilineTextAlignment(.center)
             .padding(.horizontal, 12).frame(minHeight: 30)
             .glassCard(radius: 15)
@@ -285,9 +285,9 @@ struct AddExpenseView: View {
                             Text(c.title).font(.caption2.weight(.semibold)).lineLimit(1).minimumScaleFactor(0.8)
                         }
                         .frame(maxWidth: .infinity, minHeight: 72)
-                        .background(Color.white.opacity(selected ? 0.16 : 0.04), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+                        .background(Theme.ink.opacity(selected ? 0.16 : 0.04), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
                         .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous)
-                            .strokeBorder(selected ? Theme.mint.opacity(0.8) : Color.white.opacity(0.1), lineWidth: selected ? 1.5 : 1))
+                            .strokeBorder(selected ? Theme.mint.opacity(0.8) : Theme.ink.opacity(0.1), lineWidth: selected ? 1.5 : 1))
                     }
                     .buttonStyle(.pressable)
                     .accessibilityAddTraits(selected ? .isSelected : [])
@@ -318,13 +318,13 @@ struct AddExpenseView: View {
                             }
                             Spacer(minLength: 0)
                             Image(systemName: selected ? "checkmark.circle.fill" : "circle")
-                                .font(.system(size: 20)).foregroundStyle(selected ? Theme.mint : .white.opacity(0.4))
+                                .font(.system(size: 20)).foregroundStyle(selected ? Theme.mint : Theme.ink.opacity(0.4))
                         }
                         .multilineTextAlignment(.leading)
                         .padding(12)
-                        .background(Color.white.opacity(selected ? 0.12 : 0.03), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                        .background(Theme.ink.opacity(selected ? 0.12 : 0.03), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
                         .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous)
-                            .strokeBorder(selected ? Theme.mint.opacity(0.7) : Color.white.opacity(0.08)))
+                            .strokeBorder(selected ? Theme.mint.opacity(0.7) : Theme.ink.opacity(0.08)))
                     }
                     .buttonStyle(.pressable)
                     .accessibilityAddTraits(selected ? .isSelected : [])
@@ -347,7 +347,7 @@ struct AddExpenseView: View {
                     }
             }
             .frame(height: 50)
-            Divider().overlay(Color.white.opacity(0.16))
+            Divider().overlay(Theme.ink.opacity(0.16))
             DatePicker("Date", selection: $date, in: ...Date.now.addingTimeInterval(86_400))
                 .frame(height: 50)
         }
@@ -443,7 +443,7 @@ struct IncomeIcon: View {
             .frame(width: size, height: size)
             .background(shape.fill(LinearGradient(colors: [target.color, target.color.opacity(0.62)],
                                                   startPoint: .topLeading, endPoint: .bottomTrailing)))
-            .overlay(shape.strokeBorder(Color.white.opacity(0.35), lineWidth: 1))
+            .overlay(shape.strokeBorder(Theme.ink.opacity(0.35), lineWidth: 1))
             .accessibilityHidden(true)
     }
 }

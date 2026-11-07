@@ -21,7 +21,7 @@ struct DailyBudgetApp: App {
                 .environment(\.locale, AppLanguage.locale)
                 // A new language redraws every screen, so all text and dates switch at once.
                 .id(language)
-                .preferredColorScheme(.dark)
+                .preferredColorScheme(.light)
         }
         .modelContainer(for: [Expense.self, Bill.self, BudgetSettings.self, Income.self, RecurringExpense.self, Subscription.self])
     }

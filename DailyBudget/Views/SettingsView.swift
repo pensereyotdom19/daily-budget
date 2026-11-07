@@ -37,7 +37,7 @@ struct SettingsView: View {
                                 .font(.system(size: 15, weight: .bold))
                                 .foregroundStyle(Theme.sky)
                                 .frame(width: 38, height: 38)
-                                .background(Color.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                                .background(Theme.ink.opacity(0.08), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
                             VStack(alignment: .leading, spacing: 1) {
                                 Text("Export expenses").font(.subheadline.weight(.semibold))
                                 Text("A CSV file for Numbers, Excel or Google Sheets").font(.caption).foregroundStyle(Theme.secondary)
@@ -71,7 +71,7 @@ struct SettingsView: View {
                 .font(.system(size: 15, weight: .bold))
                 .foregroundStyle(days <= 1 ? Theme.warn : Theme.mint)
                 .frame(width: 38, height: 38)
-                .background(Color.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                .background(Theme.ink.opacity(0.08), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
             VStack(alignment: .leading, spacing: 1) {
                 Text("Works until \(date)").font(.subheadline.weight(.semibold))
                 Text(days <= 0 ? "Last day. Run it from Xcode on your Mac today." :

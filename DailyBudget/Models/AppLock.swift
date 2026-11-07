@@ -111,8 +111,8 @@ private struct LockScreen: View {
                     .buttonStyle(.pressable)
                 }
             }
-            .foregroundStyle(.white)
+            .foregroundStyle(Theme.ink)
         }
-        .preferredColorScheme(.dark)
+        .preferredColorScheme(.light)
     }
 }

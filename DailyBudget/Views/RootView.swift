@@ -50,12 +50,10 @@ struct RootView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
 
             FloatingTabBar(tab: $tab, onSelect: switchTo, onAdd: { showingAdd = true })
-                .padding(.horizontal, 18)
-                .padding(.bottom, 8)
                 // Stay at the bottom behind the keyboard instead of riding up over the form.
                 .ignoresSafeArea(.keyboard, edges: .bottom)
         }
-        .foregroundStyle(.white)
+        .foregroundStyle(Theme.ink)
         .sheet(isPresented: $showingAdd) {
             AddExpenseView()
                 .presentationDetents([.large])
@@ -116,7 +114,7 @@ private extension View {
     }
 }
 
-/// Glass capsule tab bar with a separate round + button.
+/// Ledger tab bar: a ruled bar along the bottom with the + in the middle.
 struct FloatingTabBar: View {
     @Binding var tab: AppTab
     var onSelect: (AppTab) -> Void
@@ -124,46 +122,46 @@ struct FloatingTabBar: View {
     @Namespace private var highlight
 
     var body: some View {
-        HStack(spacing: 12) {
-            HStack(spacing: 0) {
-                ForEach(AppTab.allCases, id: \.self) { item in
-                    Button {
-                        onSelect(item)
-                    } label: {
-                        VStack(spacing: 2) {
-                            Image(systemName: item.symbol).font(.system(size: 19, weight: .semibold))
-                            Text(item.title).font(.caption2.weight(.semibold)).lineLimit(1).minimumScaleFactor(0.7)
-                        }
-                        .frame(maxWidth: .infinity, minHeight: 52)
-                        .foregroundStyle(tab == item ? Color.white : Color.white.opacity(0.7))
-                        .background {
-                            if tab == item {
-                                // Slides from the old tab to the new one.
-                                Capsule().fill(Color.white.opacity(0.14))
-                                    .matchedGeometryEffect(id: "highlight", in: highlight)
-                            }
-                        }
-                        .contentShape(Capsule())
-                    }
-                    .buttonStyle(.pressable)
-                    .accessibilityAddTraits(tab == item ? .isSelected : [])
-                }
-            }
-            .padding(6)
-            .glassCard(radius: 32)
-            .sensoryFeedback(.selection, trigger: tab)
-
+        HStack(spacing: 0) {
+            item(.today)
+            item(.history)
             Button(action: onAdd) {
                 Image(systemName: "plus")
-                    .font(.system(size: 24, weight: .bold))
+                    .font(.system(size: 22, weight: .bold))
                     .foregroundStyle(Theme.base)
-                    .frame(width: 64, height: 64)
-                    .background(Theme.accentGradient, in: Circle())
-                    .overlay(Circle().strokeBorder(Color.white.opacity(0.5), lineWidth: 1))
-                    .shadow(color: .black.opacity(0.4), radius: 14, y: 8)
+                    .frame(width: 54, height: 54)
+                    .background(Theme.ink, in: Circle())
             }
             .buttonStyle(.pressable)
             .accessibilityLabel("Add expense")
+            .padding(.horizontal, 6)
+            item(.plan)
+            item(.settings)
         }
+        .padding(.horizontal, 10)
+        .padding(.top, 6)
+        .padding(.bottom, 2)
+        .background {
+            Theme.card
+                .overlay(alignment: .top) { Rectangle().fill(Theme.ink).frame(height: 1) }
+                .ignoresSafeArea(edges: .bottom)
+        }
+        .sensoryFeedback(.selection, trigger: tab)
+    }
+
+    private func item(_ item: AppTab) -> some View {
+        Button { onSelect(item) } label: {
+            VStack(spacing: 3) {
+                Image(systemName: item.symbol).font(.system(size: 19, weight: tab == item ? .semibold : .regular))
+                Text(item.title).font(.caption2.weight(tab == item ? .bold : .medium)).lineLimit(1).minimumScaleFactor(0.7)
+                Capsule().fill(tab == item ? Theme.ink : .clear).frame(width: 18, height: 2)
+                    .matchedGeometryEffect(id: tab == item ? "underline" : "\(item.rawValue)", in: highlight)
+            }
+            .frame(maxWidth: .infinity, minHeight: 52)
+            .foregroundStyle(tab == item ? Theme.ink : Theme.secondary)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.pressable)
+        .accessibilityAddTraits(tab == item ? .isSelected : [])
     }
 }
