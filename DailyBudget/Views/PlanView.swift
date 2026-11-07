@@ -72,11 +72,11 @@ struct PlanView: View {
 
                 Text("Engagement \(Money.format(engagement)) is set aside on day 1 and kept out of daily spending.")
                     .font(.footnote)
-                    .foregroundStyle(Color(hex: 0x6E2A44))
+                    .foregroundStyle(Color(light: 0x6E2A44, dark: Color.lightened(0x6E2A44, by: 0.45)))
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(14)
-                    .background(Color(hex: 0x9B3D5C).opacity(0.16), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-                    .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(Color(hex: 0x9B3D5C).opacity(0.4)))
+                    .background(Color(light: 0x9B3D5C, dark: Color.lightened(0x9B3D5C, by: 0.45)).opacity(0.16), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                    .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(Color(light: 0x9B3D5C, dark: Color.lightened(0x9B3D5C, by: 0.45)).opacity(0.4)))
             }
             .padding(.horizontal, 18)
             .padding(.top, 12)
@@ -110,9 +110,9 @@ struct PlanView: View {
 
     private var totalCard: some View {
         let parts: [PlanPart] = [
-            PlanPart(name: String(localized: "Bills", bundle: AppLanguage.bundle), cents: regularBillsTotal, color: Color(hex: 0x4B3F8F)),
-            PlanPart(name: String(localized: "Engagement", bundle: AppLanguage.bundle), cents: engagement, color: Color(hex: 0x9B3D5C)),
-            PlanPart(name: String(localized: "Credit card", bundle: AppLanguage.bundle), cents: creditCardTotal, color: Color(hex: 0xA0660C)),
+            PlanPart(name: String(localized: "Bills", bundle: AppLanguage.bundle), cents: regularBillsTotal, color: Color(light: 0x4B3F8F, dark: Color.lightened(0x4B3F8F, by: 0.45))),
+            PlanPart(name: String(localized: "Engagement", bundle: AppLanguage.bundle), cents: engagement, color: Color(light: 0x9B3D5C, dark: Color.lightened(0x9B3D5C, by: 0.45))),
+            PlanPart(name: String(localized: "Credit card", bundle: AppLanguage.bundle), cents: creditCardTotal, color: Color(light: 0xA0660C, dark: Color.lightened(0xA0660C, by: 0.45))),
             PlanPart(name: String(localized: "Living", bundle: AppLanguage.bundle), cents: livingTotal, color: Theme.mint),
         ] + (subscriptionsTotal > 0
              ? [PlanPart(name: String(localized: "Subscriptions", bundle: AppLanguage.bundle), cents: subscriptionsTotal, color: Theme.sky)]

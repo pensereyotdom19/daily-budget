@@ -18,11 +18,11 @@ struct RemindersCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            row(symbol: "moon.stars.fill", color: Color(hex: 0x4B3F8F), title: "Log my spending",
+            row(symbol: "moon.stars.fill", color: Color(light: 0x4B3F8F, dark: Color.lightened(0x4B3F8F, by: 0.45)), title: "Log my spending",
                 detail: "Every evening. Skipped if you already added something.",
                 isOn: $eveningOn, minutes: $eveningMinutes)
             divider
-            row(symbol: "sun.max.fill", color: Color(hex: 0xA0660C), title: "Today's limit",
+            row(symbol: "sun.max.fill", color: Color(light: 0xA0660C, dark: Color.lightened(0xA0660C, by: 0.45)), title: "Today's limit",
                 detail: "Every morning: how much you can spend today.",
                 isOn: $morningOn, minutes: $morningMinutes)
             divider

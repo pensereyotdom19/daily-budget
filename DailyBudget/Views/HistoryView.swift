@@ -325,8 +325,8 @@ struct StatusBadge: View {
         Text(isOver ? "Over \(Money.format(overBy, alwaysShowCents: true))" : "Under")
             .font(.caption2.weight(.bold))
             .padding(.horizontal, 9).padding(.vertical, 3)
-            .foregroundStyle(isOver ? Color(hex: 0x8A2E2E) : Color(hex: 0x2F5D4A))
-            .background((isOver ? Color(hex: 0xB5651D).opacity(0.28) : Theme.mint.opacity(0.22)), in: Capsule())
+            .foregroundStyle(isOver ? Color(light: 0x8A2E2E, dark: Color.lightened(0x8A2E2E, by: 0.45)) : Color(light: 0x2F5D4A, dark: Color.lightened(0x2F5D4A, by: 0.45)))
+            .background((isOver ? Color(light: 0xB5651D, dark: Color.lightened(0xB5651D, by: 0.45)).opacity(0.28) : Theme.mint.opacity(0.22)), in: Capsule())
     }
 }
 
