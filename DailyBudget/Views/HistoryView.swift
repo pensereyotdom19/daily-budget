@@ -348,6 +348,7 @@ struct DayDetailView: View {
             ForEach(items) { e in
                 Button { editing = e } label: { ExpenseRow(expense: e) }
                     .buttonStyle(.pressable)
+                    .expenseSwipe(e)
                     .listRowBackground(Theme.ink.opacity(0.06))
             }
             .onDelete { offsets in

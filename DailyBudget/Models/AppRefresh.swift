@@ -56,6 +56,7 @@ enum ReminderPrefs {
     static let weeklyOn = "remind.weeklyOn"
     static let expiryOn = "remind.expiryOn"
     static let subscriptionsOn = "remind.subscriptionsOn"
+    static let recapOn = "remind.recapOn"
 
     static func current(_ d: UserDefaults = .standard) -> ReminderPlanner.Settings {
         var s = ReminderPlanner.Settings()
@@ -65,6 +66,7 @@ enum ReminderPrefs {
         s.weeklyOn = d.bool(forKey: weeklyOn)
         s.expiryOn = d.bool(forKey: expiryOn)
         s.subscriptionsOn = d.bool(forKey: subscriptionsOn)
+        s.recapOn = d.bool(forKey: recapOn)
         if d.object(forKey: morningMinutes) != nil { s.morningMinutes = d.integer(forKey: morningMinutes) }
         if d.object(forKey: eveningMinutes) != nil { s.eveningMinutes = d.integer(forKey: eveningMinutes) }
         return s

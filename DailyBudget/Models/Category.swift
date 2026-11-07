@@ -76,7 +76,8 @@ enum Category: String, CaseIterable, Codable, Identifiable {
         }
     }
 
-    var color: Color { Color(hex: hex) }
+    /// Deeper on paper, lighter at night so it stays readable.
+    var color: Color { Color(light: hex, dark: Color.lightened(hex, by: 0.45)) }
 
     /// True when spending in this category comes out of the daily living money.
     var countsAsLiving: Bool {

@@ -17,7 +17,7 @@ struct AccountView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 14) {
-                ScreenHeader(caption: "Account", title: "Backup & sync")
+                ScreenHeader(caption: "Backed up automatically", title: "Account")
                 if let session = sync.session {
                     signedInCard(session)
                 } else {
@@ -155,27 +155,14 @@ struct AccountView: View {
             row("Account", session.email)
             row("Waiting to upload", sync.pending == 0 ? String(localized: "Nothing", bundle: AppLanguage.bundle) : "\(sync.pending)")
 
-            HStack(spacing: 10) {
-                Button {
-                    Task { await sync.syncNow() }
-                } label: {
-                    Label("Sync now", systemImage: "arrow.triangle.2.circlepath")
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(Theme.base)
-                        .frame(maxWidth: .infinity, minHeight: 46)
-                        .background(Theme.accentGradient, in: Capsule())
-                }
-                .buttonStyle(.pressable)
-                .disabled(sync.status == .syncing)
-
-                Button { confirmSignOut = true } label: {
-                    Text("Sign out")
-                        .font(.subheadline.weight(.semibold))
-                        .frame(maxWidth: .infinity, minHeight: 46)
-                        .glassCard(radius: 23)
-                }
-                .buttonStyle(.pressable)
+            // Backing up happens by itself (a few seconds after each change), so there's no "sync" button.
+            Button { confirmSignOut = true } label: {
+                Text("Sign out")
+                    .font(.subheadline.weight(.semibold))
+                    .frame(maxWidth: .infinity, minHeight: 46)
+                    .glassCard(radius: 23)
             }
+            .buttonStyle(.pressable)
 
             Button { confirmEverywhere = true } label: {
                 Label("Sign out on all devices", systemImage: "lock.rotation")
@@ -241,7 +228,7 @@ struct AccountView: View {
     }
 }
 
-/// The small "Backup & sync" row on the Plan screen.
+/// The "Account" row in Settings.
 struct SyncCard: View {
     @Environment(SyncManager.self) private var sync
 
@@ -254,7 +241,7 @@ struct SyncCard: View {
                     .frame(width: 38, height: 38)
                     .background(Theme.ink.opacity(0.08), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
                 VStack(alignment: .leading, spacing: 1) {
-                    Text("Backup & sync").font(.subheadline.weight(.semibold))
+                    Text("Account").font(.subheadline.weight(.semibold))
                     Text(subtitle).font(.caption).foregroundStyle(Theme.secondary).lineLimit(1)
                 }
                 Spacer(minLength: 0)

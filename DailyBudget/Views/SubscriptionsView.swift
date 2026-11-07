@@ -230,7 +230,6 @@ struct SubscriptionEditor: View {
                 active = s.isActive
             }
         }
-        .preferredColorScheme(.light)
     }
 
     private func save() {

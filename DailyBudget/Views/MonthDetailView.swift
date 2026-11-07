@@ -332,7 +332,7 @@ struct MonthDetailView: View {
                 .glassCard(radius: 22)
             }
             if !days.isEmpty {
-                Text(categoryFilter == nil ? "Tap a day to see what you spent." : "Tap a day to see its expenses. Tap an expense to edit it, press and hold to delete.")
+                Text(categoryFilter == nil ? "Tap a day to see what you spent." : "Tap a day to see its expenses. Tap to edit, swipe left to delete, right to add again.")
                     .font(.caption).foregroundStyle(Theme.secondary)
                     .frame(maxWidth: .infinity)
             }
@@ -372,6 +372,7 @@ struct MonthDetailView: View {
                     ForEach(group.items.sorted { $0.date < $1.date }) { e in
                         Button { editing = e } label: { ExpenseRow(expense: e) }
                             .buttonStyle(.pressable)
+                            .expenseSwipe(e)
                             .contextMenu {
                                 Button("Edit", systemImage: "pencil") { editing = e }
                                 Button("Delete", systemImage: "trash", role: .destructive) {

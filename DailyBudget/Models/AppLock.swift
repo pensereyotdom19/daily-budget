@@ -113,6 +113,5 @@ private struct LockScreen: View {
             }
             .foregroundStyle(Theme.ink)
         }
-        .preferredColorScheme(.light)
     }
 }

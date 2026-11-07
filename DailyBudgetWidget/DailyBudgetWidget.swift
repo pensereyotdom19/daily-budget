@@ -1,5 +1,6 @@
 import WidgetKit
 import SwiftUI
+import UIKit
 import AppIntents
 
 @main
@@ -10,6 +11,10 @@ struct DailyBudgetWidgets: WidgetBundle {
 
     var body: some Widget {
         TodayLeftWidget()
+        if #available(iOS 18.0, *) {
+            QuickAddControl()
+            NewExpenseControl()
+        }
     }
 }
 
@@ -75,13 +80,19 @@ struct Provider: TimelineProvider {
 // MARK: - Views
 
 private enum W {
-    // Ledger look, same as the app: paper, navy ink, serif figures.
-    static let base = Color(red: 0.969, green: 0.953, blue: 0.918)      // #F7F3EA
-    static let ink = Color(red: 0.118, green: 0.165, blue: 0.227)       // #1E2A3A
-    static let mint = Color(red: 0.184, green: 0.365, blue: 0.290)      // #2F5D4A
-    static let warn = Color(red: 0.541, green: 0.180, blue: 0.180)      // #8A2E2E
-    static let secondary = Color(red: 0.357, green: 0.392, blue: 0.447) // #5B6472
-    static let rule = Color(red: 0.851, green: 0.812, blue: 0.729)      // #D9CFBA
+    // Ledger look, same as the app: paper and navy ink by day, dark navy and cream ink at night.
+    static func dyn(_ light: UInt32, _ dark: UInt32) -> Color {
+        func ui(_ h: UInt32) -> UIColor {
+            UIColor(red: CGFloat((h >> 16) & 0xFF) / 255, green: CGFloat((h >> 8) & 0xFF) / 255, blue: CGFloat(h & 0xFF) / 255, alpha: 1)
+        }
+        return Color(uiColor: UIColor { $0.userInterfaceStyle == .dark ? ui(dark) : ui(light) })
+    }
+    static let base = dyn(0xF7F3EA, 0x121A24)
+    static let ink = dyn(0x1E2A3A, 0xEFE7D6)
+    static let mint = dyn(0x2F5D4A, 0x86C3A2)
+    static let warn = dyn(0x8A2E2E, 0xE59A86)
+    static let secondary = dyn(0x5B6472, 0xA2AAB6)
+    static let rule = dyn(0xD9CFBA, 0x2C3846)
     static let accent = LinearGradient(colors: [mint, mint], startPoint: .top, endPoint: .bottom)
     static func rounded(_ size: CGFloat, _ weight: Font.Weight = .bold) -> Font {
         .system(size: size, weight: weight == .bold ? .semibold : weight, design: .serif)
@@ -236,9 +247,11 @@ struct TodayLeftView: View {
 }
 
 private extension Color {
+    /// The category colour: as is by day, mixed toward white at night.
     init(widgetHex hex: UInt32) {
-        self.init(.sRGB, red: Double((hex >> 16) & 0xFF) / 255, green: Double((hex >> 8) & 0xFF) / 255,
-                  blue: Double(hex & 0xFF) / 255, opacity: 1)
+        func mix(_ c: UInt32) -> UInt32 { UInt32(Double(c) + (255 - Double(c)) * 0.45) }
+        let night = (mix((hex >> 16) & 0xFF) << 16) | (mix((hex >> 8) & 0xFF) << 8) | mix(hex & 0xFF)
+        self = W.dyn(hex, night)
     }
 }
 
@@ -265,5 +278,33 @@ struct QuickAddIntent: AppIntent {
         QuickAddQueue.append(pending)
         QuickAddQueue.applyToSnapshot(pending, countsAsLiving: QuickAddQueue.countsAsLiving(category))
         return .result()
+    }
+}
+
+/// Control Center / Lock Screen button: adds your most-used expense (e.g. your usual coffee).
+@available(iOS 18.0, *)
+struct QuickAddControl: ControlWidget {
+    var body: some ControlWidgetConfiguration {
+        StaticControlConfiguration(kind: "QuickAddControl") {
+            ControlWidgetButton(action: QuickAddTopIntent()) {
+                Label("Quick add", systemImage: "plus.circle.fill")
+            }
+        }
+        .displayName("Quick add")
+        .description("Adds the expense you log most often.")
+    }
+}
+
+/// Control Center / Lock Screen button: opens Daily Budget on the + screen.
+@available(iOS 18.0, *)
+struct NewExpenseControl: ControlWidget {
+    var body: some ControlWidgetConfiguration {
+        StaticControlConfiguration(kind: "NewExpenseControl") {
+            ControlWidgetButton(action: NewExpenseFromControlIntent()) {
+                Label("New expense", systemImage: "square.and.pencil")
+            }
+        }
+        .displayName("New expense")
+        .description("Opens Daily Budget ready to add an expense.")
     }
 }

@@ -191,6 +191,7 @@ struct TodayView: View {
                         ForEach(todaysExpenses) { e in
                             Button { editing = e } label: { ExpenseRow(expense: e) }
                                 .buttonStyle(.pressable)
+                                .expenseSwipe(e)
                                 .contextMenu {
                                     Button("Edit", systemImage: "pencil") { editing = e }
                                     Button("Delete", systemImage: "trash", role: .destructive) {
@@ -202,7 +203,7 @@ struct TodayView: View {
                     }
                     .padding(.horizontal, 14).padding(.vertical, 4)
                     .glassCard()
-                    Text("Tap an expense to edit it. Press and hold to delete.")
+                    Text("Tap to edit. Swipe left to delete, right to add it again.")
                         .font(.caption).foregroundStyle(Theme.secondary)
                 }
             }
@@ -387,8 +388,11 @@ struct TodayView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.leading, 14)
             }
+            Text("Money you don't spend is shared across the rest of the month.")
+                .font(.caption).foregroundStyle(Theme.secondary)
         }
-        .padding(.vertical, 18)
+        .padding(.top, 18)
+        .padding(.bottom, 14)
         .overlay(alignment: .top) { Rectangle().fill(Theme.ink).frame(height: 2) }
         .overlay(alignment: .bottom) { Rectangle().fill(Theme.ink).frame(height: 1) }
         .contentShape(Rectangle())

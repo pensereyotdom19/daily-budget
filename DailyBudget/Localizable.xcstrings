@@ -38,12 +38,32 @@
         }
       }
     },
+    "%@ in review": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "សង្ខេបខែ %@"
+          }
+        }
+      }
+    },
     "%@ is due tomorrow": {
       "localizations": {
         "km": {
           "stringUnit": {
             "state": "translated",
             "value": "%@ ត្រូវបង់ថ្ងៃស្អែក"
+          }
+        }
+      }
+    },
+    "%@ left": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ នៅសល់"
           }
         }
       }
@@ -475,6 +495,16 @@
         }
       }
     },
+    "Add again": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បន្ថែមម្ដងទៀត"
+          }
+        }
+      }
+    },
     "Add expense": {
       "localizations": {
         "km": {
@@ -561,6 +591,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "បន្ថែមទៅលុយភ្ជាប់ពាក្យ"
+          }
+        }
+      }
+    },
+    "Adds the expense you log most often.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បន្ថែមការចំណាយដែលអ្នកកត់ត្រាញឹកញាប់ជាងគេ។"
           }
         }
       }
@@ -711,6 +751,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "បានបម្រុងទុក"
+          }
+        }
+      }
+    },
+    "Backed up automatically": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បម្រុងទុកដោយស្វ័យប្រវត្តិ"
           }
         }
       }
@@ -1084,6 +1134,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Daily Budget ឈប់បើកនៅថ្ងៃនេះ"
+          }
+        }
+      }
+    },
+    "Daily limit": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ដែនកំណត់ប្រចាំថ្ងៃ"
           }
         }
       }
@@ -1741,6 +1801,16 @@
         }
       }
     },
+    "LEFT TO SPEND TODAY": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "នៅសល់សម្រាប់ចាយថ្ងៃនេះ"
+          }
+        }
+      }
+    },
     "LEFT TODAY": {
       "localizations": {
         "km": {
@@ -1981,6 +2051,16 @@
         }
       }
     },
+    "Money you don't spend is shared across the rest of the month.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "លុយដែលមិនបានចាយ ត្រូវបែងចែកទៅថ្ងៃដែលនៅសល់ក្នុងខែ។"
+          }
+        }
+      }
+    },
     "Month": {
       "localizations": {
         "km": {
@@ -1997,6 +2077,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "ខែនីមួយៗ"
+          }
+        }
+      }
+    },
+    "Month-end recap": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "សង្ខេបចុងខែ"
           }
         }
       }
@@ -2047,16 +2137,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "ចាយច្រើនជាងគេលើ %@។"
-          }
-        }
-      }
-    },
-    "NEXT BILL": {
-      "localizations": {
-        "km": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "វិក្កយបត្របន្ទាប់"
           }
         }
       }
@@ -2130,6 +2210,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "ការជាវថ្មី"
+          }
+        }
+      }
+    },
+    "Next bill": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "វិក្កយបត្របន្ទាប់"
           }
         }
       }
@@ -2460,6 +2550,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "នៅថ្ងៃទី %@"
+          }
+        }
+      }
+    },
+    "On the 1st: what you spent, what you saved, days on budget.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ថ្ងៃទី ១៖ អ្នកចាយប៉ុន្មាន សន្សំបានប៉ុន្មាន និងថ្ងៃក្នុងថវិកា។"
           }
         }
       }
@@ -2883,16 +2983,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "អត្រារៀល"
-          }
-        }
-      }
-    },
-    "SPENT": {
-      "localizations": {
-        "km": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "បានចាយ"
           }
         }
       }
@@ -3377,16 +3467,6 @@
         }
       }
     },
-    "Sync now": {
-      "localizations": {
-        "km": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ធ្វើសមកាលកម្មឥឡូវ"
-          }
-        }
-      }
-    },
     "Synced %@": {
       "localizations": {
         "km": {
@@ -3417,12 +3497,12 @@
         }
       }
     },
-    "Tap a day to see its expenses. Tap an expense to edit it, press and hold to delete.": {
+    "Tap a day to see its expenses. Tap to edit, swipe left to delete, right to add again.": {
       "localizations": {
         "km": {
           "stringUnit": {
             "state": "translated",
-            "value": "ចុចលើថ្ងៃដើម្បីមើលការចំណាយ។ ចុចលើការចំណាយដើម្បីកែ ចុចឱ្យជាប់ដើម្បីលុប។"
+            "value": "ចុចលើថ្ងៃដើម្បីមើលការចំណាយ។ ចុចដើម្បីកែ អូសទៅឆ្វេងដើម្បីលុប ទៅស្ដាំដើម្បីបន្ថែមម្ដងទៀត។"
           }
         }
       }
@@ -3473,6 +3553,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "ចុចដើម្បីកែ។ ចុចឱ្យជាប់ដើម្បីលុប។ ការចំណាយដែលបានបន្ថែមរួចនៅដដែល។"
+          }
+        }
+      }
+    },
+    "Tap to edit. Swipe left to delete, right to add it again.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ចុចដើម្បីកែ។ អូសទៅឆ្វេងដើម្បីលុប ទៅស្ដាំដើម្បីបន្ថែមម្ដងទៀត។"
           }
         }
       }
@@ -3797,12 +3887,12 @@
         }
       }
     },
-    "Unused money rolls into tomorrow": {
+    "Use %@": {
       "localizations": {
         "km": {
           "stringUnit": {
             "state": "translated",
-            "value": "លុយមិនបានចាយនឹងបន្តទៅថ្ងៃស្អែក"
+            "value": "ប្រើ %@"
           }
         }
       }
@@ -3917,6 +4007,16 @@
         }
       }
     },
+    "You spent %@ of %@ everyday money %@. %lld of %lld days on budget.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "អ្នកបានចាយ %1$@ ក្នុងចំណោមលុយចាយប្រចាំថ្ងៃ %2$@ %3$@។ %4$lld ក្នុងចំណោម %5$lld ថ្ងៃក្នុងថវិកា។"
+          }
+        }
+      }
+    },
     "YouTube, ChatGPT, iCloud… add yours": {
       "localizations": {
         "km": {
@@ -4009,6 +4109,26 @@
     },
     "a coffee": {
       "shouldTranslate": false
+    },
+    "and saved %@ to emergency savings": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ហើយសន្សំបាន %@ ចូលប្រាក់សន្សំបន្ទាន់"
+          }
+        }
+      }
+    },
+    "and went %@ over": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ហើយចាយលើស %@"
+          }
+        }
+      }
     },
     "at %@ per $1": {
       "localizations": {

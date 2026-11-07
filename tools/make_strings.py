@@ -15,7 +15,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 from km_translations import KM, KEEP  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-BUILD = os.path.join(ROOT, "build/DD/Build/Intermediates.noindex")
+BUILD = os.path.join(ROOT, os.environ.get("STRINGS_BUILD", "build/DD") + "/Build/Intermediates.noindex")
 # Strings passed into our own view initializers aren't listed by Xcode, so they are named here.
 EXTRA = ["6-month plan", "Spent so far", "Savings", "Money kept aside", "SPENT TODAY", "Today", "History",
          "Summary", "Plan finished", "Plan so far", "Every month", "Recurring", "Account", "Backup & sync", "Settings", "Daily Budget"]

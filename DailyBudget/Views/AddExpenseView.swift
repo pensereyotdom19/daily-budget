@@ -96,6 +96,7 @@ struct AddExpenseView: View {
             date = i.date
         } else {
             inRiel = lastUsedRiel
+            category = QuickAdd.guessCategory(from: pastItems)
             amountFocused = true
         }
     }
@@ -239,9 +240,15 @@ struct AddExpenseView: View {
 
     // MARK: - Spent: quick fill and categories
 
-    private var quickItems: [QuickAdd.Item] {
-        QuickAdd.suggestions(from: expenses.filter { $0.billID == nil }
-            .map { QuickAdd.Past(category: $0.category, note: $0.note, cents: $0.amountCents, date: $0.date) })
+    private var pastItems: [QuickAdd.Past] {
+        expenses.filter { $0.billID == nil }
+            .map { QuickAdd.Past(category: $0.category, note: $0.note, cents: $0.amountCents, date: $0.date) }
+    }
+
+    private var quickItems: [QuickAdd.Item] { QuickAdd.suggestions(from: pastItems) }
+
+    private var noteSuggestions: [QuickAdd.Item] {
+        kind == .spent && editing == nil ? QuickAdd.noteSuggestions(from: pastItems, typed: note, category: category) : []
     }
 
     /// Tapping one fills in the form, so you can still change the amount before saving.
@@ -347,6 +354,38 @@ struct AddExpenseView: View {
                     }
             }
             .frame(height: 50)
+            if !noteSuggestions.isEmpty {
+                // Notes you've typed before: tap to fill in the note, its category and (if empty) its price.
+                ScrollView(.horizontal) {
+                    HStack(spacing: 6) {
+                        ForEach(noteSuggestions) { item in
+                            Button {
+                                withAnimation(.snappy) {
+                                    note = item.note
+                                    category = item.category
+                                    if amountCents == nil {
+                                        inRiel = false
+                                        amountText = String(format: "%.2f", Double(item.cents) / 100)
+                                    }
+                                }
+                            } label: {
+                                HStack(spacing: 6) {
+                                    Image(systemName: item.category.symbol).font(.caption2.weight(.bold)).foregroundStyle(item.category.color)
+                                    Text(verbatim: item.note).font(.footnote.weight(.semibold)).lineLimit(1)
+                                    Text(Money.format(item.cents, alwaysShowCents: true)).font(.caption).foregroundStyle(Theme.secondary)
+                                }
+                                .padding(.horizontal, 10).frame(height: 32)
+                                .background(Theme.ink.opacity(0.06), in: Capsule())
+                            }
+                            .buttonStyle(.pressable)
+                            .accessibilityLabel(Text("Use \(item.note)"))
+                        }
+                    }
+                }
+                .scrollIndicators(.hidden)
+                .padding(.bottom, 8)
+                .transition(.opacity)
+            }
             Divider().overlay(Theme.ink.opacity(0.16))
             DatePicker("Date", selection: $date, in: ...Date.now.addingTimeInterval(86_400))
                 .frame(height: 50)

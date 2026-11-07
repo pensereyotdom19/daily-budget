@@ -18,9 +18,10 @@ enum ReminderPlanner {
         var weeklyOn = false
         var expiryOn = false
         var subscriptionsOn = false
+        var recapOn = false
         static let billMinutes = 9 * 60
         static let weeklyMinutes = 19 * 60
-        var anyOn: Bool { morningOn || eveningOn || billsOn || weeklyOn || expiryOn || subscriptionsOn }
+        var anyOn: Bool { morningOn || eveningOn || billsOn || weeklyOn || expiryOn || subscriptionsOn || recapOn }
     }
 
     struct BillDue {
@@ -32,7 +33,7 @@ enum ReminderPlanner {
         var dueDay: Int? = nil
     }
 
-    enum Kind: String { case morning, evening, billsDue, billsUnpaid, weekly, expiry, renewal }
+    enum Kind: String { case morning, evening, billsDue, billsUnpaid, weekly, expiry, renewal, recap }
 
     struct Renewal {
         var id: UUID
@@ -165,6 +166,32 @@ enum ReminderPlanner {
                                     title: String(localized: "\(r.name) renews soon", bundle: AppLanguage.bundle),
                                     body: String(localized: "\(Money.format(r.cents, alwaysShowCents: true)) on \(when). Cancel before then if you don't need it.", bundle: AppLanguage.bundle)))
             }
+        }
+
+        // 9 AM on the 1st: how the month that just ended went (as of the last time the app was used).
+        if settings.recapOn,
+           let monthStart = cal.dateInterval(of: .month, for: now)?.start,
+           let nextFirst = cal.date(byAdding: .month, value: 1, to: monthStart),
+           planMonths.contains(MonthKey.key(for: now, calendar: cal)),
+           let fire = at(nextFirst, Settings.billMinutes), fire > now {
+            let budget = calculator.livingBudget(inMonthOf: now)
+            let left = calculator.monthLeftCents(inMonthOf: now)
+            var counted = 0, onBudget = 0
+            var day = cal.startOfDay(for: max(monthStart, streakStart))
+            let lastDay = cal.date(byAdding: .day, value: -1, to: nextFirst)!
+            while day <= lastDay {
+                counted += 1
+                if !calculator.summary(on: day).isOver { onBudget += 1 }
+                day = cal.date(byAdding: .day, value: 1, to: day)!
+            }
+            let name = MonthKey.title(of: MonthKey.key(for: now, calendar: cal), calendar: cal)
+            let spent = Money.format(budget - left, alwaysShowCents: true)
+            let saved = left >= 0
+                ? String(localized: "and saved \(Money.format(left, alwaysShowCents: true)) to emergency savings", bundle: AppLanguage.bundle)
+                : String(localized: "and went \(Money.format(-left, alwaysShowCents: true)) over", bundle: AppLanguage.bundle)
+            out.append(Reminder(id: "recap-\(MonthKey.key(for: now, calendar: cal))", kind: .recap, fireDate: fire,
+                                title: String(localized: "\(name) in review", bundle: AppLanguage.bundle),
+                                body: String(localized: "You spent \(spent) of \(Money.format(budget)) everyday money \(saved). \(onBudget) of \(counted) days on budget.", bundle: AppLanguage.bundle)))
         }
 
         return out.sorted { $0.fireDate < $1.fireDate }

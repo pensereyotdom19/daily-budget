@@ -133,7 +133,6 @@ struct RecurringEditor: View {
                 active = r.isActive
             }
         }
-        .preferredColorScheme(.light)
         .presentationDetents([.large])
     }
 

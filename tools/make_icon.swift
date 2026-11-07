@@ -1,67 +1,57 @@
 import AppKit
-// Regenerate: swift tools/make_icon.swift DailyBudget/Assets.xcassets/AppIcon.appiconset/AppIcon.png
 import CoreGraphics
 import CoreText
+// Draws the Daily Budget app icons in the "Ledger" style (1024×1024, opaque):
+//   swift tools/make_icon.swift DailyBudget/Assets.xcassets/AppIcon.appiconset
+// writes AppIcon.png (paper), AppIcon-Dark.png (night) and AppIcon-Tinted.png (grey, for tinted home screens).
 
-// Draws the Daily Budget app icon (1024x1024, opaque) in the app's theme.
 let size = 1024
-let out = CommandLine.arguments[1]
+let folder = CommandLine.arguments[1]
+let S = CGFloat(size)
+let cs = CGColorSpace(name: CGColorSpace.sRGB)!
 
 func rgb(_ hex: UInt32, _ a: CGFloat = 1) -> CGColor {
     CGColor(srgbRed: CGFloat((hex >> 16) & 0xFF) / 255, green: CGFloat((hex >> 8) & 0xFF) / 255,
             blue: CGFloat(hex & 0xFF) / 255, alpha: a)
 }
 
-let cs = CGColorSpace(name: CGColorSpace.sRGB)!
-let ctx = CGContext(data: nil, width: size, height: size, bitsPerComponent: 8, bytesPerRow: 0,
-                    space: cs, bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue)!
-let S = CGFloat(size)
+func draw(paper: UInt32, ink: UInt32, accent: UInt32, rule: UInt32, to name: String) {
+    let ctx = CGContext(data: nil, width: size, height: size, bitsPerComponent: 8, bytesPerRow: 0,
+                        space: cs, bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue)!
+    ctx.setFillColor(rgb(paper)); ctx.fill(CGRect(x: 0, y: 0, width: S, height: S))
 
-// Background: Theme.base
-ctx.setFillColor(rgb(0x040509)); ctx.fill(CGRect(x: 0, y: 0, width: S, height: S))
+    // Faint ledger lines across the page (CG origin is bottom-left).
+    ctx.setStrokeColor(rgb(rule)); ctx.setLineWidth(S * 0.006)
+    for i in 1...6 {
+        let y = S * (0.14 + CGFloat(i) * 0.12)
+        ctx.move(to: CGPoint(x: 0, y: y)); ctx.addLine(to: CGPoint(x: S, y: y))
+    }
+    ctx.strokePath()
+    // A red margin line, like a ledger page.
+    ctx.setStrokeColor(rgb(accent, 0.55)); ctx.setLineWidth(S * 0.008)
+    ctx.move(to: CGPoint(x: S * 0.2, y: 0)); ctx.addLine(to: CGPoint(x: S * 0.2, y: S)); ctx.strokePath()
 
-// Soft glows (violet top-left, pink right, teal bottom-left). CG origin is bottom-left.
-func glow(_ hex: UInt32, _ alpha: CGFloat, _ cx: CGFloat, _ cy: CGFloat, _ r: CGFloat) {
-    let g = CGGradient(colorsSpace: cs, colors: [rgb(hex, alpha), rgb(hex, 0)] as CFArray, locations: [0, 1])!
-    ctx.drawRadialGradient(g, startCenter: CGPoint(x: cx, y: cy), startRadius: 0,
-                           endCenter: CGPoint(x: cx, y: cy), endRadius: r, options: [])
+    // A big serif "$" in ink.
+    let base = NSFont.systemFont(ofSize: S * 0.56, weight: .semibold)
+    let font = base.fontDescriptor.withDesign(.serif).flatMap { NSFont(descriptor: $0, size: S * 0.56) } ?? base
+    let attr = NSAttributedString(string: "$", attributes: [.font: font, .foregroundColor: NSColor(cgColor: rgb(ink))!])
+    let line = CTLineCreateWithAttributedString(attr)
+    let b = CTLineGetImageBounds(line, ctx)
+    ctx.textPosition = CGPoint(x: S * 0.56 - b.midX, y: S * 0.55 - b.midY)
+    CTLineDraw(line, ctx)
+
+    // A double rule under it, like a total.
+    ctx.setStrokeColor(rgb(ink)); ctx.setLineWidth(S * 0.016)
+    for y in [S * 0.20, S * 0.165] {
+        ctx.move(to: CGPoint(x: S * 0.3, y: y)); ctx.addLine(to: CGPoint(x: S * 0.82, y: y))
+    }
+    ctx.strokePath()
+
+    let rep = NSBitmapImageRep(cgImage: ctx.makeImage()!)
+    try! rep.representation(using: .png, properties: [:])!.write(to: URL(fileURLWithPath: "\(folder)/\(name)"))
+    print("wrote \(name)")
 }
-glow(0x7B5CFF, 0.55, S * 0.18, S * 0.86, S * 0.62)
-glow(0xFF5E8A, 0.30, S * 0.92, S * 0.55, S * 0.50)
-glow(0x12B5A2, 0.45, S * 0.20, S * 0.08, S * 0.62)
 
-let center = CGPoint(x: S / 2, y: S / 2)
-let radius = S * 0.30
-let line = S * 0.085
-
-// Ring track
-ctx.setLineWidth(line); ctx.setLineCap(.round)
-ctx.setStrokeColor(rgb(0xFFFFFF, 0.16))
-ctx.addArc(center: center, radius: radius, startAngle: 0, endAngle: .pi * 2, clockwise: false)
-ctx.strokePath()
-
-// Progress arc (about 3/4 left), mint -> sky gradient, starting at 12 o'clock going clockwise.
-let start = CGFloat.pi / 2
-let end = start - CGFloat.pi * 2 * 0.75
-let arc = CGMutablePath()
-arc.addArc(center: center, radius: radius, startAngle: start, endAngle: end, clockwise: true)
-let stroked = arc.copy(strokingWithWidth: line, lineCap: .round, lineJoin: .round, miterLimit: 10)
-ctx.saveGState()
-ctx.addPath(stroked); ctx.clip()
-let ringGrad = CGGradient(colorsSpace: cs, colors: [rgb(0x7CF2A0), rgb(0x5FD0FF)] as CFArray, locations: [0, 1])!
-ctx.drawLinearGradient(ringGrad, start: CGPoint(x: S * 0.2, y: S * 0.8), end: CGPoint(x: S * 0.8, y: S * 0.2), options: [])
-ctx.restoreGState()
-
-// "$" in SF Rounded heavy, centered
-let base = NSFont.systemFont(ofSize: S * 0.34, weight: .heavy)
-let font = base.fontDescriptor.withDesign(.rounded).flatMap { NSFont(descriptor: $0, size: S * 0.34) } ?? base
-let attr = NSAttributedString(string: "$", attributes: [.font: font, .foregroundColor: NSColor.white])
-let ctLine = CTLineCreateWithAttributedString(attr)
-let bounds = CTLineGetImageBounds(ctLine, ctx)
-ctx.textPosition = CGPoint(x: center.x - bounds.midX, y: center.y - bounds.midY)
-CTLineDraw(ctLine, ctx)
-
-let img = ctx.makeImage()!
-let rep = NSBitmapImageRep(cgImage: img)
-try! rep.representation(using: .png, properties: [:])!.write(to: URL(fileURLWithPath: out))
-print("wrote \(out)")
+draw(paper: 0xF7F3EA, ink: 0x1E2A3A, accent: 0x8A2E2E, rule: 0xE2D9C6, to: "AppIcon.png")
+draw(paper: 0x121A24, ink: 0xEFE7D6, accent: 0xE59A86, rule: 0x223040, to: "AppIcon-Dark.png")
+draw(paper: 0x000000, ink: 0xF2F2F2, accent: 0x8C8C8C, rule: 0x262626, to: "AppIcon-Tinted.png")

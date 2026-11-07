@@ -13,6 +13,7 @@ struct RemindersCard: View {
     @AppStorage(ReminderPrefs.weeklyOn) private var weeklyOn = false
     @AppStorage(ReminderPrefs.expiryOn) private var expiryOn = false
     @AppStorage(ReminderPrefs.subscriptionsOn) private var subscriptionsOn = false
+    @AppStorage(ReminderPrefs.recapOn) private var recapOn = false
     @State private var denied = false
 
     var body: some View {
@@ -32,6 +33,10 @@ struct RemindersCard: View {
             row(symbol: "repeat.circle.fill", color: Theme.mint, title: "Subscriptions",
                 detail: "Two days before each renewal, so you can cancel in time.",
                 isOn: $subscriptionsOn, minutes: nil)
+            divider
+            row(symbol: "book.closed.fill", color: Theme.violet, title: "Month-end recap",
+                detail: "On the 1st: what you spent, what you saved, days on budget.",
+                isOn: $recapOn, minutes: nil)
             divider
             row(symbol: "calendar.badge.checkmark", color: Theme.sky, title: "Weekly summary",
                 detail: "Sunday 7 PM: what you spent and how many days were on budget.",
@@ -63,6 +68,7 @@ struct RemindersCard: View {
         .onChange(of: weeklyOn) { _, on in switched(on) { weeklyOn = false } }
         .onChange(of: expiryOn) { _, on in switched(on) { expiryOn = false } }
         .onChange(of: subscriptionsOn) { _, on in switched(on) { subscriptionsOn = false } }
+        .onChange(of: recapOn) { _, on in switched(on) { recapOn = false } }
         .onChange(of: eveningMinutes) { AppRefresh.run(context: context) }
         .onChange(of: morningMinutes) { AppRefresh.run(context: context) }
         .animation(.snappy, value: eveningOn)
