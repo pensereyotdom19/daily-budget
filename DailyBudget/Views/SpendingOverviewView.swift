@@ -15,6 +15,8 @@ struct SpendingOverviewView: View {
     @Query(sort: \Bill.sortOrder) private var bills: [Bill]
     @State private var editing: Expense?
     @State private var categoryFilter: Category?
+    /// The day opened in "All expenses" (one at a time).
+    @State private var openDay: Date?
 
     private var settings: BudgetSettings? { settingsList.first }
     private var currentMonth: String { MonthKey.key(for: .now) }
@@ -55,6 +57,7 @@ struct SpendingOverviewView: View {
     }
 
     var body: some View {
+        ScrollViewReader { proxy in
         ScrollView {
             VStack(spacing: 14) {
                 ScreenHeader(caption: rangeCaption, title: "Spent so far")
@@ -62,13 +65,22 @@ struct SpendingOverviewView: View {
                 whereItWentCard
                 if !categoryTotals.isEmpty { categoriesCard }
                 if !biggest.isEmpty { biggestCard }
-                allExpensesSection
+                allExpensesSection.id("all")
             }
             .padding(.horizontal, 18)
             .padding(.top, 4)
             .padding(.bottom, 110)
         }
         .scrollIndicators(.hidden)
+        #if DEBUG
+        // Screenshots only: launch with `-scrollToAll YES`.
+        .task {
+            guard UserDefaults.standard.bool(forKey: "scrollToAll") else { return }
+            try? await Task.sleep(for: .milliseconds(600))
+            proxy.scrollTo("all", anchor: .top)
+        }
+        #endif
+        }
         .background(GlowBackground())
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.visible, for: .navigationBar)
@@ -263,8 +275,20 @@ struct SpendingOverviewView: View {
         return expenses.filter { $0.category == categoryFilter }
     }
 
+    /// Each day of a month up to today (from the first day you used the app), newest first.
+    private func daySummaries(of month: String, _ calc: BudgetCalculator) -> [BudgetCalculator.DaySummary] {
+        guard let first = MonthKey.firstDay(of: month),
+              let last = Calendar.current.date(byAdding: DateComponents(month: 1, day: -1), to: first) else { return [] }
+        let end = min(last, Date.now)
+        guard end >= first else { return [] }
+        let start = Calendar.current.startOfDay(for: settings?.streakStartDate ?? first)
+        return calc.daySummaries(inMonthOf: end).filter { $0.day >= start }
+    }
+
     private var allExpensesSection: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        let calc = self.calc
+        let byDay = Dictionary(grouping: expenses) { Calendar.current.startOfDay(for: $0.date) }
+        return VStack(alignment: .leading, spacing: 10) {
             HStack {
                 Text("All expenses").font(.title3.weight(.bold))
                 Spacer()
@@ -312,19 +336,34 @@ struct SpendingOverviewView: View {
                         }
                         .buttonStyle(.pressable)
                         .accessibilityHint("Opens \(MonthKey.title(of: month))")
-                        VStack(spacing: 0) {
-                            ForEach(items) { e in
-                                expenseButton(e, showDate: true)
-                                if e.id != items.last?.id { Divider().overlay(Theme.ink.opacity(0.14)) }
+                        if categoryFilter == nil {
+                            // Same as History's "day by day": a one-line summary per day; tap to see the expenses.
+                            let days = daySummaries(of: month, calc)
+                            VStack(spacing: 0) {
+                                ForEach(days) { day in
+                                    DaySummaryRow(day: day, items: byDay[day.day] ?? [], isOpen: openDay == day.day) {
+                                        withAnimation(.snappy) { openDay = openDay == day.day ? nil : day.day }
+                                    }
+                                    if day.id != days.last?.id { Divider().overlay(Theme.ink.opacity(0.12)) }
+                                }
                             }
+                            .padding(.horizontal, 14).padding(.vertical, 4)
+                            .glassCard(radius: 22)
+                        } else {
+                            VStack(spacing: 0) {
+                                ForEach(items) { e in
+                                    expenseButton(e, showDate: true)
+                                    if e.id != items.last?.id { Divider().overlay(Theme.ink.opacity(0.14)) }
+                                }
+                            }
+                            .padding(.horizontal, 14).padding(.vertical, 2)
+                            .glassCard(radius: 22)
                         }
-                        .padding(.horizontal, 14).padding(.vertical, 2)
-                        .glassCard(radius: 22)
                     }
                 }
             }
             if !filtered.isEmpty {
-                Text("Tap an expense to edit it. Press and hold to delete.")
+                Text(categoryFilter == nil ? "Tap a day to see what you spent." : "Tap an expense to edit it. Press and hold to delete.")
                     .font(.caption).foregroundStyle(Theme.secondary)
                     .frame(maxWidth: .infinity)
             }
