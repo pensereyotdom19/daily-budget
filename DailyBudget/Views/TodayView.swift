@@ -56,6 +56,8 @@ struct TodayView: View {
     }
 
     var body: some View {
+        // Built once per redraw; every card below reads from it.
+        let calc = self.calc
         let today = calc.summary(on: .now)
         let streak = calc.streak(endingOn: .now, since: settings?.streakStartDate ?? .now)
 

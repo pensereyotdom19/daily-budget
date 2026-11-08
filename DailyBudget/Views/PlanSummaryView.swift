@@ -16,6 +16,7 @@ struct PlanSummaryView: View {
     private var ended: Bool { BudgetCalculator.planHasEnded(planMonths: months, today: .now) }
 
     var body: some View {
+        let calc = self.calc
         let s = calc.planSummary(planMonths: months, today: .now, streakStart: settings?.streakStartDate ?? .now)
         let savings = settings?.savingsCents(calc, incomes: incomes) ?? 0
         ScrollView {
@@ -24,7 +25,7 @@ struct PlanSummaryView: View {
                 daysCard(s)
                 HStack(spacing: 12) {
                     tile("Spent", Money.format(s.totalSpentCents, alwaysShowCents: true),
-                         "of \(Money.format(settings?.totalCents ?? 0)) total", .white)
+                         "of \(Money.format(settings?.totalCents ?? 0)) total", Theme.ink)
                     tile("Saved", Money.format(savings, alwaysShowCents: true), "emergency savings", Theme.sky)
                 }
                 VStack(spacing: 0) {

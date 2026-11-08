@@ -34,6 +34,9 @@ struct HistoryView: View {
     @State private var openDay: Date?
 
     var body: some View {
+        // Built once per redraw and shared by every card below.
+        let calc = self.calc
+        let monthly = calc.monthlySpending(months: historyMonths)
         NavigationStack(path: $path) {
             ScrollView {
                 VStack(spacing: 14) {
@@ -48,14 +51,14 @@ struct HistoryView: View {
                         .buttonStyle(.pressable)
                         .accessibilityLabel("Search expenses")
                     }
-                    NavigationLink(value: SpendingRoute()) { overviewCard }
+                    NavigationLink(value: SpendingRoute()) { overviewCard(calc) }
                         .buttonStyle(.pressable)
                         .accessibilityHint("Shows where your money went")
-                    TrendCard(months: calc.monthlySpending(months: historyMonths),
+                    TrendCard(months: monthly,
                               budget: { key in MonthKey.firstDay(of: key).map { calc.livingBudget(inMonthOf: $0) } ?? living },
                               currentMonth: currentMonth)
-                    monthsSection
-                    daysSection
+                    monthsSection(monthly)
+                    daysSection(calc)
                 }
                 .padding(.horizontal, 18)
                 .padding(.top, 12)
@@ -85,14 +88,15 @@ struct HistoryView: View {
 
     // MARK: - Overview
 
-    private var overviewCard: some View {
+    private func overviewCard(_ calc: BudgetCalculator) -> some View {
         let soFar = planMonths.filter { $0 <= currentMonth }
-        let spent = calc.monthlySpending(months: soFar).reduce(0) { $0 + $1.totalCents }
+        let soFarSpending = calc.monthlySpending(months: soFar)
+        let spent = soFarSpending.reduce(0) { $0 + $1.totalCents }
         let plannedSoFar = soFar.reduce(0) { $0 + planned($1) }
         let diff = plannedSoFar - spent
         let saved = settings?.savingsCents(calc, incomes: incomes) ?? 0
         let finished = soFar.filter { $0 < currentMonth }
-        let finishedSpent = calc.monthlySpending(months: finished).reduce(0) { $0 + $1.totalCents }
+        let finishedSpent = soFarSpending.filter { finished.contains($0.monthKey) }.reduce(0) { $0 + $1.totalCents }
         return VStack(alignment: .leading, spacing: 14) {
             VStack(alignment: .leading, spacing: 2) {
                 HStack {
@@ -136,9 +140,8 @@ struct HistoryView: View {
 
     // MARK: - Month by month
 
-    private var monthsSection: some View {
-        let data = calc.monthlySpending(months: historyMonths)
-        return VStack(alignment: .leading, spacing: 10) {
+    private func monthsSection(_ data: [BudgetCalculator.MonthSpending]) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
             HStack(alignment: .firstTextBaseline) {
                 Text("Month by month").font(.title3.weight(.bold))
                 Spacer()
@@ -179,13 +182,15 @@ struct HistoryView: View {
     // MARK: - This month, day by day
 
     /// Days of this month from the first day the app was used, newest first.
-    private var days: [BudgetCalculator.DaySummary] {
+    private func days(_ calc: BudgetCalculator) -> [BudgetCalculator.DaySummary] {
         let start = Calendar.current.startOfDay(for: settings?.streakStartDate ?? .now)
         return calc.daySummaries(inMonthOf: .now).filter { $0.day >= start }
     }
 
-    private var daysSection: some View {
-        VStack(alignment: .leading, spacing: 10) {
+    private func daysSection(_ calc: BudgetCalculator) -> some View {
+        let list = days(calc)
+        let byDay = Dictionary(grouping: expenses) { Calendar.current.startOfDay(for: $0.date) }
+        return VStack(alignment: .leading, spacing: 10) {
             HStack(alignment: .firstTextBaseline) {
                 Text("\(MonthKey.title(of: currentMonth)), day by day").font(.title3.weight(.bold))
                 Spacer()
@@ -194,13 +199,13 @@ struct HistoryView: View {
             .padding(.horizontal, 4)
             .padding(.top, 6)
             VStack(spacing: 0) {
-                ForEach(days) { day in
+                ForEach(list) { day in
                     DaySummaryRow(day: day,
-                                  items: expenses.filter { Calendar.current.isDate($0.date, inSameDayAs: day.day) },
+                                  items: byDay[day.day] ?? [],
                                   isOpen: openDay == day.day) {
                         withAnimation(.snappy) { openDay = openDay == day.day ? nil : day.day }
                     }
-                    if day.id != days.last?.id { Divider().overlay(Theme.ink.opacity(0.12)) }
+                    if day.id != list.last?.id { Divider().overlay(Theme.ink.opacity(0.12)) }
                 }
             }
             .padding(.horizontal, 14).padding(.vertical, 4)

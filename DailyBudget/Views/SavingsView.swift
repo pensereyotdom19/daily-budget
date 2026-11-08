@@ -164,7 +164,7 @@ struct SavingsView: View {
         .accessibilityHint("Shows engagement spending")
     }
 
-    private func stat(_ title: LocalizedStringKey, _ cents: Int, color: Color = .white) -> some View {
+    private func stat(_ title: LocalizedStringKey, _ cents: Int, color: Color = Theme.ink) -> some View {
         VStack(alignment: .leading, spacing: 1) {
             Text(title).font(.caption.weight(.semibold)).foregroundStyle(Theme.secondary)
             Text(Money.format(cents, alwaysShowCents: true)).font(Theme.rounded(18)).foregroundStyle(color)

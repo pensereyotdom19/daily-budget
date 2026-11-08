@@ -37,7 +37,10 @@ struct MonthDetailView: View {
     private var billsPlanned: Int { dueBills.reduce(0) { $0 + $1.amountCents } }
 
     private var monthExpenses: [Expense] {
-        allExpenses.filter { MonthKey.key(for: $0.date) == monthKey }
+        // Compare against the month's dates (cheap) rather than formatting a key for every expense.
+        guard let first = MonthKey.firstDay(of: monthKey),
+              let month = Calendar.current.dateInterval(of: .month, for: first) else { return [] }
+        return allExpenses.filter { $0.date >= month.start && $0.date < month.end }
     }
 
     /// Each day of this month up to today (from the first day you used the app), newest first.
@@ -278,7 +281,11 @@ struct MonthDetailView: View {
     }
 
     private var expensesSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        // Worked out once here, not again for every row.
+        let daySummaries = self.daySummaries
+        let days = self.days
+        let byDay = Dictionary(grouping: monthExpenses) { Calendar.current.startOfDay(for: $0.date) }
+        return VStack(alignment: .leading, spacing: 8) {
             HStack {
                 Text("Expenses").font(.title3.weight(.bold))
                 Spacer()
@@ -312,7 +319,7 @@ struct MonthDetailView: View {
                 VStack(spacing: 0) {
                     ForEach(daySummaries) { day in
                         DaySummaryRow(day: day,
-                                      items: monthExpenses.filter { Calendar.current.isDate($0.date, inSameDayAs: day.day) },
+                                      items: byDay[day.day] ?? [],
                                       isOpen: openDay == day.day) {
                             withAnimation(.snappy) { openDay = openDay == day.day ? nil : day.day }
                         }

@@ -105,7 +105,7 @@ struct SpendingOverviewView: View {
             HStack(spacing: 10) {
                 stat(diff >= 0 ? "Under plan" : "Over plan", Money.format(abs(diff), alwaysShowCents: true),
                      diff >= 0 ? Theme.mint : Theme.warn)
-                stat("Everyday / day", Money.format(livingSpent / daysSoFar, alwaysShowCents: true), .white)
+                stat("Everyday / day", Money.format(livingSpent / daysSoFar, alwaysShowCents: true), Theme.ink)
                 stat("Saved", Money.format(saved, alwaysShowCents: true), Theme.sky)
             }
         }

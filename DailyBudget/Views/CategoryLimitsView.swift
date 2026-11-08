@@ -17,6 +17,7 @@ struct CategoryLimitsView: View {
     private var calc: BudgetCalculator { BudgetCalculator(expenses: expenses, settings: settings, incomes: incomes) }
 
     var body: some View {
+        let calc = self.calc
         ScrollView {
             VStack(alignment: .leading, spacing: 14) {
                 ScreenHeader(caption: "Every month", title: "Category limits")
@@ -25,7 +26,7 @@ struct CategoryLimitsView: View {
                 VStack(spacing: 0) {
                     ForEach(Category.allCases.filter(\.countsAsLiving)) { c in
                         Button { text = limits[c.rawValue].map { String(format: "%.2f", Double($0) / 100) } ?? ""; editing = c } label: {
-                            row(c)
+                            row(c, calc)
                         }
                         .buttonStyle(.pressable)
                         if c != Category.allCases.filter(\.countsAsLiving).last { Divider().overlay(Theme.ink.opacity(0.14)) }
@@ -51,7 +52,7 @@ struct CategoryLimitsView: View {
         }
     }
 
-    private func row(_ c: Category) -> some View {
+    private func row(_ c: Category, _ calc: BudgetCalculator) -> some View {
         let limit = limits[c.rawValue]
         let spent = calc.spent(category: c.rawValue, inMonthOf: .now)
         return HStack(spacing: 12) {

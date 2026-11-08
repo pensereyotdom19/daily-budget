@@ -39,18 +39,20 @@ struct BudgetCalculator {
         var isOver: Bool { spentCents > limitCents }
     }
 
-    var entries: [Entry]
+    var entries: [Entry] { didSet { livingIndexCache = LivingIndexCache() } }
     var livingMonthlyCents: Int
     var calendar: Calendar = .current
     /// Extra income added to a month's living money, by month key ("2026-11").
     var extraLivingByMonth: [String: Int] = [:]
+    /// Running totals of living spending, built on first use so daily limits and streaks
+    /// don't re-scan every expense for every day. Replaced whenever `entries` changes.
+    var livingIndexCache = LivingIndexCache()
 
     // MARK: - Basic sums
 
     private func livingSpent(from start: Date, to end: Date) -> Int {
-        entries.lazy
-            .filter { $0.countsAsLiving && $0.date >= start && $0.date < end }
-            .reduce(0) { $0 + $1.cents }
+        guard end > start else { return 0 }
+        return livingIndexCache.index(for: entries).sum(from: start, to: end)
     }
 
     private func monthInterval(containing date: Date) -> DateInterval {
@@ -336,5 +338,49 @@ struct BudgetCalculator {
     static func planHasEnded(planMonths: [String], today: Date, calendar: Calendar = .current) -> Bool {
         guard let last = planMonths.last else { return false }
         return MonthKey.key(for: today, calendar: calendar) > last
+    }
+}
+
+/// Living entries sorted by date with running totals, so any "spent between two dates"
+/// is two binary searches instead of a pass over every expense.
+struct LivingIndex {
+    private var dates: [Date] = []
+    /// prefix[i] = total of the first i entries.
+    private var prefix: [Int] = [0]
+
+    init(_ entries: [BudgetCalculator.Entry]) {
+        let living = entries.filter(\.countsAsLiving).sorted { $0.date < $1.date }
+        dates.reserveCapacity(living.count)
+        prefix.reserveCapacity(living.count + 1)
+        for e in living {
+            dates.append(e.date)
+            prefix.append(prefix[prefix.count - 1] + e.cents)
+        }
+    }
+
+    /// Number of entries dated before `date`.
+    private func countBefore(_ date: Date) -> Int {
+        var lo = 0, hi = dates.count
+        while lo < hi {
+            let mid = (lo + hi) / 2
+            if dates[mid] < date { lo = mid + 1 } else { hi = mid }
+        }
+        return lo
+    }
+
+    /// Total of entries with start <= date < end.
+    func sum(from start: Date, to end: Date) -> Int {
+        prefix[countBefore(end)] - prefix[countBefore(start)]
+    }
+}
+
+/// Holds the index once it's built. A class so a calculator can fill it in without being `mutating`.
+final class LivingIndexCache: @unchecked Sendable {
+    private var index: LivingIndex?
+    func index(for entries: [BudgetCalculator.Entry]) -> LivingIndex {
+        if let index { return index }
+        let built = LivingIndex(entries)
+        index = built
+        return built
     }
 }
