@@ -47,6 +47,9 @@ enum Theme {
     static let pink = Color(light: 0x9B3D5C, dark: 0xE29AB3)
     static let violet = Color(light: 0x4B3F8F, dark: 0xB1A6EA)
     /// Main buttons are solid ink (kept as a gradient type so existing call sites work).
+    /// Ledger shapes: square-ish buttons and small tags instead of round pills.
+    static let buttonShape = RoundedRectangle(cornerRadius: 10, style: .continuous)
+    static let chipShape = RoundedRectangle(cornerRadius: 5, style: .continuous)
     static let accentGradient = LinearGradient(colors: [ink, ink], startPoint: .top, endPoint: .bottom)
 
     /// Figures and titles: serif, like a printed ledger.

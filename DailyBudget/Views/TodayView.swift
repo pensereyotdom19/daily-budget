@@ -197,7 +197,7 @@ struct TodayView: View {
                                 .contextMenu {
                                     Button("Edit", systemImage: "pencil") { editing = e }
                                     Button("Delete", systemImage: "trash", role: .destructive) {
-                                        BillPayments.delete(e, in: context)
+                                        DeleteUndo.shared.delete(e, in: context)
                                     }
                                 }
                             if e.id != todaysExpenses.last?.id { Divider().overlay(Theme.ink.opacity(0.14)) }
@@ -313,11 +313,11 @@ struct TodayView: View {
                                 .font(.footnote.weight(.semibold))
                                 .foregroundStyle(s.level == .over ? Theme.warn : Theme.ink)
                             GeometryReader { geo in
-                                Capsule().fill(s.level == .over ? Theme.warn : c.color)
+                                Rectangle().fill(s.level == .over ? Theme.warn : c.color)
                                     .frame(width: geo.size.width * min(1, CGFloat(s.spentCents) / CGFloat(max(1, s.limitCents))))
                             }
                             .frame(height: 5)
-                            .background(Theme.ink.opacity(0.1), in: Capsule())
+                            .background(Theme.ink.opacity(0.1), in: Rectangle())
                         }
                         Image(systemName: "chevron.right").font(.caption2.weight(.bold)).foregroundStyle(Theme.secondary)
                     }
@@ -354,7 +354,7 @@ struct TodayView: View {
                             .font(.system(size: 10, weight: .bold, design: .rounded))
                             .foregroundStyle(Theme.base)
                             .padding(.horizontal, 4).frame(minWidth: 16, minHeight: 16)
-                            .background(Theme.warn, in: Capsule())
+                            .background(Theme.warn, in: Rectangle())
                             .offset(x: 4, y: -4)
                     }
                 }

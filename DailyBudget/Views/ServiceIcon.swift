@@ -73,7 +73,6 @@ struct BrandTile: View {
         .frame(width: size, height: size)
         .background(shape.fill(Color(hex: brand.background)))
         .overlay(shape.strokeBorder(Theme.ink.opacity(0.18), lineWidth: 1))
-        .shadow(color: Color(hex: brand.background).opacity(0.35), radius: size * 0.18, y: size * 0.05)
         .accessibilityHidden(true)
     }
 }

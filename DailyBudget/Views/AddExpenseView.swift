@@ -140,7 +140,7 @@ struct AddExpenseView: View {
             Label(label, systemImage: symbol)
                 .font(.subheadline.weight(.semibold))
                 .frame(maxWidth: .infinity, minHeight: 40)
-                .background(kind == k ? Theme.ink.opacity(0.16) : .clear, in: Capsule())
+                .background(kind == k ? Theme.ink.opacity(0.16) : .clear, in: Theme.chipShape)
                 .foregroundStyle(kind == k ? Theme.ink : Theme.secondary)
         }
         .buttonStyle(.pressable)
@@ -375,7 +375,7 @@ struct AddExpenseView: View {
                                     Text(Money.format(item.cents, alwaysShowCents: true)).font(.caption).foregroundStyle(Theme.secondary)
                                 }
                                 .padding(.horizontal, 10).frame(height: 32)
-                                .background(Theme.ink.opacity(0.06), in: Capsule())
+                                .background(Theme.ink.opacity(0.06), in: Theme.chipShape)
                             }
                             .buttonStyle(.pressable)
                             .accessibilityLabel(Text("Use \(item.note)"))
@@ -400,7 +400,7 @@ struct AddExpenseView: View {
                 .font(.headline)
                 .foregroundStyle(Theme.base)
                 .frame(maxWidth: .infinity, minHeight: 58)
-                .background(Theme.accentGradient, in: Capsule())
+                .background(Theme.ink, in: Theme.buttonShape)
                 .opacity(amountCents == nil ? 0.45 : 1)
         }
         .disabled(amountCents == nil)

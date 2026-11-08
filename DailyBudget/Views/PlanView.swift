@@ -133,7 +133,7 @@ struct PlanView: View {
                 }
             }
             .frame(height: 14)
-            .clipShape(Capsule())
+            .clipShape(Rectangle())
             LazyVGrid(columns: [GridItem(.flexible(), alignment: .leading), GridItem(.flexible(), alignment: .leading)], spacing: 8) {
                 ForEach(parts) { part in
                     HStack(spacing: 7) {
@@ -184,7 +184,7 @@ struct PlanView: View {
                     Label("Summary", systemImage: "chart.pie.fill")
                         .font(.subheadline.weight(.semibold))
                         .frame(maxWidth: .infinity, minHeight: 44)
-                        .background(Theme.ink.opacity(0.1), in: Capsule())
+                        .background(Theme.ink.opacity(0.1), in: Theme.buttonShape)
                 }
                 .buttonStyle(.pressable)
                 Button { startingNewPlan = true } label: {
@@ -193,8 +193,8 @@ struct PlanView: View {
                         .foregroundStyle(ended || lastMonth ? Theme.base : Theme.ink)
                         .frame(maxWidth: .infinity, minHeight: 44)
                         .background {
-                            if ended || lastMonth { Capsule().fill(Theme.accentGradient) }
-                            else { Capsule().fill(Theme.ink.opacity(0.1)) }
+                            if ended || lastMonth { Theme.buttonShape.fill(Theme.ink) }
+                            else { Theme.buttonShape.fill(Theme.ink.opacity(0.1)) }
                         }
                 }
                 .buttonStyle(.pressable)
@@ -272,7 +272,7 @@ struct PlanView: View {
                                 if month == currentMonth {
                                     Text("NOW").font(.caption2.weight(.bold))
                                         .padding(.horizontal, 6).padding(.vertical, 2)
-                                        .background(Theme.mint.opacity(0.25), in: Capsule())
+                                        .background(Theme.mint.opacity(0.25), in: Theme.chipShape)
                                 }
                             }
                             Text(breakdown(due: due, subscriptions: subs, living: living))

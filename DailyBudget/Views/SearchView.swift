@@ -62,7 +62,7 @@ struct SearchView: View {
                             .buttonStyle(.pressable)
                             .contextMenu {
                                 Button("Edit", systemImage: "pencil") { editing = e }
-                                Button("Delete", systemImage: "trash", role: .destructive) { BillPayments.delete(e, in: context) }
+                                Button("Delete", systemImage: "trash", role: .destructive) { DeleteUndo.shared.delete(e, in: context) }
                             }
                             if e.id != results.prefix(200).last?.id { Divider().overlay(Theme.ink.opacity(0.14)) }
                         }

@@ -120,9 +120,9 @@ struct MonthDetailView: View {
             }
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
-                    Capsule().fill(Theme.ink.opacity(0.12))
-                    Capsule()
-                        .fill(over ? AnyShapeStyle(Theme.warn) : AnyShapeStyle(Theme.accentGradient))
+                    Rectangle().fill(Theme.ink.opacity(0.12))
+                    Rectangle()
+                        .fill(over ? AnyShapeStyle(Theme.warn) : AnyShapeStyle(Theme.mint))
                         .frame(width: max(0, geo.size.width * fraction))
                 }
             }
@@ -245,8 +245,8 @@ struct MonthDetailView: View {
                             .frame(width: 78, alignment: .leading)
                         GeometryReader { geo in
                             ZStack(alignment: .leading) {
-                                Capsule().fill(Theme.ink.opacity(0.12))
-                                Capsule().fill(item.category.color)
+                                Rectangle().fill(Theme.ink.opacity(0.12))
+                                Rectangle().fill(item.category.color)
                                     .frame(width: max(6, geo.size.width * CGFloat(item.cents) / CGFloat(maxValue)))
                             }
                         }
@@ -383,7 +383,7 @@ struct MonthDetailView: View {
                             .contextMenu {
                                 Button("Edit", systemImage: "pencil") { editing = e }
                                 Button("Delete", systemImage: "trash", role: .destructive) {
-                                    BillPayments.delete(e, in: context)
+                                    DeleteUndo.shared.delete(e, in: context)
                                 }
                             }
                     }

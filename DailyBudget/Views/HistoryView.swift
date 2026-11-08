@@ -38,6 +38,7 @@ struct HistoryView: View {
         let calc = self.calc
         let monthly = calc.monthlySpending(months: historyMonths)
         NavigationStack(path: $path) {
+            ScrollViewReader { proxy in
             ScrollView {
                 VStack(spacing: 14) {
                     HStack(alignment: .bottom) {
@@ -58,13 +59,22 @@ struct HistoryView: View {
                               budget: { key in MonthKey.firstDay(of: key).map { calc.livingBudget(inMonthOf: $0) } ?? living },
                               currentMonth: currentMonth)
                     monthsSection(monthly)
-                    daysSection(calc)
+                    daysSection(calc).id("days")
                 }
                 .padding(.horizontal, 18)
                 .padding(.top, 12)
                 .padding(.bottom, 110)
             }
             .scrollIndicators(.hidden)
+            #if DEBUG
+            // Screenshots only: launch with `-scrollToDays YES`.
+            .task {
+                guard UserDefaults.standard.bool(forKey: "scrollToDays") else { return }
+                try? await Task.sleep(for: .milliseconds(600))
+                proxy.scrollTo("days", anchor: .top)
+            }
+            #endif
+            }
             .background(GlowBackground())
             .toolbar(.hidden, for: .navigationBar)
             .navigationDestination(for: Date.self) { day in
@@ -198,6 +208,7 @@ struct HistoryView: View {
             }
             .padding(.horizontal, 4)
             .padding(.top, 6)
+            if !list.isEmpty { MonthCalendarCard(month: .now, days: list) }
             VStack(spacing: 0) {
                 ForEach(list) { day in
                     DaySummaryRow(day: day,
@@ -273,23 +284,23 @@ private struct MonthRow: View {
     private func chip(_ text: LocalizedStringKey, _ background: Color) -> some View {
         Text(text).font(.caption2.weight(.bold))
             .padding(.horizontal, 6).padding(.vertical, 2)
-            .background(background, in: Capsule())
+            .background(background, in: Theme.chipShape)
     }
 
     private var bar: some View {
         GeometryReader { geo in
             let scale = geo.size.width / CGFloat(max(1, max(plannedCents, total)))
             ZStack(alignment: .leading) {
-                Capsule().fill(Theme.ink.opacity(stage == .upcoming ? 0.07 : 0.12))
+                Rectangle().fill(Theme.ink.opacity(stage == .upcoming ? 0.07 : 0.12))
                 HStack(spacing: 0) {
                     Rectangle().fill(Theme.mint).frame(width: CGFloat(spending.livingCents) * scale)
                     Rectangle().fill(Category.bills.color).frame(width: CGFloat(spending.billsCents) * scale)
                     Rectangle().fill(Category.engagement.color).frame(width: CGFloat(spending.engagementCents) * scale)
                 }
-                .clipShape(Capsule())
+                .clipShape(Rectangle())
             }
             .overlay {
-                if total > plannedCents { Capsule().strokeBorder(Theme.warn, lineWidth: 1) }
+                if total > plannedCents { Rectangle().strokeBorder(Theme.warn, lineWidth: 1) }
             }
         }
         .frame(height: 8)
@@ -331,7 +342,7 @@ struct StatusBadge: View {
             .font(.caption2.weight(.bold))
             .padding(.horizontal, 9).padding(.vertical, 3)
             .foregroundStyle(isOver ? Color(light: 0x8A2E2E, dark: Color.lightened(0x8A2E2E, by: 0.45)) : Color(light: 0x2F5D4A, dark: Color.lightened(0x2F5D4A, by: 0.45)))
-            .background((isOver ? Color(light: 0xB5651D, dark: Color.lightened(0xB5651D, by: 0.45)).opacity(0.28) : Theme.mint.opacity(0.22)), in: Capsule())
+            .background((isOver ? Color(light: 0xB5651D, dark: Color.lightened(0xB5651D, by: 0.45)).opacity(0.28) : Theme.mint.opacity(0.22)), in: Theme.chipShape)
     }
 }
 
@@ -358,7 +369,7 @@ struct DayDetailView: View {
             }
             .onDelete { offsets in
                 let doomed = offsets.map { items[$0] }
-                for e in doomed { BillPayments.delete(e, in: context) }
+                for e in doomed { DeleteUndo.shared.delete(e, in: context) }
             }
             if items.isEmpty {
                 Text("No expenses on this day.").foregroundStyle(Theme.secondary)

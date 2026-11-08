@@ -241,6 +241,9 @@
         }
       }
     },
+    "%@, %@": {
+      "shouldTranslate": false
+    },
     "%@, %@, %@": {
       "shouldTranslate": false
     },
@@ -343,6 +346,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$lld ក្នុងចំណោម %2$lld"
+          }
+        }
+      }
+    },
+    "%lld on budget · %lld over": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld ក្នុងថវិកា · %2$lld លើស"
           }
         }
       }
@@ -741,6 +754,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "នៅម៉ោង %@។ ដំណើរការពី Xcode លើ Mac ដើម្បីបានថែម ៧ ថ្ងៃ។ ទិន្នន័យនៅដដែល។"
+          }
+        }
+      }
+    },
+    "At a glance": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "មើលរួម"
           }
         }
       }
@@ -1224,6 +1247,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "លុប"
+          }
+        }
+      }
+    },
+    "Deleted %@ %@": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បានលុប %1$@ %2$@"
           }
         }
       }
@@ -2560,6 +2593,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "បិទ ខ្ញុំសម្គាល់ខ្លួនឯង"
+          }
+        }
+      }
+    },
+    "On budget": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ក្នុងថវិកា"
           }
         }
       }

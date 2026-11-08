@@ -57,6 +57,10 @@ KM = {
     "Add %@, %@": "បន្ថែម %1$@, %2$@",
     "Added %@ %@": "បានបន្ថែម %1$@ %2$@",
     "Undo": "ត្រឡប់វិញ",
+    "At a glance": "មើលរួម",
+    "On budget": "ក្នុងថវិកា",
+    "%lld on budget · %lld over": "%1$lld ក្នុងថវិកា · %2$lld លើស",
+    "Deleted %@ %@": "បានលុប %1$@ %2$@",
     "Backing up": "កំពុងបម្រុងទុក",
     "Backup problem": "មានបញ្ហាបម្រុងទុក",
     "%lld changes waiting to back up": "ការផ្លាស់ប្ដូរ %lld កំពុងរង់ចាំបម្រុងទុក",
@@ -496,7 +500,7 @@ KM = {
 }
 
 # Not words (symbols, numbers, placeholders only): keep as they are.
-KEEP = {"Add ${category} to ${applicationName}", "Add ${category} on ${applicationName}", "Log ${category} to ${applicationName}", "Log ${category} on ${applicationName}", "${applicationName} add ${category}", "${applicationName} log ${category}", "I bought ${category} in ${applicationName}", "Spent on ${category} in ${applicationName}", "Add an expense to ${applicationName}", "Add expense in ${applicationName}", "Add expense to ${applicationName}", "Log an expense in ${applicationName}", "Log expense in ${applicationName}", "${applicationName} add expense", "New ${applicationName} expense", "Open the add screen in ${applicationName}", "Log ${category} in ${applicationName}", "Add an expense in ${applicationName}", "Open ${applicationName} to add an expense", "Add ${amount} for ${category}", "Add ${category} in ${applicationName}", "New expense in ${applicationName}", "Daily Budget", "%@ · %@", "%@ %@", "%lld", "+%@", "–", "$", "៛", "0", "0.00", "4100", "", "· %lld", "%@, %@, %@"}
+KEEP = {"Add ${category} to ${applicationName}", "Add ${category} on ${applicationName}", "Log ${category} to ${applicationName}", "Log ${category} on ${applicationName}", "${applicationName} add ${category}", "${applicationName} log ${category}", "I bought ${category} in ${applicationName}", "Spent on ${category} in ${applicationName}", "Add an expense to ${applicationName}", "Add expense in ${applicationName}", "Add expense to ${applicationName}", "Log an expense in ${applicationName}", "Log expense in ${applicationName}", "${applicationName} add expense", "New ${applicationName} expense", "Open the add screen in ${applicationName}", "Log ${category} in ${applicationName}", "Add an expense in ${applicationName}", "Open ${applicationName} to add an expense", "Add ${amount} for ${category}", "Add ${category} in ${applicationName}", "New expense in ${applicationName}", "Daily Budget", "%@ · %@", "%@ %@", "%lld", "+%@", "–", "$", "៛", "0", "0.00", "4100", "", "· %lld", "%@, %@, %@", "%@, %@"}
 
 # Siri's category words (Siri doesn't support Khmer, so they stay English).
 KEEP |= {'doctor', 'top-up', 'breakfast', 'iced coffee', 'something else', 'top up', 'games', 'something', 'bus', 'tuk tuk', 'latte', 'data', 'movie', 'a coffee', 'groceries', 'game', 'medicine', 'gym', 'taxi', 'clothes', 'phone card', 'noodles', 'dinner', 'badminton', 'meal', 'PassApp', 'cinema', 'makeup', 'petrol', 'tea', 'gas', 'phone top-up', 'cosmetics', 'drink', 'rice', 'football', 'fuel', 'karaoke', 'skincare', 'Grab', 'snack', 'lunch', 'pharmacy', 'shoes'}

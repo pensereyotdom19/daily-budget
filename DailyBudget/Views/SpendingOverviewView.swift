@@ -94,9 +94,9 @@ struct SpendingOverviewView: View {
             }
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
-                    Capsule().fill(Theme.ink.opacity(0.12))
-                    Capsule()
-                        .fill(diff < 0 ? AnyShapeStyle(Theme.warn) : AnyShapeStyle(Theme.accentGradient))
+                    Rectangle().fill(Theme.ink.opacity(0.12))
+                    Rectangle()
+                        .fill(diff < 0 ? AnyShapeStyle(Theme.warn) : AnyShapeStyle(Theme.mint))
                         .frame(width: geo.size.width * fraction)
                 }
             }
@@ -144,7 +144,7 @@ struct SpendingOverviewView: View {
                     Spacer(minLength: 0)
                 }
                 .background(Theme.ink.opacity(0.12))
-                .clipShape(Capsule())
+                .clipShape(Rectangle())
             }
             .frame(height: 12)
             .accessibilityHidden(true)
@@ -213,8 +213,8 @@ struct SpendingOverviewView: View {
                             }
                             GeometryReader { geo in
                                 ZStack(alignment: .leading) {
-                                    Capsule().fill(Theme.ink.opacity(0.12))
-                                    Capsule().fill(item.category.color)
+                                    Rectangle().fill(Theme.ink.opacity(0.12))
+                                    Rectangle().fill(item.category.color)
                                         .frame(width: max(6, geo.size.width * CGFloat(item.cents) / CGFloat(maxValue)))
                                 }
                             }
@@ -350,7 +350,7 @@ struct SpendingOverviewView: View {
         .contextMenu {
             Button("Edit", systemImage: "pencil") { editing = e }
             Button("Delete", systemImage: "trash", role: .destructive) {
-                BillPayments.delete(e, in: context)
+                DeleteUndo.shared.delete(e, in: context)
             }
         }
     }

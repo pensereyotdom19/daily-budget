@@ -98,7 +98,7 @@ struct AccountView: View {
                 .font(.headline)
                 .foregroundStyle(Theme.base)
                 .frame(maxWidth: .infinity, minHeight: 54)
-                .background(Theme.accentGradient, in: Capsule())
+                .background(Theme.ink, in: Theme.buttonShape)
                 .opacity(canSignIn ? 1 : 0.45)
             }
             .buttonStyle(.pressable)

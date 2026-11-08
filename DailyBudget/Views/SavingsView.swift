@@ -78,18 +78,18 @@ struct SavingsView: View {
                             GeometryReader { geo in
                                 HStack(spacing: 2) {
                                     if m.leftoverCents > 0 {
-                                        Capsule().fill(Theme.mint)
+                                        Rectangle().fill(Theme.mint)
                                             .frame(width: geo.size.width * CGFloat(m.leftoverCents) / CGFloat(maxValue))
                                     }
                                     if m.incomeCents > 0 {
-                                        Capsule().fill(Theme.sky)
+                                        Rectangle().fill(Theme.sky)
                                             .frame(width: geo.size.width * CGFloat(m.incomeCents) / CGFloat(maxValue))
                                     }
                                     Spacer(minLength: 0)
                                 }
                             }
                             .frame(height: 8)
-                            .background(Theme.ink.opacity(0.08), in: Capsule())
+                            .background(Theme.ink.opacity(0.08), in: Rectangle())
                             Text(note(for: m)).font(.caption).foregroundStyle(Theme.secondary)
                         }
                     }
@@ -146,11 +146,11 @@ struct SavingsView: View {
                     Image(systemName: "chevron.right").font(.caption.weight(.bold)).foregroundStyle(Theme.secondary)
                 }
                 GeometryReader { geo in
-                    Capsule().fill(Category.engagement.color)
+                    Rectangle().fill(Category.engagement.color)
                         .frame(width: max(0, geo.size.width * fraction))
                 }
                 .frame(height: 10)
-                .background(Theme.ink.opacity(0.1), in: Capsule())
+                .background(Theme.ink.opacity(0.1), in: Rectangle())
                 HStack {
                     stat("Used", spent)
                     Spacer()

@@ -30,6 +30,7 @@ struct RootView: View {
     @Environment(AppLock.self) private var lock
     /// Kept by the app, so switching language (which redraws everything) stays on the same tab.
     @Binding var tab: AppTab
+    private var undo = DeleteUndo.shared
     /// For screenshots during development: launch with `-openAdd YES` to start on the + screen.
     @State private var showingAdd = UserDefaults.standard.bool(forKey: "openAdd")
 
@@ -49,6 +50,13 @@ struct RootView: View {
                     .tabLayer(isActive: tab == .settings)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+            if let snap = undo.last {
+                UndoBar(snapshot: snap) { undo.undo(in: context) }
+                    .padding(.bottom, 96)
+                    .id(snap.token)
+                    .zIndex(2)
+            }
 
             FloatingTabBar(tab: $tab, onSelect: switchTo, onAdd: { showingAdd = true })
                 // Stay at the bottom behind the keyboard instead of riding up over the form.

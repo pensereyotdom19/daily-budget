@@ -53,7 +53,7 @@ struct PlanSummaryView: View {
                     Label("Start a new plan", systemImage: "calendar.badge.plus")
                         .font(.headline).foregroundStyle(Theme.base)
                         .frame(maxWidth: .infinity, minHeight: 56)
-                        .background(Theme.accentGradient, in: Capsule())
+                        .background(Theme.ink, in: Theme.buttonShape)
                 }
                 .buttonStyle(.pressable)
                 .padding(.top, 4)
@@ -74,7 +74,7 @@ struct PlanSummaryView: View {
             ZStack {
                 Circle().stroke(Theme.ink.opacity(0.16), lineWidth: 12)
                 Circle().trim(from: 0, to: fraction)
-                    .stroke(Theme.accentGradient, style: StrokeStyle(lineWidth: 12, lineCap: .round))
+                    .stroke(Theme.mint, style: StrokeStyle(lineWidth: 10, lineCap: .butt))
                     .rotationEffect(.degrees(-90))
                 Text("\(Int((fraction * 100).rounded()))%").font(Theme.rounded(24))
             }

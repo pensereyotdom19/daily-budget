@@ -85,7 +85,7 @@ struct ExpenseSwipe: ViewModifier {
 
     private func delete() {
         withAnimation(.snappy) { offset = -500 }
-        BillPayments.delete(expense, in: context)
+        DeleteUndo.shared.delete(expense, in: context)
         done += 1
     }
 
