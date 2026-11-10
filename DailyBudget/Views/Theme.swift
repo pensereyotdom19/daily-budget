@@ -27,6 +27,9 @@ extension Color {
 }
 
 /// "Ledger" look: serif figures and thin ruled lines.
+/// In dark mode the cards are frosted light-blue glass on a navy-to-teal background (like the
+/// web dashboard). What's inside a glass card is drawn in light mode, so it uses the light
+/// colours (dark ink, forest green for good, tomato for over), which read well on light glass.
 /// Light: oat milk paper, forest green for good, tomato red for over.
 /// Dark: midnight navy, powder blue for good, soft tomato for over, sunflower for highlights.
 /// Good and over keep the same meaning in both modes.
@@ -64,12 +67,36 @@ enum Theme {
     }
 }
 
-/// Plain paper background (the name is kept from the earlier glowing look).
+/// Light mode: plain oat paper. Dark mode: midnight navy with soft teal and blue light,
+/// the background the glass cards sit on.
 struct GlowBackground: View {
+    @Environment(\.colorScheme) private var scheme
+
     var body: some View {
-        Theme.base
-            .ignoresSafeArea()
-            .allowsHitTesting(false)
+        ZStack {
+            Theme.base
+            if scheme == .dark {
+                RadialGradient(colors: [Color(hex: 0x2C7A8C, opacity: 0.85), .clear],
+                               center: UnitPoint(x: 0.95, y: 0.0), startRadius: 0, endRadius: 520)
+                RadialGradient(colors: [Color(hex: 0x1B4A7A, opacity: 0.9), .clear],
+                               center: UnitPoint(x: 0.0, y: 1.0), startRadius: 0, endRadius: 560)
+            }
+        }
+        .ignoresSafeArea()
+        .allowsHitTesting(false)
+    }
+}
+
+/// True for views inside a dark-mode glass card (they're drawn in light mode there),
+/// so a card inside a card knows to be glass too.
+private struct OnGlassKey: EnvironmentKey {
+    static let defaultValue = false
+}
+
+extension EnvironmentValues {
+    var onGlass: Bool {
+        get { self[OnGlassKey.self] }
+        set { self[OnGlassKey.self] = newValue }
     }
 }
 
@@ -87,15 +114,32 @@ extension ButtonStyle where Self == PressableButtonStyle {
     static var pressable: PressableButtonStyle { PressableButtonStyle() }
 }
 
-/// A ledger card: lighter paper with a thin ruled border (the name is kept from the glass look).
+/// A card. Light mode: lighter paper with a thin ruled border.
+/// Dark mode: frosted light-blue glass with a soft white edge; the content inside is drawn in
+/// light mode so its text is dark. A card inside a card is a slightly clearer glass.
 struct GlassCard: ViewModifier {
     var radius: CGFloat = 24
+    @Environment(\.colorScheme) private var scheme
+    @Environment(\.onGlass) private var onGlass
 
     func body(content: Content) -> some View {
-        let shape = RoundedRectangle(cornerRadius: min(radius, 14), style: .continuous)
-        content
-            .background(Theme.card, in: shape)
-            .overlay(shape.strokeBorder(Theme.rule, lineWidth: 1))
+        if scheme == .dark || onGlass {
+            let shape = RoundedRectangle(cornerRadius: min(radius, 18), style: .continuous)
+            content
+                .environment(\.colorScheme, .light)
+                .environment(\.onGlass, true)
+                .background {
+                    shape.fill(.ultraThinMaterial).environment(\.colorScheme, .light)
+                        .overlay(shape.fill(Color(hex: onGlass ? 0xF4F8FC : 0xE2EEF8, opacity: onGlass ? 0.7 : 0.86)))
+                }
+                .overlay(shape.strokeBorder(Color.white.opacity(0.55), lineWidth: 1))
+                .shadow(color: .black.opacity(onGlass ? 0.06 : 0.22), radius: onGlass ? 6 : 14, y: onGlass ? 2 : 8)
+        } else {
+            let shape = RoundedRectangle(cornerRadius: min(radius, 14), style: .continuous)
+            content
+                .background(Theme.card, in: shape)
+                .overlay(shape.strokeBorder(Theme.rule, lineWidth: 1))
+        }
     }
 }
 

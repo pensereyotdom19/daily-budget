@@ -142,6 +142,7 @@ struct FloatingTabBar: View {
     var onSelect: (AppTab) -> Void
     var onAdd: () -> Void
     @Namespace private var highlight
+    @Environment(\.colorScheme) private var scheme
 
     var body: some View {
         HStack(spacing: 0) {
@@ -164,9 +165,17 @@ struct FloatingTabBar: View {
         .padding(.top, 6)
         .padding(.bottom, 2)
         .background {
-            Theme.card
-                .overlay(alignment: .top) { Rectangle().fill(Theme.ink).frame(height: 1) }
-                .ignoresSafeArea(edges: .bottom)
+            // Light: paper with an ink rule. Dark: smoky navy glass over the background.
+            if scheme == .dark {
+                Rectangle().fill(.ultraThinMaterial)
+                    .overlay(Color(hex: 0x0A1424, opacity: 0.72))
+                    .overlay(alignment: .top) { Rectangle().fill(Color.white.opacity(0.12)).frame(height: 1) }
+                    .ignoresSafeArea(edges: .bottom)
+            } else {
+                Theme.card
+                    .overlay(alignment: .top) { Rectangle().fill(Theme.ink).frame(height: 1) }
+                    .ignoresSafeArea(edges: .bottom)
+            }
         }
         .sensoryFeedback(.selection, trigger: tab)
     }
