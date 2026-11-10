@@ -54,4 +54,30 @@ final class DeleteUndoTests: XCTestCase {
         DeleteUndo().undo(in: context)
         XCTAssertTrue(allExpenses().isEmpty)
     }
+
+    func testUndoingNewIncomeRemovesIt() {
+        let income = Income(amountCents: 10_000, target: .living, note: "Side job")
+        context.insert(income); try? context.save()
+        let notice = IncomeNotice()
+        notice.show(income)
+        XCTAssertEqual(notice.last?.cents, 10_000)
+        XCTAssertEqual(notice.last?.target, .living)
+        notice.undo(in: context)
+        XCTAssertNil(notice.last)
+        XCTAssertTrue(((try? context.fetch(FetchDescriptor<Income>())) ?? []).isEmpty)
+    }
+
+    func testLivingIncomeShowsUpInTodaysNumbers() {
+        // What Today reads: $100 extra raises this month's living money and the daily limit.
+        let now = Date.now
+        let before = BudgetCalculator(expenses: [], settings: nil, incomes: [])
+        let income = Income(amountCents: 10_000, target: .living, date: now)
+        let after = BudgetCalculator(expenses: [], settings: nil, incomes: [income])
+        XCTAssertEqual(after.livingBudget(inMonthOf: now) - before.livingBudget(inMonthOf: now), 10_000)
+        XCTAssertGreaterThan(after.limitCents(on: now), before.limitCents(on: now))
+        XCTAssertEqual(after.extraLivingByMonth[MonthKey.key(for: now)], 10_000)
+        // Savings income doesn't change the daily limit.
+        let saved = BudgetCalculator(expenses: [], settings: nil, incomes: [Income(amountCents: 10_000, target: .savings, date: now)])
+        XCTAssertEqual(saved.limitCents(on: now), before.limitCents(on: now))
+    }
 }

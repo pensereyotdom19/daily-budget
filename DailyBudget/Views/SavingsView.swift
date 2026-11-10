@@ -190,7 +190,7 @@ struct SavingsView: View {
             } else {
                 VStack(spacing: 0) {
                     ForEach(incomes) { i in
-                        Button { editingIncome = i } label: { IncomeRow(income: i) }
+                        Button { editingIncome = i } label: { IncomeRow(income: i, showDate: true) }
                             .buttonStyle(.pressable)
                             .contextMenu {
                                 Button("Edit", systemImage: "pencil") { editingIncome = i }
@@ -210,23 +210,37 @@ struct SavingsView: View {
     }
 }
 
+/// A row for extra income in lists: green, with a plus. `size` below 36 gives the compact form used inside day rows.
 struct IncomeRow: View {
     let income: Income
+    var size: CGFloat = 40
+    /// The Savings list shows the date; lists that are already one day show only where it went.
+    var showDate = false
+
+    private var compact: Bool { size < 36 }
 
     var body: some View {
-        HStack(spacing: 12) {
-            IncomeIcon(target: income.target, size: 40)
+        HStack(spacing: compact ? 10 : 12) {
+            IncomeIcon(target: income.target, size: size)
             VStack(alignment: .leading, spacing: 1) {
                 Text(income.note.isEmpty ? String(localized: "Extra money", bundle: AppLanguage.bundle) : income.note)
-                    .font(.subheadline.weight(.semibold))
-                Text("\(income.target.title) · \(income.date.formatted(Date.FormatStyle(date: .abbreviated, time: .omitted, locale: AppLanguage.locale)))")
+                    .font(compact ? .footnote.weight(.semibold) : .subheadline.weight(.semibold)).lineLimit(1)
+                if !compact {
+                    Group {
+                        if showDate {
+                            Text("\(income.target.title) · \(income.date.formatted(Date.FormatStyle(date: .abbreviated, time: .omitted, locale: AppLanguage.locale)))")
+                        } else {
+                            Text(income.target.title)
+                        }
+                    }
                     .font(.caption).foregroundStyle(Theme.secondary).lineLimit(1)
+                }
             }
             Spacer()
             Text("+\(Money.format(income.amountCents, alwaysShowCents: true))")
-                .font(Theme.rounded(16)).foregroundStyle(Theme.mint)
+                .font(Theme.rounded(compact ? 14 : 16)).foregroundStyle(Theme.mint)
         }
-        .padding(.vertical, 10)
+        .padding(.vertical, compact ? 0 : 10)
         .contentShape(Rectangle())
     }
 }

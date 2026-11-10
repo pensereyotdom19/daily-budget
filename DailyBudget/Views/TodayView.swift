@@ -11,6 +11,7 @@ struct TodayView: View {
     @Query private var settingsList: [BudgetSettings]
     @Query(sort: \Bill.sortOrder) private var bills: [Bill]
     @State private var editing: Expense?
+    @State private var editingIncome: Income?
     @State private var justAdded: Expense?
     @State private var affording = false
     @State private var addedCount = 0
@@ -20,6 +21,11 @@ struct TodayView: View {
     private var calc: BudgetCalculator { BudgetCalculator(expenses: expenses, settings: settings, incomes: incomes) }
 
     /// Today's expenses, without bill payments (those live in History and the month screens).
+    /// Extra income dated today, shown in green above today's expenses.
+    private var todaysIncomes: [Income] {
+        incomes.filter { Calendar.current.isDateInToday($0.date) }.sorted { $0.date > $1.date }
+    }
+
     private var todaysExpenses: [Expense] {
         expenses.filter { Calendar.current.isDateInToday($0.date) && $0.category != .bills }
     }
@@ -116,7 +122,7 @@ struct TodayView: View {
                     NavigationLink(value: MonthRoute(monthKey: MonthKey.key(for: .now))) {
                         statCard(title: "\(MonthKey.title(of: MonthKey.key(for: .now))) left",
                                  value: Money.format(calc.monthLeftCents(inMonthOf: .now), alwaysShowCents: true),
-                                 note: "of \(Money.format(calc.livingBudget(inMonthOf: .now))) living money",
+                                 note: livingNote(calc),
                                  noteColor: Theme.secondary)
                     }
                     .buttonStyle(.pressable)
@@ -181,7 +187,7 @@ struct TodayView: View {
                     .accessibilityHint("Shows this month's bills")
                 }
 
-                if todaysExpenses.isEmpty {
+                if todaysExpenses.isEmpty && todaysIncomes.isEmpty {
                     Text("Nothing yet today. Tap + to add an expense.")
                         .font(.subheadline)
                         .foregroundStyle(Theme.secondary)
@@ -190,6 +196,18 @@ struct TodayView: View {
                         .glassCard()
                 } else {
                     VStack(spacing: 0) {
+                        ForEach(todaysIncomes) { i in
+                            Button { editingIncome = i } label: { IncomeRow(income: i) }
+                                .buttonStyle(.pressable)
+                                .contextMenu {
+                                    Button("Edit", systemImage: "pencil") { editingIncome = i }
+                                    Button("Delete", systemImage: "trash", role: .destructive) {
+                                        context.delete(i)
+                                        try? context.save()
+                                    }
+                                }
+                            if i.id != todaysIncomes.last?.id || !todaysExpenses.isEmpty { Divider().overlay(Theme.ink.opacity(0.14)) }
+                        }
                         ForEach(todaysExpenses) { e in
                             Button { editing = e } label: { ExpenseRow(expense: e) }
                                 .buttonStyle(.pressable)
@@ -235,6 +253,10 @@ struct TodayView: View {
             AddExpenseView(editing: e)
                 .presentationBackground(Theme.base)
         }
+        .sheet(item: $editingIncome) { i in
+            AddExpenseView(editingIncome: i)
+                .presentationBackground(Theme.base)
+        }
         }
     }
 
@@ -258,6 +280,14 @@ struct TodayView: View {
             .scrollClipDisabled()
         }
         .padding(.top, 2)
+    }
+
+    /// "of $192 living money · +$100 extra" when extra income went into this month.
+    private func livingNote(_ calc: BudgetCalculator) -> LocalizedStringKey {
+        let budget = Money.format(calc.livingBudget(inMonthOf: .now))
+        let extra = calc.extraLivingByMonth[MonthKey.key(for: .now)] ?? 0
+        if extra > 0 { return "of \(budget) · +\(Money.format(extra)) extra" }
+        return "of \(budget) living money"
     }
 
     private func addedToast(_ e: Expense) -> some View {

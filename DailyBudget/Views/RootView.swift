@@ -31,6 +31,7 @@ struct RootView: View {
     /// Kept by the app, so switching language (which redraws everything) stays on the same tab.
     @Binding var tab: AppTab
     private var undo = DeleteUndo.shared
+    private var incomeNotice = IncomeNotice.shared
     /// For screenshots during development: launch with `-openAdd YES` to start on the + screen.
     @State private var showingAdd = UserDefaults.standard.bool(forKey: "openAdd")
 
@@ -51,12 +52,16 @@ struct RootView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
 
-            if let snap = undo.last {
-                UndoBar(snapshot: snap) { undo.undo(in: context) }
-                    .padding(.bottom, 96)
-                    .id(snap.token)
-                    .zIndex(2)
+            VStack(spacing: 8) {
+                if let snap = incomeNotice.last {
+                    IncomeBar(snapshot: snap) { incomeNotice.undo(in: context) }.id(snap.token)
+                }
+                if let snap = undo.last {
+                    UndoBar(snapshot: snap) { undo.undo(in: context) }.id(snap.token)
+                }
             }
+            .padding(.bottom, 96)
+            .zIndex(2)
 
             FloatingTabBar(tab: $tab, onSelect: switchTo, onAdd: { showingAdd = true })
                 // Stay at the bottom behind the keyboard instead of riding up over the form.
@@ -72,6 +77,11 @@ struct RootView: View {
             Seed.insertIfNeeded(into: context)
             #if DEBUG
             SampleData.insertIfRequested(into: context)
+            // Screenshots only: `-showIncomeNotice YES` shows the bar for the newest income.
+            if UserDefaults.standard.bool(forKey: "showIncomeNotice"),
+               let newest = try? context.fetch(FetchDescriptor<Income>(sortBy: [SortDescriptor(\.date, order: .reverse)])).first {
+                IncomeNotice.shared.show(newest)
+            }
             #endif
             BillPayments.sync(in: context)
             BillAutoPay.run(in: context)

@@ -288,6 +288,7 @@ struct SpendingOverviewView: View {
     private var allExpensesSection: some View {
         let calc = self.calc
         let byDay = Dictionary(grouping: expenses) { Calendar.current.startOfDay(for: $0.date) }
+        let incomeByDay = Dictionary(grouping: incomes) { Calendar.current.startOfDay(for: $0.date) }
         return VStack(alignment: .leading, spacing: 10) {
             HStack {
                 Text("All expenses").font(.title3.weight(.bold))
@@ -341,7 +342,7 @@ struct SpendingOverviewView: View {
                             let days = daySummaries(of: month, calc)
                             VStack(spacing: 0) {
                                 ForEach(days) { day in
-                                    DaySummaryRow(day: day, items: byDay[day.day] ?? [], isOpen: openDay == day.day) {
+                                    DaySummaryRow(day: day, items: byDay[day.day] ?? [], incomes: incomeByDay[day.day] ?? [], isOpen: openDay == day.day) {
                                         withAnimation(.snappy) { openDay = openDay == day.day ? nil : day.day }
                                     }
                                     if day.id != days.last?.id { Divider().overlay(Theme.ink.opacity(0.12)) }

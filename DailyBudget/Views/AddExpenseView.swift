@@ -426,7 +426,10 @@ struct AddExpenseView: View {
             i.note = trimmed
             i.date = date
         } else if kind == .income {
-            context.insert(Income(amountCents: cents, target: target, note: trimmed, date: date))
+            let income = Income(amountCents: cents, target: target, note: trimmed, date: date)
+            context.insert(income)
+            try? context.save()
+            IncomeNotice.shared.show(income)
         } else {
             context.insert(Expense(amountCents: cents, category: category, note: trimmed, date: date))
         }
@@ -436,6 +439,15 @@ struct AddExpenseView: View {
 }
 
 extension IncomeTarget {
+    /// What the money did, for the bar shown after saving.
+    var effect: String {
+        switch self {
+        case .living: return String(localized: "Added to this month's everyday money", bundle: AppLanguage.bundle)
+        case .savings: return String(localized: "Added to emergency savings", bundle: AppLanguage.bundle)
+        case .engagement: return String(localized: "Added to the Engagement money", bundle: AppLanguage.bundle)
+        }
+    }
+
     var title: String {
         switch self {
         case .living: return String(localized: "This month's everyday money", bundle: AppLanguage.bundle)
@@ -475,14 +487,14 @@ struct IncomeIcon: View {
     var size: CGFloat = 38
 
     var body: some View {
-        let shape = RoundedRectangle(cornerRadius: size * 0.3, style: .continuous)
+        // Flat, like CategoryIcon: a light tint with the symbol in colour.
+        let shape = RoundedRectangle(cornerRadius: min(10, size * 0.28), style: .continuous)
         Image(systemName: target.symbol)
-            .font(.system(size: size * 0.44, weight: .bold))
-            .foregroundStyle(Theme.base.opacity(0.85))
+            .font(.system(size: size * 0.44, weight: .semibold))
+            .foregroundStyle(target.color)
             .frame(width: size, height: size)
-            .background(shape.fill(LinearGradient(colors: [target.color, target.color.opacity(0.62)],
-                                                  startPoint: .topLeading, endPoint: .bottomTrailing)))
-            .overlay(shape.strokeBorder(Theme.ink.opacity(0.35), lineWidth: 1))
+            .background(shape.fill(target.color.opacity(0.13)))
+            .overlay(shape.strokeBorder(target.color.opacity(0.25), lineWidth: 1))
             .accessibilityHidden(true)
     }
 }

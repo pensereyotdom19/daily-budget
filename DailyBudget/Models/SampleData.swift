@@ -32,6 +32,7 @@ enum SampleData {
             context.insert(Subscription(name: "Claude Pro", amountCents: 2000, cycle: .monthly, nextRenewal: renew))
         }
         context.insert(Income(amountCents: 2000, target: .savings, note: "Gift from mom", date: at(2, 10)))
+        if at(0, 7) <= now { context.insert(Income(amountCents: 10_000, target: .living, note: "Side job", date: at(0, 7))) }
         // Count the whole month so History's calendar and day list have something to show.
         if let settings = try? context.fetch(FetchDescriptor<BudgetSettings>()).first,
            let monthStart = cal.dateInterval(of: .month, for: now)?.start {

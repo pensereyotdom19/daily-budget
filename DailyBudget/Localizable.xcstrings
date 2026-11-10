@@ -598,12 +598,32 @@
         }
       }
     },
+    "Added to emergency savings": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បន្ថែមទៅប្រាក់សន្សំបន្ទាន់"
+          }
+        }
+      }
+    },
     "Added to the Engagement money": {
       "localizations": {
         "km": {
           "stringUnit": {
             "state": "translated",
             "value": "បន្ថែមទៅលុយភ្ជាប់ពាក្យ"
+          }
+        }
+      }
+    },
+    "Added to this month's everyday money": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បន្ថែមទៅលុយចាយប្រចាំថ្ងៃខែនេះ"
           }
         }
       }
@@ -2100,6 +2120,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "លុយ និងសុវត្ថិភាព"
+          }
+        }
+      }
+    },
+    "Money in": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "លុយចូល"
           }
         }
       }
@@ -4377,6 +4407,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "ក្នុងចំណោមសរុប %@"
+          }
+        }
+      }
+    },
+    "of %@ · +%@ extra": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ក្នុងចំណោម %1$@ · បន្ថែម +%2$@"
           }
         }
       }

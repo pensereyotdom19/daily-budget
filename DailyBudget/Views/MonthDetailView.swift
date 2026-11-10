@@ -285,6 +285,7 @@ struct MonthDetailView: View {
         let daySummaries = self.daySummaries
         let days = self.days
         let byDay = Dictionary(grouping: monthExpenses) { Calendar.current.startOfDay(for: $0.date) }
+        let incomeByDay = Dictionary(grouping: incomes) { Calendar.current.startOfDay(for: $0.date) }
         return VStack(alignment: .leading, spacing: 8) {
             HStack {
                 Text("Expenses").font(.title3.weight(.bold))
@@ -320,6 +321,7 @@ struct MonthDetailView: View {
                     ForEach(daySummaries) { day in
                         DaySummaryRow(day: day,
                                       items: byDay[day.day] ?? [],
+                                      incomes: incomeByDay[day.day] ?? [],
                                       isOpen: openDay == day.day) {
                             withAnimation(.snappy) { openDay = openDay == day.day ? nil : day.day }
                         }

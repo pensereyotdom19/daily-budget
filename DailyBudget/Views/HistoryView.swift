@@ -200,6 +200,7 @@ struct HistoryView: View {
     private func daysSection(_ calc: BudgetCalculator) -> some View {
         let list = days(calc)
         let byDay = Dictionary(grouping: expenses) { Calendar.current.startOfDay(for: $0.date) }
+        let incomeByDay = Dictionary(grouping: incomes) { Calendar.current.startOfDay(for: $0.date) }
         return VStack(alignment: .leading, spacing: 10) {
             HStack(alignment: .firstTextBaseline) {
                 Text("\(MonthKey.title(of: currentMonth)), day by day").font(.title3.weight(.bold))
@@ -213,6 +214,7 @@ struct HistoryView: View {
                 ForEach(list) { day in
                     DaySummaryRow(day: day,
                                   items: byDay[day.day] ?? [],
+                                  incomes: incomeByDay[day.day] ?? [],
                                   isOpen: openDay == day.day) {
                         withAnimation(.snappy) { openDay = openDay == day.day ? nil : day.day }
                     }
@@ -353,14 +355,36 @@ struct DayDetailView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @Query(sort: \Expense.date, order: .reverse) private var expenses: [Expense]
+    @Query(sort: \Income.date, order: .reverse) private var allIncomes: [Income]
     @State private var editing: Expense?
+    @State private var editingIncome: Income?
 
     private var items: [Expense] {
         expenses.filter { Calendar.current.isDate($0.date, inSameDayAs: day) }
     }
 
+    private var dayIncomes: [Income] {
+        allIncomes.filter { Calendar.current.isDate($0.date, inSameDayAs: day) }
+    }
+
     var body: some View {
         List {
+            if !dayIncomes.isEmpty {
+                Section {
+                    ForEach(dayIncomes) { i in
+                        Button { editingIncome = i } label: { IncomeRow(income: i) }
+                            .buttonStyle(.pressable)
+                            .listRowBackground(Theme.ink.opacity(0.06))
+                    }
+                    .onDelete { offsets in
+                        let doomed = offsets.map { dayIncomes[$0] }
+                        for i in doomed { context.delete(i) }
+                        try? context.save()
+                    }
+                } header: {
+                    Text("Money in")
+                }
+            }
             ForEach(items) { e in
                 Button { editing = e } label: { ExpenseRow(expense: e) }
                     .buttonStyle(.pressable)
@@ -384,6 +408,10 @@ struct DayDetailView: View {
         .safeAreaInset(edge: .bottom) { Color.clear.frame(height: 90) }
         .sheet(item: $editing) { e in
             AddExpenseView(editing: e)
+                .presentationBackground(Theme.base)
+        }
+        .sheet(item: $editingIncome) { i in
+            AddExpenseView(editingIncome: i)
                 .presentationBackground(Theme.base)
         }
     }

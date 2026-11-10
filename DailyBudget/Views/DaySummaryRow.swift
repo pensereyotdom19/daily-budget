@@ -5,6 +5,8 @@ import SwiftUI
 struct DaySummaryRow: View {
     let day: BudgetCalculator.DaySummary
     let items: [Expense]
+    /// Extra income received that day (shown in green; it doesn't count as spending).
+    var incomes: [Income] = []
     let isOpen: Bool
     let toggle: () -> Void
 
@@ -23,6 +25,13 @@ struct DaySummaryRow: View {
                     if !other.isEmpty {
                         Image(systemName: "doc.text.fill").font(.caption2).foregroundStyle(Category.bills.color)
                             .accessibilityLabel(Text("Bills paid"))
+                    }
+                    if !incomes.isEmpty {
+                        Text("+\(Money.format(incomes.reduce(0) { $0 + $1.amountCents }))")
+                            .font(.caption.weight(.semibold)).foregroundStyle(Theme.mint)
+                            .padding(.horizontal, 5).padding(.vertical, 1)
+                            .background(Theme.mint.opacity(0.14), in: Theme.chipShape)
+                            .accessibilityLabel(Text("Extra money"))
                     }
                     Spacer()
                     Text(Money.format(day.spentCents, alwaysShowCents: true))
@@ -46,6 +55,7 @@ struct DaySummaryRow: View {
 
     private var details: some View {
         VStack(alignment: .leading, spacing: 6) {
+            ForEach(incomes) { i in IncomeRow(income: i, size: 28) }
             if items.isEmpty {
                 Text("Nothing spent this day.").font(.caption).foregroundStyle(Theme.secondary)
             }
