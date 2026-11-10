@@ -128,12 +128,14 @@ struct GlassCard: ViewModifier {
             content
                 .environment(\.colorScheme, .light)
                 .environment(\.onGlass, true)
+                // Kept cheap for smooth scrolling: no live blur (a see-through tint looks almost
+                // the same here), and the shadow is drawn from the card's shape only, not from
+                // everything inside it.
                 .background {
-                    shape.fill(.ultraThinMaterial).environment(\.colorScheme, .light)
-                        .overlay(shape.fill(Color(hex: onGlass ? 0xF4F8FC : 0xE2EEF8, opacity: onGlass ? 0.7 : 0.86)))
+                    shape.fill(Color(hex: onGlass ? 0xF4F8FC : 0xE2EEF8, opacity: onGlass ? 0.7 : 0.9))
+                        .shadow(color: .black.opacity(onGlass ? 0 : 0.2), radius: 12, y: 6)
                 }
                 .overlay(shape.strokeBorder(Color.white.opacity(0.55), lineWidth: 1))
-                .shadow(color: .black.opacity(onGlass ? 0.06 : 0.22), radius: onGlass ? 6 : 14, y: onGlass ? 2 : 8)
         } else {
             let shape = RoundedRectangle(cornerRadius: min(radius, 14), style: .continuous)
             content

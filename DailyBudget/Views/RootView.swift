@@ -167,8 +167,8 @@ struct FloatingTabBar: View {
         .background {
             // Light: paper with an ink rule. Dark: smoky navy glass over the background.
             if scheme == .dark {
-                Rectangle().fill(.ultraThinMaterial)
-                    .overlay(Color(hex: 0x0A1424, opacity: 0.72))
+                // Solid instead of a live blur, so scrolling under it stays smooth.
+                Color(hex: 0x0B1626)
                     .overlay(alignment: .top) { Rectangle().fill(Color.white.opacity(0.12)).frame(height: 1) }
                     .ignoresSafeArea(edges: .bottom)
             } else {
