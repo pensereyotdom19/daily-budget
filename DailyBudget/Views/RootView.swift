@@ -142,7 +142,7 @@ struct FloatingTabBar: View {
                     .font(.system(size: 22, weight: .bold))
                     .foregroundStyle(Theme.base)
                     .frame(width: 54, height: 54)
-                    .background(Theme.ink, in: Circle())
+                    .background(Theme.highlight, in: Circle())
             }
             .buttonStyle(.pressable)
             .accessibilityLabel("Add expense")

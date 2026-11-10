@@ -46,7 +46,7 @@ struct RecurringView: View {
                     Label("Add recurring expense", systemImage: "plus")
                         .font(.headline).foregroundStyle(Theme.base)
                         .frame(maxWidth: .infinity, minHeight: 54)
-                        .background(Theme.ink, in: Theme.buttonShape)
+                        .background(Theme.primary, in: Theme.buttonShape)
                 }
                 .buttonStyle(.pressable)
             }

@@ -52,6 +52,6 @@ func draw(paper: UInt32, ink: UInt32, accent: UInt32, rule: UInt32, to name: Str
     print("wrote \(name)")
 }
 
-draw(paper: 0xF7F3EA, ink: 0x1E2A3A, accent: 0x8A2E2E, rule: 0xE2D9C6, to: "AppIcon.png")
-draw(paper: 0x121A24, ink: 0xEFE7D6, accent: 0xE59A86, rule: 0x223040, to: "AppIcon-Dark.png")
+draw(paper: 0xF3EBDD, ink: 0x2E5E3E, accent: 0xD2452F, rule: 0xE2D6C1, to: "AppIcon.png")
+draw(paper: 0x0F1A2E, ink: 0xF5C542, accent: 0xA9CBE8, rule: 0x1E2D48, to: "AppIcon-Dark.png")
 draw(paper: 0x000000, ink: 0xF2F2F2, accent: 0x8C8C8C, rule: 0x262626, to: "AppIcon-Tinted.png")

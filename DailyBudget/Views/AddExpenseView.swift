@@ -400,7 +400,7 @@ struct AddExpenseView: View {
                 .font(.headline)
                 .foregroundStyle(Theme.base)
                 .frame(maxWidth: .infinity, minHeight: 58)
-                .background(Theme.ink, in: Theme.buttonShape)
+                .background(Theme.primary, in: Theme.buttonShape)
                 .opacity(amountCents == nil ? 0.45 : 1)
         }
         .disabled(amountCents == nil)

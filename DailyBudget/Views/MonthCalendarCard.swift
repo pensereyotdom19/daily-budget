@@ -77,7 +77,7 @@ struct MonthCalendarCard: View {
                     .background(summary.isOver ? color : color.opacity(0.34), in: Theme.chipShape)
                     .overlay {
                         if calendar.isDateInToday(date) {
-                            Theme.chipShape.strokeBorder(Theme.ink, lineWidth: 1.5)
+                            Theme.chipShape.strokeBorder(Theme.highlight, lineWidth: 2)
                         }
                     }
             }

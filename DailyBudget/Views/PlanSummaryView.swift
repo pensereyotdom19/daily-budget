@@ -53,7 +53,7 @@ struct PlanSummaryView: View {
                     Label("Start a new plan", systemImage: "calendar.badge.plus")
                         .font(.headline).foregroundStyle(Theme.base)
                         .frame(maxWidth: .infinity, minHeight: 56)
-                        .background(Theme.ink, in: Theme.buttonShape)
+                        .background(Theme.primary, in: Theme.buttonShape)
                 }
                 .buttonStyle(.pressable)
                 .padding(.top, 4)

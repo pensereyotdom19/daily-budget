@@ -193,7 +193,7 @@ struct PlanView: View {
                         .foregroundStyle(ended || lastMonth ? Theme.base : Theme.ink)
                         .frame(maxWidth: .infinity, minHeight: 44)
                         .background {
-                            if ended || lastMonth { Theme.buttonShape.fill(Theme.ink) }
+                            if ended || lastMonth { Theme.buttonShape.fill(Theme.primary) }
                             else { Theme.buttonShape.fill(Theme.ink.opacity(0.1)) }
                         }
                 }

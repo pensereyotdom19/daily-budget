@@ -448,7 +448,7 @@ struct QuickAddChip: View {
 struct StreakLabelStyle: LabelStyle {
     func makeBody(configuration: Configuration) -> some View {
         HStack(spacing: 6) {
-            configuration.icon.foregroundStyle(Theme.mint)
+            configuration.icon.foregroundStyle(Theme.highlight)
             configuration.title
         }
     }

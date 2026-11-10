@@ -26,24 +26,30 @@ extension Color {
     }
 }
 
-/// "Ledger" look: cream paper, navy ink, serif figures, thin ruled lines.
-/// At night (dark mode) the page turns dark navy and the ink cream.
+/// "Ledger" look: serif figures and thin ruled lines.
+/// Light: oat milk paper, forest green for good, tomato red for over.
+/// Dark: midnight navy, powder blue for good, soft tomato for over, sunflower for highlights.
+/// Good and over keep the same meaning in both modes.
 enum Theme {
     /// Paper: the screen background.
-    static let base = Color(light: 0xF7F3EA, dark: 0x121A24)
+    static let base = Color(light: 0xF3EBDD, dark: 0x0F1A2E)
     /// Slightly lighter paper for cards and sheets.
-    static let card = Color(light: 0xFBF8F1, dark: 0x18222E)
-    /// Navy ink: text, rules and the main buttons.
-    static let ink = Color(light: 0x1E2A3A, dark: 0xEFE7D6)
+    static let card = Color(light: 0xFBF6EE, dark: 0x16243D)
+    /// Ink: text and rules.
+    static let ink = Color(light: 0x23301F, dark: 0xE7EEF6)
     /// Thin lines between rows and around cards.
-    static let rule = Color(light: 0xD9CFBA, dark: 0x2C3846)
-    static let secondary = Color(light: 0x5B6472, dark: 0xA2AAB6)
-    /// Positive (under budget, saved): ledger green.
-    static let mint = Color(light: 0x2F5D4A, dark: 0x86C3A2)
-    /// Over budget, bills to watch: oxblood.
-    static let warn = Color(light: 0x8A2E2E, dark: 0xE59A86)
-    static let sky = Color(light: 0x2B5A8A, dark: 0x93B8E3)
-    static let teal = Color(light: 0x2F5D4A, dark: 0x86C3A2)
+    static let rule = Color(light: 0xE2D6C1, dark: 0x263756)
+    static let secondary = Color(light: 0x6F6A5C, dark: 0x8FA6C2)
+    /// Positive (under budget, saved): forest green / powder blue.
+    static let mint = Color(light: 0x2E5E3E, dark: 0xA9CBE8)
+    /// Over budget, bills to watch: tomato (a deeper shade in light so small text stays readable).
+    static let warn = Color(light: 0xBF3F2A, dark: 0xF07A62)
+    /// Main buttons: forest green / powder blue, with `base` text on top.
+    static let primary = Color(light: 0x2E5E3E, dark: 0xA9CBE8)
+    /// The special touch: the + button, today in the calendar, the streak. Sunflower at night.
+    static let highlight = Color(light: 0x2E5E3E, dark: 0xF5C542)
+    static let sky = Color(light: 0x2B5A8A, dark: 0x9AD3C6)
+    static let teal = Color(light: 0x2E5E3E, dark: 0xA9CBE8)
     static let pink = Color(light: 0x9B3D5C, dark: 0xE29AB3)
     static let violet = Color(light: 0x4B3F8F, dark: 0xB1A6EA)
     /// Main buttons are solid ink (kept as a gradient type so existing call sites work).
