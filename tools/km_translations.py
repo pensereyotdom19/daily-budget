@@ -512,6 +512,9 @@ KM = {
     "Limit": "ដែនកំណត់",
     "Often": "ញឹកញាប់",
     "Streak": "ជាប់គ្នា",
+    "By category": "តាមប្រភេទ",
+    "Tap one to see only its expenses.": "ចុចលើមួយ ដើម្បីមើលតែការចំណាយរបស់វា។",
+    "Where should it go?": "តើគួរដាក់ទៅណា?",
 }
 
 # Not words (symbols, numbers, placeholders only): keep as they are.

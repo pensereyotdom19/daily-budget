@@ -948,6 +948,16 @@
         }
       }
     },
+    "By category": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "តាមប្រភេទ"
+          }
+        }
+      }
+    },
     "By category · tap to filter": {
       "localizations": {
         "km": {
@@ -3580,6 +3590,16 @@
         }
       }
     },
+    "Tap one to see only its expenses.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ចុចលើមួយ ដើម្បីមើលតែការចំណាយរបស់វា។"
+          }
+        }
+      }
+    },
     "Tap to edit. Press and hold to delete.": {
       "localizations": {
         "km": {
@@ -3960,16 +3980,6 @@
         }
       }
     },
-    "WHERE SHOULD IT GO?": {
-      "localizations": {
-        "km": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ដាក់លុយនេះទៅណា?"
-          }
-        }
-      }
-    },
     "Waiting to upload": {
       "localizations": {
         "km": {
@@ -3996,6 +4006,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "លុយទៅណា"
+          }
+        }
+      }
+    },
+    "Where should it go?": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "តើគួរដាក់ទៅណា?"
           }
         }
       }

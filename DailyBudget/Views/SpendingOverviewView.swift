@@ -99,14 +99,14 @@ struct SpendingOverviewView: View {
         let saved = settings?.savingsCents(calc, incomes: incomes) ?? 0
         return VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .firstTextBaseline) {
-                Text(Money.format(total, alwaysShowCents: true)).font(Theme.rounded(38))
+                Text(Money.format(total, alwaysShowCents: true)).font(.system(size: 34, weight: .semibold)).monospacedDigit()
                 Spacer()
                 Text("of \(Money.format(plannedSoFar)) planned")
                     .font(.footnote).foregroundStyle(Theme.secondary)
             }
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
-                    Rectangle().fill(Theme.ink.opacity(0.12))
+                    Rectangle().fill(Theme.rule)
                     Rectangle()
                         .fill(diff < 0 ? AnyShapeStyle(Theme.warn) : AnyShapeStyle(Theme.mint))
                         .frame(width: geo.size.width * fraction)
@@ -114,25 +114,29 @@ struct SpendingOverviewView: View {
             }
             .frame(height: 10)
             .accessibilityHidden(true)
-            HStack(spacing: 10) {
+            Divider().overlay(Theme.rule)
+            HStack(spacing: 0) {
                 stat(diff >= 0 ? "Under plan" : "Over plan", Money.format(abs(diff), alwaysShowCents: true),
                      diff >= 0 ? Theme.mint : Theme.warn)
+                Rectangle().fill(Theme.rule).frame(width: 1, height: 32)
                 stat("Everyday / day", Money.format(livingSpent / daysSoFar, alwaysShowCents: true), Theme.ink)
-                stat("Saved", Money.format(saved, alwaysShowCents: true), Theme.sky)
+                    .padding(.leading, 12)
+                Rectangle().fill(Theme.rule).frame(width: 1, height: 32)
+                stat("Saved", Money.format(saved, alwaysShowCents: true), Theme.ink)
+                    .padding(.leading, 12)
             }
         }
-        .padding(18)
-        .glassCard(radius: 28)
+        .padding(16)
+        .glassCard()
     }
 
     private func stat(_ title: LocalizedStringKey, _ value: String, _ color: Color) -> some View {
         VStack(alignment: .leading, spacing: 2) {
-            Text(title).font(.caption2.weight(.semibold)).foregroundStyle(Theme.secondary).lineLimit(1)
-            Text(value).font(Theme.rounded(16)).foregroundStyle(color).lineLimit(1).minimumScaleFactor(0.7)
+            Text(title).font(.caption).foregroundStyle(Theme.secondary).lineLimit(1)
+            Text(value).font(.system(size: 17, weight: .semibold)).monospacedDigit().foregroundStyle(color)
+                .lineLimit(1).minimumScaleFactor(0.7)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(10)
-        .background(Theme.ink.opacity(0.06), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
         .accessibilityElement(children: .combine)
     }
 
@@ -208,7 +212,8 @@ struct SpendingOverviewView: View {
     private var categoriesCard: some View {
         let maxValue = max(1, categoryTotals.first?.cents ?? 1)
         return VStack(alignment: .leading, spacing: 10) {
-            Text("By category · tap to filter").font(.caption.weight(.semibold)).foregroundStyle(Theme.secondary)
+            Text("By category").font(.headline).foregroundStyle(Theme.ink)
+            Text("Tap one to see only its expenses.").font(.caption).foregroundStyle(Theme.secondary)
             ForEach(categoryTotals) { item in
                 let selected = categoryFilter == item.category
                 Button {
@@ -225,8 +230,8 @@ struct SpendingOverviewView: View {
                             }
                             GeometryReader { geo in
                                 ZStack(alignment: .leading) {
-                                    Rectangle().fill(Theme.ink.opacity(0.12))
-                                    Rectangle().fill(item.category.color)
+                                    Rectangle().fill(Theme.rule)
+                                    Rectangle().fill(Theme.mint)
                                         .frame(width: max(6, geo.size.width * CGFloat(item.cents) / CGFloat(maxValue)))
                                 }
                             }

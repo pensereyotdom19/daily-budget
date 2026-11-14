@@ -288,13 +288,14 @@ struct AddExpenseView: View {
                         VStack(spacing: 5) {
                             Image(systemName: c.symbol)
                                 .font(.system(size: 20, weight: .semibold))
-                                .foregroundStyle(c.color)
-                            Text(c.title).font(.caption2.weight(.semibold)).lineLimit(1).minimumScaleFactor(0.8)
+                                .foregroundStyle(selected ? Theme.mint : Theme.secondary)
+                            Text(c.title).font(.caption2.weight(selected ? .semibold : .regular)).lineLimit(1).minimumScaleFactor(0.8)
+                                .foregroundStyle(selected ? Theme.mint : Theme.ink)
                         }
-                        .frame(maxWidth: .infinity, minHeight: 72)
-                        .background(Theme.ink.opacity(selected ? 0.16 : 0.04), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
-                        .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous)
-                            .strokeBorder(selected ? Theme.mint.opacity(0.8) : Theme.ink.opacity(0.1), lineWidth: selected ? 1.5 : 1))
+                        .frame(maxWidth: .infinity, minHeight: 68)
+                        .background(selected ? Theme.mint.opacity(0.12) : Theme.base, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                        .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous)
+                            .strokeBorder(selected ? Theme.mint : .clear, lineWidth: 1.5))
                     }
                     .buttonStyle(.pressable)
                     .accessibilityAddTraits(selected ? .isSelected : [])
@@ -309,7 +310,7 @@ struct AddExpenseView: View {
 
     private var targetPicker: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("WHERE SHOULD IT GO?").font(.caption.weight(.semibold)).foregroundStyle(Theme.secondary).padding(.leading, 4)
+            Text("Where should it go?").font(.subheadline.weight(.semibold)).foregroundStyle(Theme.secondary).padding(.leading, 4)
             VStack(spacing: 8) {
                 ForEach(IncomeTarget.allCases) { t in
                     let selected = t == target
@@ -329,9 +330,9 @@ struct AddExpenseView: View {
                         }
                         .multilineTextAlignment(.leading)
                         .padding(12)
-                        .background(Theme.ink.opacity(selected ? 0.12 : 0.03), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-                        .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous)
-                            .strokeBorder(selected ? Theme.mint.opacity(0.7) : Theme.ink.opacity(0.08)))
+                        .background(selected ? Theme.mint.opacity(0.12) : Theme.base, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                        .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous)
+                            .strokeBorder(selected ? Theme.mint : .clear, lineWidth: 1.5))
                     }
                     .buttonStyle(.pressable)
                     .accessibilityAddTraits(selected ? .isSelected : [])
@@ -370,12 +371,11 @@ struct AddExpenseView: View {
                                 }
                             } label: {
                                 HStack(spacing: 6) {
-                                    Image(systemName: item.category.symbol).font(.caption2.weight(.bold)).foregroundStyle(item.category.color)
-                                    Text(verbatim: item.note).font(.footnote.weight(.semibold)).lineLimit(1)
-                                    Text(Money.format(item.cents, alwaysShowCents: true)).font(.caption).foregroundStyle(Theme.secondary)
+                                    Text(verbatim: item.note).font(.subheadline).lineLimit(1)
+                                    Text(Money.format(item.cents, alwaysShowCents: true)).font(.subheadline).monospacedDigit().foregroundStyle(Theme.secondary)
                                 }
-                                .padding(.horizontal, 10).frame(height: 32)
-                                .background(Theme.ink.opacity(0.06), in: Theme.chipShape)
+                                .padding(.horizontal, 14).frame(height: 36)
+                                .background(Theme.card, in: Capsule())
                             }
                             .buttonStyle(.pressable)
                             .accessibilityLabel(Text("Use \(item.note)"))

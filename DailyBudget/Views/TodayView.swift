@@ -341,7 +341,7 @@ struct TodayView: View {
                                     .frame(width: geo.size.width * min(1, CGFloat(s.spentCents) / CGFloat(max(1, s.limitCents))))
                             }
                             .frame(height: 5)
-                            .background(Theme.ink.opacity(0.1), in: Rectangle())
+                            .background(Theme.rule, in: Rectangle())
                         }
                         Image(systemName: "chevron.right").font(.caption2.weight(.bold)).foregroundStyle(Theme.secondary)
                     }

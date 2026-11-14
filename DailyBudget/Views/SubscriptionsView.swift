@@ -93,7 +93,7 @@ struct SubscriptionsView: View {
         return HStack(alignment: .firstTextBaseline) {
             VStack(alignment: .leading, spacing: 2) {
                 Text("Every month").font(.caption.weight(.semibold)).foregroundStyle(Theme.secondary)
-                Text(Money.format(monthly, alwaysShowCents: true)).font(Theme.rounded(34))
+                Text(Money.format(monthly, alwaysShowCents: true)).font(.system(size: 34, weight: .semibold)).monospacedDigit()
             }
             Spacer()
             VStack(alignment: .trailing, spacing: 2) {

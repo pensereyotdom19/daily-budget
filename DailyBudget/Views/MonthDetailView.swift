@@ -116,11 +116,11 @@ struct MonthDetailView: View {
                 }
                 Spacer()
                 Text(isFuture ? Money.format(planned) : Money.format(total, alwaysShowCents: true))
-                    .font(Theme.rounded(30))
+                    .font(.system(size: 30, weight: .semibold)).monospacedDigit()
             }
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
-                    Rectangle().fill(Theme.ink.opacity(0.12))
+                    Rectangle().fill(Theme.rule)
                     Rectangle()
                         .fill(over ? AnyShapeStyle(Theme.warn) : AnyShapeStyle(Theme.mint))
                         .frame(width: max(0, geo.size.width * fraction))
@@ -245,8 +245,8 @@ struct MonthDetailView: View {
                             .frame(width: 78, alignment: .leading)
                         GeometryReader { geo in
                             ZStack(alignment: .leading) {
-                                Rectangle().fill(Theme.ink.opacity(0.12))
-                                Rectangle().fill(item.category.color)
+                                Rectangle().fill(Theme.rule)
+                                Rectangle().fill(Theme.mint)
                                     .frame(width: max(6, geo.size.width * CGFloat(item.cents) / CGFloat(maxValue)))
                             }
                         }

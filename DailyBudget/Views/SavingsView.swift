@@ -52,7 +52,7 @@ struct SavingsView: View {
             HStack(alignment: .firstTextBaseline) {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Emergency savings").font(.caption.weight(.semibold)).foregroundStyle(Theme.secondary)
-                    Text(Money.format(total, alwaysShowCents: true)).font(Theme.rounded(38))
+                    Text(Money.format(total, alwaysShowCents: true)).font(.system(size: 34, weight: .semibold)).monospacedDigit()
                 }
                 Spacer()
                 Image(systemName: "banknote.fill").font(.system(size: 26)).foregroundStyle(Theme.sky)
@@ -150,7 +150,7 @@ struct SavingsView: View {
                         .frame(width: max(0, geo.size.width * fraction))
                 }
                 .frame(height: 10)
-                .background(Theme.ink.opacity(0.1), in: Rectangle())
+                .background(Theme.rule, in: Rectangle())
                 HStack {
                     stat("Used", spent)
                     Spacer()
