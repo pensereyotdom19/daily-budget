@@ -141,8 +141,6 @@ struct FloatingTabBar: View {
     @Binding var tab: AppTab
     var onSelect: (AppTab) -> Void
     var onAdd: () -> Void
-    @Namespace private var highlight
-    @Environment(\.colorScheme) private var scheme
 
     var body: some View {
         HStack(spacing: 0) {
@@ -150,9 +148,9 @@ struct FloatingTabBar: View {
             item(.history)
             Button(action: onAdd) {
                 Image(systemName: "plus")
-                    .font(.system(size: 22, weight: .bold))
-                    .foregroundStyle(Theme.base)
-                    .frame(width: 54, height: 54)
+                    .font(.system(size: 20, weight: .semibold))
+                    .foregroundStyle(Theme.card)
+                    .frame(width: 46, height: 46)
                     .background(Theme.highlight, in: Circle())
             }
             .buttonStyle(.pressable)
@@ -165,17 +163,9 @@ struct FloatingTabBar: View {
         .padding(.top, 6)
         .padding(.bottom, 2)
         .background {
-            // Light: paper with an ink rule. Dark: smoky navy glass over the background.
-            if scheme == .dark {
-                // Solid instead of a live blur, so scrolling under it stays smooth.
-                Color(hex: 0x0B1626)
-                    .overlay(alignment: .top) { Rectangle().fill(Color.white.opacity(0.12)).frame(height: 1) }
-                    .ignoresSafeArea(edges: .bottom)
-            } else {
-                Theme.card
-                    .overlay(alignment: .top) { Rectangle().fill(Theme.ink).frame(height: 1) }
-                    .ignoresSafeArea(edges: .bottom)
-            }
+            Theme.card
+                .overlay(alignment: .top) { Rectangle().fill(Theme.rule).frame(height: 1) }
+                .ignoresSafeArea(edges: .bottom)
         }
         .sensoryFeedback(.selection, trigger: tab)
     }
@@ -183,13 +173,12 @@ struct FloatingTabBar: View {
     private func item(_ item: AppTab) -> some View {
         Button { onSelect(item) } label: {
             VStack(spacing: 3) {
-                Image(systemName: item.symbol).font(.system(size: 19, weight: tab == item ? .semibold : .regular))
-                Text(item.title).font(.caption2.weight(tab == item ? .bold : .medium)).lineLimit(1).minimumScaleFactor(0.7)
-                Capsule().fill(tab == item ? Theme.ink : .clear).frame(width: 18, height: 2)
-                    .matchedGeometryEffect(id: tab == item ? "underline" : "\(item.rawValue)", in: highlight)
+                Image(systemName: item.symbol).font(.system(size: 20, weight: .regular))
+                    .frame(height: 24)
+                Text(item.title).font(.caption2.weight(.medium)).lineLimit(1).minimumScaleFactor(0.7)
             }
-            .frame(maxWidth: .infinity, minHeight: 52)
-            .foregroundStyle(tab == item ? Theme.ink : Theme.secondary)
+            .frame(maxWidth: .infinity, minHeight: 50)
+            .foregroundStyle(tab == item ? Theme.mint : Theme.secondary)
             .contentShape(Rectangle())
         }
         .buttonStyle(.pressable)

@@ -501,6 +501,17 @@ KM = {
     "%@ left today": "នៅសល់ %@ ថ្ងៃនេះ",
     "Limit %@": "ដែនកំណត់ %@",
     "Over today": "លើសថ្ងៃនេះ",
+    # Professional redesign (2026-11-14)
+    "%lld days": "%lld ថ្ងៃ",
+    "Avg %@ / day": "មធ្យម %@ / ថ្ងៃ",
+    "Day": "ថ្ងៃ",
+    "Days on budget": "ថ្ងៃក្នុងថវិកា",
+    "Every year": "រៀងរាល់ឆ្នាំ",
+    "Everyday spending each day this month": "ការចំណាយប្រចាំថ្ងៃ ក្នុងខែនេះ",
+    "Left to spend today": "នៅសល់សម្រាប់ចំណាយថ្ងៃនេះ",
+    "Limit": "ដែនកំណត់",
+    "Often": "ញឹកញាប់",
+    "Streak": "ជាប់គ្នា",
 }
 
 # Not words (symbols, numbers, placeholders only): keep as they are.

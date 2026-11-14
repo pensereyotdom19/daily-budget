@@ -64,7 +64,7 @@ struct SubscriptionsView: View {
                 totalCard
                 if !active.isEmpty { list(active) }
                 if !stopped.isEmpty {
-                    Text("Stopped").font(.title3.weight(.bold)).padding(.horizontal, 4).padding(.top, 4)
+                    Text("Stopped").font(.headline).padding(.horizontal, 4).padding(.top, 4)
                     list(stopped)
                 }
                 Text("On each renewal date the payment is added as a Bills expense, so it doesn't lower your daily limit. Tap one to edit. Press and hold to delete.")
@@ -92,12 +92,12 @@ struct SubscriptionsView: View {
         let monthly = active.reduce(0) { $0 + $1.monthlyCents }
         return HStack(alignment: .firstTextBaseline) {
             VStack(alignment: .leading, spacing: 2) {
-                Text("EVERY MONTH").font(.caption.weight(.semibold)).foregroundStyle(Theme.secondary)
+                Text("Every month").font(.caption.weight(.semibold)).foregroundStyle(Theme.secondary)
                 Text(Money.format(monthly, alwaysShowCents: true)).font(Theme.rounded(34))
             }
             Spacer()
             VStack(alignment: .trailing, spacing: 2) {
-                Text("EVERY YEAR").font(.caption.weight(.semibold)).foregroundStyle(Theme.secondary)
+                Text("Every year").font(.caption.weight(.semibold)).foregroundStyle(Theme.secondary)
                 Text(Money.format(active.reduce(0) { $0 + ($1.cycle == .monthly ? $1.amountCents * 12 : $1.amountCents) }, alwaysShowCents: true))
                     .font(Theme.rounded(20))
             }
@@ -118,7 +118,7 @@ struct SubscriptionsView: View {
                             try? context.save()
                         }
                     }
-                if s.id != items.last?.id { Divider().overlay(Theme.ink.opacity(0.14)) }
+                if s.id != items.last?.id { Divider().overlay(Theme.rule) }
             }
         }
         .padding(.horizontal, 14).padding(.vertical, 4)

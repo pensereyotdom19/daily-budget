@@ -87,15 +87,15 @@ private enum W {
         }
         return Color(uiColor: UIColor { $0.userInterfaceStyle == .dark ? ui(dark) : ui(light) })
     }
-    static let base = dyn(0xF3EBDD, 0x0F1A2E)
-    static let ink = dyn(0x23301F, 0xE7EEF6)
+    static let base = dyn(0xF2F2F7, 0x0F1A2E)
+    static let ink = dyn(0x111A12, 0xEEF2F7)
     static let mint = dyn(0x2E5E3E, 0xA9CBE8)
-    static let warn = dyn(0xBF3F2A, 0xF07A62)
-    static let secondary = dyn(0x6F6A5C, 0x8FA6C2)
-    static let rule = dyn(0xE2D6C1, 0x263756)
+    static let warn = dyn(0xC0392B, 0xF07A62)
+    static let secondary = dyn(0x6B6F68, 0x8FA3BC)
+    static let rule = dyn(0xE3E3E8, 0x253651)
     static let accent = LinearGradient(colors: [mint, mint], startPoint: .top, endPoint: .bottom)
     static func rounded(_ size: CGFloat, _ weight: Font.Weight = .bold) -> Font {
-        .system(size: size, weight: weight == .bold ? .semibold : weight, design: .serif)
+        .system(size: size, weight: weight == .bold ? .semibold : weight)
     }
 }
 

@@ -69,17 +69,9 @@ struct TodayView: View {
 
         NavigationStack {
         ScrollView {
-            VStack(spacing: 14) {
+            VStack(spacing: 16) {
                 HStack(alignment: .bottom) {
-                    ScreenHeader(caption: Date.now.formatted(.dateTime.weekday(.wide).month(.abbreviated).day().locale(AppLanguage.locale)), title: "Today")
-                    if streak > 0 {
-                        Label("\(streak) day\(streak == 1 ? "" : "s") on budget", systemImage: "checkmark")
-                            .font(.footnote.weight(.semibold))
-                            .labelStyle(StreakLabelStyle())
-                            .padding(.horizontal, 12).frame(height: 34)
-                            .glassCard(radius: 17)
-                            .fixedSize()
-                    }
+                    ScreenHeader(caption: Date.now.formatted(.dateTime.weekday(.wide).day().month(.wide).locale(AppLanguage.locale)), title: "Today")
                     if sync.isSignedIn { syncBadge }
                 }
 
@@ -113,12 +105,12 @@ struct TodayView: View {
                 }
 
                 NavigationLink(value: Calendar.current.startOfDay(for: .now)) {
-                    ringCard(today)
+                    ringCard(today, streak: streak)
                 }
                 .buttonStyle(.pressable)
                 .accessibilityHint("Shows today's expenses")
 
-                VStack(spacing: 4) {
+                VStack(spacing: 0) {
                     NavigationLink(value: MonthRoute(monthKey: MonthKey.key(for: .now))) {
                         statCard(title: "\(MonthKey.title(of: MonthKey.key(for: .now))) left",
                                  value: Money.format(calc.monthLeftCents(inMonthOf: .now), alwaysShowCents: true),
@@ -126,12 +118,13 @@ struct TodayView: View {
                                  noteColor: Theme.secondary)
                     }
                     .buttonStyle(.pressable)
+                    Divider().overlay(Theme.rule).padding(.leading, 14)
                     if let next = nextBill {
                         NavigationLink(value: MonthRoute(monthKey: next.month)) {
                             statCard(title: "Next bill",
                                      value: Money.format(next.bill.amountCents),
                                      note: "\(next.bill.name) · \(next.bill.dueDay.flatMap { BillSchedule.dueDate(month: next.month, day: $0) }.map { $0.formatted(.dateTime.month(.abbreviated).day().locale(AppLanguage.locale)) } ?? MonthKey.title(of: next.month))",
-                                     noteColor: Theme.warn)
+                                     noteColor: Theme.secondary)
                         }
                         .buttonStyle(.pressable)
                     } else {
@@ -141,20 +134,21 @@ struct TodayView: View {
                         .buttonStyle(.pressable)
                     }
                 }
+                .glassCard()
 
                 let warnings = calc.limitStatuses(limits: settings?.categoryLimits ?? [:], on: .now).filter { $0.level != .ok }
                 if !warnings.isEmpty { limitWarnings(warnings) }
 
                 Button { affording = true } label: {
                     HStack(spacing: 10) {
-                        Image(systemName: "questionmark.circle.fill").foregroundStyle(Theme.sky)
+                        Image(systemName: "questionmark.circle").foregroundStyle(Theme.mint)
                         Text("Can I afford it?")
                         Spacer()
                         Image(systemName: "chevron.right").font(.caption2.weight(.bold)).foregroundStyle(Theme.secondary)
                     }
-                    .font(.subheadline.weight(.semibold))
-                    .padding(.horizontal, 16).frame(height: 46)
-                    .glassCard(radius: 23)
+                    .font(.body)
+                    .padding(.horizontal, 14).frame(height: 48)
+                    .glassCard()
                 }
                 .buttonStyle(.pressable)
                 .accessibilityHint("Check a price before you buy")
@@ -162,26 +156,26 @@ struct TodayView: View {
                 if !quickItems.isEmpty { quickAddRow }
 
                 HStack(alignment: .firstTextBaseline) {
-                    Text("Today's spending").font(.title3.weight(.bold))
+                    Text("Today's spending").font(.headline)
                     Spacer()
                     Button("See all", action: onSeeAll)
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(Theme.ink.opacity(0.85))
+                        .font(.subheadline.weight(.medium))
+                        .foregroundStyle(Theme.mint)
                 }
                 .padding(.horizontal, 4).padding(.top, 4)
 
                 if billsPaidTodayCents > 0 {
                     NavigationLink(value: MonthRoute(monthKey: MonthKey.key(for: .now), category: .bills)) {
                         HStack(spacing: 10) {
-                            Image(systemName: Category.bills.symbol).foregroundStyle(Category.bills.color)
+                            Image(systemName: Category.bills.symbol).foregroundStyle(Theme.mint)
                             Text("Bills paid today \(Money.format(billsPaidTodayCents, alwaysShowCents: true))")
                             Spacer()
                             Image(systemName: "chevron.right").font(.caption2.weight(.bold))
                         }
-                        .font(.footnote.weight(.semibold))
+                        .font(.subheadline)
                         .foregroundStyle(Theme.secondary)
-                        .padding(.horizontal, 14).frame(height: 40)
-                        .glassCard(radius: 20)
+                        .padding(.horizontal, 14).frame(height: 44)
+                        .glassCard()
                     }
                     .buttonStyle(.pressable)
                     .accessibilityHint("Shows this month's bills")
@@ -197,7 +191,7 @@ struct TodayView: View {
                 } else {
                     VStack(spacing: 0) {
                         ForEach(todaysIncomes) { i in
-                            Button { editingIncome = i } label: { IncomeRow(income: i) }
+                            Button { editingIncome = i } label: { IncomeRow(income: i, size: 32) }
                                 .buttonStyle(.pressable)
                                 .contextMenu {
                                     Button("Edit", systemImage: "pencil") { editingIncome = i }
@@ -206,7 +200,7 @@ struct TodayView: View {
                                         try? context.save()
                                     }
                                 }
-                            if i.id != todaysIncomes.last?.id || !todaysExpenses.isEmpty { Divider().overlay(Theme.ink.opacity(0.14)) }
+                            if i.id != todaysIncomes.last?.id || !todaysExpenses.isEmpty { Divider().overlay(Theme.rule).padding(.leading, 44) }
                         }
                         ForEach(todaysExpenses) { e in
                             Button { editing = e } label: { ExpenseRow(expense: e) }
@@ -218,13 +212,16 @@ struct TodayView: View {
                                         DeleteUndo.shared.delete(e, in: context)
                                     }
                                 }
-                            if e.id != todaysExpenses.last?.id { Divider().overlay(Theme.ink.opacity(0.14)) }
+                            if e.id != todaysExpenses.last?.id { Divider().overlay(Theme.rule).padding(.leading, 44) }
                         }
                     }
-                    .padding(.horizontal, 14).padding(.vertical, 4)
+                    .padding(.horizontal, 14).padding(.vertical, 2)
                     .glassCard()
-                    Text("Tap to edit. Swipe left to delete, right to add it again.")
-                        .font(.caption).foregroundStyle(Theme.secondary)
+                    // A tip for the first days only; after that the screen stays quiet.
+                    if expenses.count < 12 {
+                        Text("Tap to edit. Swipe left to delete, right to add it again.")
+                            .font(.caption).foregroundStyle(Theme.secondary)
+                    }
                 }
             }
             .padding(.horizontal, 18)
@@ -262,11 +259,8 @@ struct TodayView: View {
 
     private var quickAddRow: some View {
         VStack(alignment: .leading, spacing: 8) {
-            HStack(spacing: 6) {
-                Text("QUICK ADD").font(.caption.weight(.semibold)).foregroundStyle(Theme.secondary)
-                Text("Tap to add it now").font(.caption).foregroundStyle(Theme.secondary.opacity(0.7))
-            }
-            .padding(.leading, 4)
+            Text("Quick add").font(.subheadline.weight(.medium)).foregroundStyle(Theme.secondary)
+                .padding(.leading, 4)
             ScrollView(.horizontal) {
                 HStack(spacing: 8) {
                     ForEach(quickItems) { item in
@@ -279,7 +273,6 @@ struct TodayView: View {
             .scrollIndicators(.hidden)
             .scrollClipDisabled()
         }
-        .padding(.top, 2)
     }
 
     /// "of $192 living money · +$100 extra" when extra income went into this month.
@@ -302,7 +295,8 @@ struct TodayView: View {
         }
         .font(.subheadline.weight(.semibold))
         .padding(.horizontal, 16).frame(height: 50)
-        .glassCard(radius: 25)
+        .background(Theme.card, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .shadow(color: .black.opacity(0.12), radius: 10, y: 4)
         .padding(.horizontal, 18)
         .padding(.bottom, 96)
         .transition(.move(edge: .bottom).combined(with: .opacity))
@@ -393,40 +387,45 @@ struct TodayView: View {
         .accessibilityLabel(state.label)
     }
 
-    /// Ledger-style top: what's left today in big serif figures, a thin bar, then limit and spent.
-    private func ringCard(_ today: BudgetCalculator.DaySummary) -> some View {
+    /// The top of Today: what's left today as the one big number, a thin bar, then
+    /// the daily limit, what's spent and the streak in one row.
+    private func ringCard(_ today: BudgetCalculator.DaySummary, streak: Int) -> some View {
         let fraction = today.limitCents > 0 ? max(0, Double(today.leftCents) / Double(today.limitCents)) : 0
-        return VStack(alignment: .leading, spacing: 14) {
-            Text(today.isOver ? "OVER TODAY" : "LEFT TO SPEND TODAY")
-                .font(.caption.weight(.semibold)).tracking(1.4)
-                .foregroundStyle(Theme.secondary)
+        return VStack(alignment: .leading, spacing: 0) {
+            Text(today.isOver ? "Over today" : "Left to spend today")
+                .font(.subheadline).foregroundStyle(Theme.secondary)
             Text(Money.format(today.isOver ? -today.leftCents : today.leftCents, alwaysShowCents: true))
-                .font(.system(size: 64, weight: .medium, design: .serif))
+                .font(.system(size: 56, weight: .semibold))
                 .monospacedDigit()
+                .contentTransition(.numericText())
                 .foregroundStyle(today.isOver ? Theme.warn : Theme.ink)
                 .minimumScaleFactor(0.5).lineLimit(1)
+                .padding(.bottom, 10)
             GeometryReader { geo in
-                Rectangle().fill(today.isOver ? Theme.warn : Theme.mint)
-                    .frame(width: geo.size.width * min(1, today.isOver ? 1 : fraction))
+                Capsule().fill(today.isOver ? Theme.warn : Theme.mint)
+                    .frame(width: max(6, geo.size.width * min(1, today.isOver ? 1 : fraction)))
                     .animation(.snappy, value: fraction)
             }
-            .frame(height: 4)
-            .background(Theme.rule)
+            .frame(height: 6)
+            .background(Theme.rule, in: Capsule())
+            .padding(.bottom, 14)
             HStack(spacing: 0) {
                 labeled("Daily limit", Money.format(today.limitCents, alwaysShowCents: true))
                     .frame(maxWidth: .infinity, alignment: .leading)
-                Rectangle().fill(Theme.rule).frame(width: 1, height: 40)
+                Rectangle().fill(Theme.rule).frame(width: 1, height: 34)
                 labeled("Spent", Money.format(today.spentCents, alwaysShowCents: true))
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.leading, 14)
+                if streak > 0 {
+                    Rectangle().fill(Theme.rule).frame(width: 1, height: 34)
+                    labeled("Streak", String(localized: "\(streak) days", bundle: AppLanguage.bundle))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.leading, 14)
+                }
             }
-            Text("Money you don't spend is shared across the rest of the month.")
-                .font(.caption).foregroundStyle(Theme.secondary)
         }
-        .padding(.top, 18)
-        .padding(.bottom, 14)
-        .overlay(alignment: .top) { Rectangle().fill(Theme.ink).frame(height: 2) }
-        .overlay(alignment: .bottom) { Rectangle().fill(Theme.ink).frame(height: 1) }
+        .padding(.top, 6)
+        .padding(.horizontal, 4)
         .contentShape(Rectangle())
         .accessibilityElement(children: .combine)
     }
@@ -434,44 +433,41 @@ struct TodayView: View {
     private func labeled(_ title: LocalizedStringKey, _ value: String) -> some View {
         VStack(alignment: .leading, spacing: 2) {
             Text(title).font(.caption).foregroundStyle(Theme.secondary)
-            Text(value).font(Theme.rounded(22, .regular)).monospacedDigit()
+            Text(value).font(.system(size: 17, weight: .semibold)).monospacedDigit().lineLimit(1).minimumScaleFactor(0.7)
         }
     }
 
-    /// A ledger line: label …… value, with a small note under the label.
+    /// A list row: title with a small note under it, the amount on the right, and a chevron.
     private func statCard(title: LocalizedStringKey, value: String, note: LocalizedStringKey, noteColor: Color) -> some View {
-        HStack(alignment: .firstTextBaseline, spacing: 8) {
+        HStack(spacing: 8) {
             VStack(alignment: .leading, spacing: 1) {
-                Text(title).font(.subheadline)
+                Text(title).font(.body)
                 Text(note).font(.caption).foregroundStyle(noteColor).lineLimit(1)
             }
-            Line().stroke(Theme.secondary.opacity(0.6), style: StrokeStyle(lineWidth: 1, dash: [1, 3]))
-                .frame(height: 1)
-            Text(value).font(Theme.rounded(19, .regular)).monospacedDigit()
-            Image(systemName: "chevron.right").font(.caption2.weight(.bold)).foregroundStyle(Theme.secondary)
+            Spacer(minLength: 8)
+            Text(value).font(.system(size: 17, weight: .semibold)).monospacedDigit()
+            Image(systemName: "chevron.right").font(.caption.weight(.semibold)).foregroundStyle(Theme.secondary.opacity(0.7))
         }
-        .padding(.vertical, 6)
+        .padding(.horizontal, 14).padding(.vertical, 10)
         .contentShape(Rectangle())
     }
 
 }
 
-/// A small glass button: category icon, name and price.
+/// A small pill: what you buy often and its price. One tap adds it.
 struct QuickAddChip: View {
     let item: QuickAdd.Item
 
     var body: some View {
-        HStack(spacing: 8) {
-            CategoryIcon(category: item.category, size: 28)
-            VStack(alignment: .leading, spacing: 0) {
-                Text(item.title).font(.footnote.weight(.semibold)).lineLimit(1)
-                Text(Money.format(item.cents, alwaysShowCents: true))
-                    .font(Theme.rounded(13, .semibold)).foregroundStyle(Theme.secondary)
-            }
+        HStack(spacing: 5) {
+            Text(item.title).lineLimit(1)
+            Text(Money.format(item.cents, alwaysShowCents: true))
+                .monospacedDigit().foregroundStyle(Theme.secondary)
         }
-        .padding(.leading, 9).padding(.trailing, 14)
-        .frame(height: 48)
-        .glassCard(radius: 24)
+        .font(.subheadline)
+        .padding(.horizontal, 14)
+        .frame(height: 36)
+        .background(Theme.card, in: Capsule())
     }
 }
 
@@ -489,23 +485,23 @@ struct ExpenseRow: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            ExpenseIcon(expense: expense, size: 40)
+            ExpenseIcon(expense: expense, size: 32)
             VStack(alignment: .leading, spacing: 1) {
                 Text(expense.note.isEmpty ? expense.category.title : expense.note)
-                    .font(.subheadline.weight(.semibold))
+                    .font(.body)
                 Text("\(expense.category.title) · \(expense.date.formatted(Date.FormatStyle(date: .omitted, time: .shortened, locale: AppLanguage.locale)))")
                     .font(.caption).foregroundStyle(Theme.secondary)
             }
             Spacer()
             Text(Money.format(expense.amountCents, alwaysShowCents: true))
-                .font(Theme.rounded(16))
+                .font(.system(size: 17, weight: .semibold)).monospacedDigit()
         }
-        .padding(.vertical, 10)
+        .padding(.vertical, 9)
         .contentShape(Rectangle())
     }
 }
 
-/// A straight horizontal line across its frame (for dotted leaders).
+/// A straight horizontal line across its frame.
 struct Line: Shape {
     func path(in rect: CGRect) -> Path {
         var p = Path()

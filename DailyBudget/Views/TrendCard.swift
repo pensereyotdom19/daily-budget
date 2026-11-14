@@ -1,70 +1,79 @@
 import SwiftUI
 import Charts
 
-/// Everyday spending per month as bars, with the month's living money as a line, and the average per day.
+/// This month, day by day: one bar per day for everyday spending (red when over that day's
+/// limit), a dashed step line for each day's limit, and the average spent per day so far.
+/// Days still to come show as an empty axis, so the month's shape is clear from the 1st.
 struct TrendCard: View {
-    let months: [BudgetCalculator.MonthSpending]
-    let budget: (String) -> Int
-    let currentMonth: String
+    /// Days of this month up to today (any order).
+    let days: [BudgetCalculator.DaySummary]
+    let month: Date
 
-    private var shown: [BudgetCalculator.MonthSpending] { months.filter { $0.monthKey <= currentMonth } }
+    private var calendar: Calendar { .current }
+    private var dayCount: Int { calendar.range(of: .day, in: .month, for: month)?.count ?? 30 }
+    private var sorted: [BudgetCalculator.DaySummary] { days.sorted { $0.day < $1.day } }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .firstTextBaseline) {
-                Text("Everyday spending").font(.subheadline.weight(.semibold))
+                Text("\(month.formatted(.dateTime.month(.wide).locale(AppLanguage.locale))), day by day")
+                    .font(.headline)
                 Spacer()
-                if let avg = averagePerFinishedMonth {
-                    Text("Avg \(Money.format(avg)) / month").font(.caption).foregroundStyle(Theme.secondary)
+                if let avg = averagePerDay {
+                    Text("Avg \(Money.format(avg, alwaysShowCents: true)) / day")
+                        .font(.caption).foregroundStyle(Theme.secondary)
                 }
             }
             Chart {
-                ForEach(shown) { m in
-                    let title = MonthKey.title(of: m.monthKey).prefix(3).description
-                    BarMark(x: .value("Month", title), y: .value("Spent", Double(m.livingCents) / 100))
-                        .foregroundStyle(m.livingCents > budget(m.monthKey) ? Theme.warn : Theme.mint)
-                        .cornerRadius(6)
-                    // A short marker per month (a line would need two months to show).
-                    RectangleMark(x: .value("Month", title), y: .value("Living money", Double(budget(m.monthKey)) / 100),
-                                  width: .ratio(0.9), height: 2)
-                        .foregroundStyle(Theme.ink.opacity(0.7))
+                ForEach(sorted) { d in
+                    let n = calendar.component(.day, from: d.day)
+                    BarMark(x: .value("Day", n), y: .value("Spent", Double(d.spentCents) / 100), width: .fixed(6))
+                        .foregroundStyle(d.isOver ? Theme.warn : Theme.mint)
+                        .cornerRadius(2)
+                    LineMark(x: .value("Day", n), y: .value("Limit", Double(d.limitCents) / 100))
+                        .interpolationMethod(.stepCenter)
+                        .lineStyle(StrokeStyle(lineWidth: 1, dash: [3, 3]))
+                        .foregroundStyle(Theme.secondary)
+                }
+            }
+            .chartXScale(domain: 0.5...(Double(dayCount) + 0.5))
+            .chartXAxis {
+                AxisMarks(values: [1, 8, 15, 22, 29]) { value in
+                    AxisValueLabel { if let v = value.as(Int.self) { Text(verbatim: "\(v)") } }
+                        .foregroundStyle(Theme.secondary)
                 }
             }
             .chartYAxis {
-                AxisMarks(position: .leading) { value in
-                    AxisGridLine().foregroundStyle(Theme.ink.opacity(0.1))
+                AxisMarks(position: .leading, values: .automatic(desiredCount: 3)) { value in
+                    AxisGridLine().foregroundStyle(Theme.rule)
                     AxisValueLabel { if let v = value.as(Double.self) { Text(verbatim: "$\(Int(v))") } }
                         .foregroundStyle(Theme.secondary)
                 }
             }
-            .chartXAxis {
-                AxisMarks { _ in AxisValueLabel().foregroundStyle(Theme.secondary) }
-            }
-            .frame(height: 150)
+            .frame(height: 140)
             HStack(spacing: 14) {
                 legend(Theme.mint, "Spent")
                 legend(Theme.warn, "Over")
                 HStack(spacing: 5) {
-                    Rectangle().fill(Theme.ink.opacity(0.6)).frame(width: 14, height: 2)
-                    Text("Living money").font(.caption2).foregroundStyle(Theme.secondary)
+                    Rectangle().fill(Theme.secondary).frame(width: 14, height: 1)
+                    Text("Daily limit").font(.caption2).foregroundStyle(Theme.secondary)
                 }
             }
         }
         .padding(16)
-        .glassCard(radius: 26)
+        .glassCard()
         .accessibilityElement(children: .combine)
-        .accessibilityLabel(Text("Everyday spending by month"))
+        .accessibilityLabel(Text("Everyday spending each day this month"))
     }
 
-    private var averagePerFinishedMonth: Int? {
-        let finished = shown.filter { $0.monthKey < currentMonth }
-        guard !finished.isEmpty else { return nil }
-        return finished.reduce(0) { $0 + $1.livingCents } / finished.count
+    private var averagePerDay: Int? {
+        guard !days.isEmpty else { return nil }
+        return days.reduce(0) { $0 + $1.spentCents } / days.count
     }
 
     private func legend(_ color: Color, _ text: LocalizedStringKey) -> some View {
         HStack(spacing: 5) {
-            RoundedRectangle(cornerRadius: 2).fill(color).frame(width: 10, height: 10)
+            RoundedRectangle(cornerRadius: 2).fill(color).frame(width: 9, height: 9)
             Text(text).font(.caption2).foregroundStyle(Theme.secondary)
         }
     }

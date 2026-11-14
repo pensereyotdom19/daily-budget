@@ -77,7 +77,7 @@ struct RemindersCard: View {
     }
 
     private var divider: some View {
-        Divider().overlay(Theme.ink.opacity(0.14)).padding(.vertical, 4)
+        Divider().overlay(Theme.rule).padding(.vertical, 4)
     }
 
     private func row(symbol: String, color: Color, title: LocalizedStringKey, detail: LocalizedStringKey,
@@ -86,10 +86,10 @@ struct RemindersCard: View {
             Toggle(isOn: isOn) {
                 HStack(spacing: 12) {
                     Image(systemName: symbol)
-                        .font(.system(size: 15, weight: .bold))
-                        .foregroundStyle(color)
-                        .frame(width: 32, height: 32)
-                        .background(color.opacity(0.16), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                        .font(.system(size: 15, weight: .medium))
+                        .foregroundStyle(Theme.mint)
+                        .frame(width: 30, height: 30)
+                        .background(Theme.mint.opacity(0.12), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
                     VStack(alignment: .leading, spacing: 1) {
                         Text(title).font(.subheadline.weight(.semibold))
                         Text(detail).font(.caption).foregroundStyle(Theme.secondary)

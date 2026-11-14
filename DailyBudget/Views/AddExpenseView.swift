@@ -254,7 +254,7 @@ struct AddExpenseView: View {
     /// Tapping one fills in the form, so you can still change the amount before saving.
     private var quickFill: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("OFTEN").font(.caption.weight(.semibold)).foregroundStyle(Theme.secondary).padding(.leading, 4)
+            Text("Often").font(.subheadline.weight(.semibold)).foregroundStyle(Theme.secondary).padding(.leading, 4)
             ScrollView(.horizontal) {
                 HStack(spacing: 8) {
                     ForEach(quickItems) { item in
@@ -278,7 +278,7 @@ struct AddExpenseView: View {
 
     private var categoryGrid: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("CATEGORY").font(.caption.weight(.semibold)).foregroundStyle(Theme.secondary).padding(.leading, 4)
+            Text("Category").font(.subheadline.weight(.semibold)).foregroundStyle(Theme.secondary).padding(.leading, 4)
             LazyVGrid(columns: columns, spacing: 8) {
                 ForEach(Category.allCases) { c in
                     let selected = c == category
@@ -386,7 +386,7 @@ struct AddExpenseView: View {
                 .padding(.bottom, 8)
                 .transition(.opacity)
             }
-            Divider().overlay(Theme.ink.opacity(0.16))
+            Divider().overlay(Theme.rule)
             DatePicker("Date", selection: $date, in: ...Date.now.addingTimeInterval(86_400))
                 .frame(height: 50)
         }
@@ -466,7 +466,7 @@ extension IncomeTarget {
 
     var symbol: String {
         switch self {
-        case .living: return "fork.knife"
+        case .living: return "banknote"
         case .savings: return "banknote.fill"
         case .engagement: return "heart.fill"
         }
@@ -488,13 +488,12 @@ struct IncomeIcon: View {
 
     var body: some View {
         // Flat, like CategoryIcon: a light tint with the symbol in colour.
-        let shape = RoundedRectangle(cornerRadius: min(10, size * 0.28), style: .continuous)
+        let shape = RoundedRectangle(cornerRadius: size * 0.28, style: .continuous)
         Image(systemName: target.symbol)
-            .font(.system(size: size * 0.44, weight: .semibold))
-            .foregroundStyle(target.color)
+            .font(.system(size: size * 0.46, weight: .medium))
+            .foregroundStyle(Theme.mint)
             .frame(width: size, height: size)
-            .background(shape.fill(target.color.opacity(0.13)))
-            .overlay(shape.strokeBorder(target.color.opacity(0.25), lineWidth: 1))
+            .background(shape.fill(Theme.mint.opacity(0.12)))
             .accessibilityHidden(true)
     }
 }

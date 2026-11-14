@@ -29,7 +29,7 @@ struct CategoryLimitsView: View {
                             row(c, calc)
                         }
                         .buttonStyle(.pressable)
-                        if c != Category.allCases.filter(\.countsAsLiving).last { Divider().overlay(Theme.ink.opacity(0.14)) }
+                        if c != Category.allCases.filter(\.countsAsLiving).last { Divider().overlay(Theme.rule) }
                     }
                 }
                 .padding(.horizontal, 14).padding(.vertical, 4)

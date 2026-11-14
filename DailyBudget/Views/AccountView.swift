@@ -77,7 +77,7 @@ struct AccountView: View {
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
                     .frame(height: 50)
-                Divider().overlay(Theme.ink.opacity(0.16))
+                Divider().overlay(Theme.rule)
                 SecureField("Password", text: $password)
                     .textContentType(.password)
                     .frame(height: 50)
@@ -150,7 +150,7 @@ struct AccountView: View {
                 Spacer(minLength: 0)
             }
 
-            Divider().overlay(Theme.ink.opacity(0.14))
+            Divider().overlay(Theme.rule)
 
             row("Account", session.email)
             row("Waiting to upload", sync.pending == 0 ? String(localized: "Nothing", bundle: AppLanguage.bundle) : "\(sync.pending)")

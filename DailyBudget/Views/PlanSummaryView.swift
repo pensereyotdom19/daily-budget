@@ -30,9 +30,9 @@ struct PlanSummaryView: View {
                 }
                 VStack(spacing: 0) {
                     row("Everyday", s.livingSpentCents, of: s.livingPlannedCents, Theme.mint)
-                    Divider().overlay(Theme.ink.opacity(0.14))
+                    Divider().overlay(Theme.rule)
                     row("Bills", s.billsCents, of: nil, Category.bills.color)
-                    Divider().overlay(Theme.ink.opacity(0.14))
+                    Divider().overlay(Theme.rule)
                     row("Engagement", s.engagementCents, of: nil, Category.engagement.color)
                 }
                 .padding(.horizontal, 16).padding(.vertical, 4)
@@ -80,7 +80,7 @@ struct PlanSummaryView: View {
             }
             .frame(width: 104, height: 104)
             VStack(alignment: .leading, spacing: 4) {
-                Text("DAYS ON BUDGET").font(.caption.weight(.semibold)).foregroundStyle(Theme.secondary)
+                Text("Days on budget").font(.caption.weight(.semibold)).foregroundStyle(Theme.secondary)
                 Text("\(s.daysOnBudget) of \(s.daysCounted)").font(Theme.rounded(26))
                 Text("Days you spent no more than that day's limit.")
                     .font(.caption).foregroundStyle(Theme.secondary)

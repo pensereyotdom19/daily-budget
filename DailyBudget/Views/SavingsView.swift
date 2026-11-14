@@ -51,7 +51,7 @@ struct SavingsView: View {
         return VStack(alignment: .leading, spacing: 14) {
             HStack(alignment: .firstTextBaseline) {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("EMERGENCY SAVINGS").font(.caption.weight(.semibold)).foregroundStyle(Theme.secondary)
+                    Text("Emergency savings").font(.caption.weight(.semibold)).foregroundStyle(Theme.secondary)
                     Text(Money.format(total, alwaysShowCents: true)).font(Theme.rounded(38))
                 }
                 Spacer()
@@ -176,7 +176,7 @@ struct SavingsView: View {
     private var incomeSection: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(alignment: .firstTextBaseline) {
-                Text("Extra money").font(.title3.weight(.bold))
+                Text("Extra money").font(.headline)
                 Spacer()
                 Button("Add") { adding = true }
                     .font(.subheadline.weight(.semibold)).foregroundStyle(Theme.mint)
@@ -199,7 +199,7 @@ struct SavingsView: View {
                                     try? context.save()
                                 }
                             }
-                        if i.id != incomes.last?.id { Divider().overlay(Theme.ink.opacity(0.14)) }
+                        if i.id != incomes.last?.id { Divider().overlay(Theme.rule) }
                     }
                 }
                 .padding(.horizontal, 14).padding(.vertical, 4)

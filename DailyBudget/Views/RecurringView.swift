@@ -34,7 +34,7 @@ struct RecurringView: View {
                                         try? context.save()
                                     }
                                 }
-                            if r.id != items.last?.id { Divider().overlay(Theme.ink.opacity(0.14)) }
+                            if r.id != items.last?.id { Divider().overlay(Theme.rule) }
                         }
                     }
                     .padding(.horizontal, 14).padding(.vertical, 4)

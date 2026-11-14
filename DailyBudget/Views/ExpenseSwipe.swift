@@ -6,7 +6,6 @@ import SwiftData
 struct ExpenseSwipe: ViewModifier {
     let expense: Expense
     @Environment(\.modelContext) private var context
-    @Environment(\.onGlass) private var onGlass
     @State private var offset: CGFloat = 0
     @State private var settled: CGFloat = 0
     @State private var done = 0
@@ -46,9 +45,8 @@ struct ExpenseSwipe: ViewModifier {
                 }
             }
             content
-                // See-through while still, so the row matches its card (paper or glass).
-                // While swiping it needs a solid fill to cover the buttons underneath.
-                .background(offset == 0 ? Color.clear : (onGlass ? Color(hex: 0xDCE7F1) : Theme.card))
+                // See-through while still; a solid fill while swiping covers the buttons underneath.
+                .background(offset == 0 ? Color.clear : Theme.card)
                 .offset(x: offset)
                 .overlay {
                     // While a button is showing, a tap on the row just closes it.

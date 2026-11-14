@@ -207,7 +207,7 @@ struct PlanView: View {
     private var thisMonthBills: some View {
         let due = bills.filter { $0.isDue(in: currentMonth) }
         return VStack(alignment: .leading, spacing: 8) {
-            Text("Bills this month").font(.title3.weight(.bold)).padding(.horizontal, 4)
+            Text("Bills this month").font(.headline).padding(.horizontal, 4)
             VStack(spacing: 0) {
                 if due.isEmpty {
                     Text("No bills due this month.").font(.subheadline).foregroundStyle(Theme.secondary)
@@ -242,7 +242,7 @@ struct PlanView: View {
                         }
                         .buttonStyle(.pressable)
                     }
-                    if bill.id != due.last?.id { Divider().overlay(Theme.ink.opacity(0.14)) }
+                    if bill.id != due.last?.id { Divider().overlay(Theme.rule) }
                 }
             }
             .padding(.horizontal, 12).padding(.vertical, 2)
@@ -255,7 +255,7 @@ struct PlanView: View {
             BudgetCalculator(expenses: expenses, settings: settings, incomes: incomes)
                 .monthlySpending(months: months).map { ($0.monthKey, $0.totalCents) })
         return VStack(alignment: .leading, spacing: 8) {
-            Text("Month by month").font(.title3.weight(.bold)).padding(.horizontal, 4)
+            Text("Month by month").font(.headline).padding(.horizontal, 4)
             VStack(spacing: 0) {
                 ForEach(months, id: \.self) { month in
                     let due = bills.filter { $0.isDue(in: month) }
@@ -294,7 +294,7 @@ struct PlanView: View {
                     }
                     .buttonStyle(.pressable)
                     .accessibilityHint("Opens \(MonthKey.title(of: month))")
-                    if month != months.last { Divider().overlay(Theme.ink.opacity(0.14)) }
+                    if month != months.last { Divider().overlay(Theme.rule) }
                 }
             }
             .padding(.horizontal, 16).padding(.vertical, 2)

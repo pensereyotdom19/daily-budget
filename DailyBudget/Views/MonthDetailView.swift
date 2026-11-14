@@ -136,7 +136,7 @@ struct MonthDetailView: View {
             }
 
             if !isFuture {
-                Divider().overlay(Theme.ink.opacity(0.14))
+                Divider().overlay(Theme.rule)
                 HStack {
                     Text(livingLeft < 0 ? "Everyday money over by"
                          : isPast ? "Saved to emergency" : "Everyday money left")
@@ -171,7 +171,7 @@ struct MonthDetailView: View {
 
     private var billsCard: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Bills").font(.title3.weight(.bold)).padding(.horizontal, 4)
+            Text("Bills").font(.headline).padding(.horizontal, 4)
             VStack(spacing: 0) {
                 if dueBills.isEmpty {
                     Text("No bills due in \(MonthKey.title(of: monthKey)).")
@@ -208,7 +208,7 @@ struct MonthDetailView: View {
                     .buttonStyle(.pressable)
                     .accessibilityLabel("\(bill.name), \(Money.format(bill.amountCents)), \(paid ? "paid" : "not paid")")
                     .accessibilityHint(paid ? "Marks it unpaid" : "Marks it paid")
-                    if bill.id != dueBills.last?.id { Divider().overlay(Theme.ink.opacity(0.14)) }
+                    if bill.id != dueBills.last?.id { Divider().overlay(Theme.rule) }
                 }
             }
             .padding(.horizontal, 14).padding(.vertical, 2)
@@ -288,7 +288,7 @@ struct MonthDetailView: View {
         let incomeByDay = Dictionary(grouping: incomes) { Calendar.current.startOfDay(for: $0.date) }
         return VStack(alignment: .leading, spacing: 8) {
             HStack {
-                Text("Expenses").font(.title3.weight(.bold))
+                Text("Expenses").font(.headline)
                 Spacer()
                 if let categoryFilter {
                     Button {
@@ -325,7 +325,7 @@ struct MonthDetailView: View {
                                       isOpen: openDay == day.day) {
                             withAnimation(.snappy) { openDay = openDay == day.day ? nil : day.day }
                         }
-                        if day.id != daySummaries.last?.id { Divider().overlay(Theme.ink.opacity(0.12)) }
+                        if day.id != daySummaries.last?.id { Divider().overlay(Theme.rule) }
                     }
                 }
                 .padding(.horizontal, 14).padding(.vertical, 4)
@@ -334,7 +334,7 @@ struct MonthDetailView: View {
                 VStack(spacing: 0) {
                     ForEach(days, id: \.day) { group in
                         dayRow(group)
-                        if group.day != days.last?.day { Divider().overlay(Theme.ink.opacity(0.12)) }
+                        if group.day != days.last?.day { Divider().overlay(Theme.rule) }
                     }
                 }
                 .padding(.horizontal, 14).padding(.vertical, 4)

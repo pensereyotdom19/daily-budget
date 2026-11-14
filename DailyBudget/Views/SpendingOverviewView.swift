@@ -145,7 +145,7 @@ struct SpendingOverviewView: View {
             ("Engagement", engagementSpent, Category.engagement.color, "From the money set aside"),
         ]
         return VStack(alignment: .leading, spacing: 12) {
-            Text("Where it went").font(.title3.weight(.bold))
+            Text("Where it went").font(.headline)
             // One bar split by group.
             GeometryReader { geo in
                 let scale = geo.size.width / CGFloat(max(1, total))
@@ -256,11 +256,11 @@ struct SpendingOverviewView: View {
 
     private var biggestCard: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Biggest expenses").font(.title3.weight(.bold)).padding(.horizontal, 4)
+            Text("Biggest expenses").font(.headline).padding(.horizontal, 4)
             VStack(spacing: 0) {
                 ForEach(biggest) { e in
                     expenseButton(e, showDate: true)
-                    if e.id != biggest.last?.id { Divider().overlay(Theme.ink.opacity(0.14)) }
+                    if e.id != biggest.last?.id { Divider().overlay(Theme.rule) }
                 }
             }
             .padding(.horizontal, 14).padding(.vertical, 2)
@@ -291,7 +291,7 @@ struct SpendingOverviewView: View {
         let incomeByDay = Dictionary(grouping: incomes) { Calendar.current.startOfDay(for: $0.date) }
         return VStack(alignment: .leading, spacing: 10) {
             HStack {
-                Text("All expenses").font(.title3.weight(.bold))
+                Text("All expenses").font(.headline)
                 Spacer()
                 if let categoryFilter {
                     Button {
@@ -345,7 +345,7 @@ struct SpendingOverviewView: View {
                                     DaySummaryRow(day: day, items: byDay[day.day] ?? [], incomes: incomeByDay[day.day] ?? [], isOpen: openDay == day.day) {
                                         withAnimation(.snappy) { openDay = openDay == day.day ? nil : day.day }
                                     }
-                                    if day.id != days.last?.id { Divider().overlay(Theme.ink.opacity(0.12)) }
+                                    if day.id != days.last?.id { Divider().overlay(Theme.rule) }
                                 }
                             }
                             .padding(.horizontal, 14).padding(.vertical, 4)
@@ -354,7 +354,7 @@ struct SpendingOverviewView: View {
                             VStack(spacing: 0) {
                                 ForEach(items) { e in
                                     expenseButton(e, showDate: true)
-                                    if e.id != items.last?.id { Divider().overlay(Theme.ink.opacity(0.14)) }
+                                    if e.id != items.last?.id { Divider().overlay(Theme.rule) }
                                 }
                             }
                             .padding(.horizontal, 14).padding(.vertical, 2)

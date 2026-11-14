@@ -92,7 +92,7 @@ struct SettingsView: View {
     }
 
     private func section(_ title: LocalizedStringKey) -> some View {
-        Text(title).font(.title3.weight(.bold)).padding(.horizontal, 4).padding(.top, 6)
+        Text(title).font(.headline).padding(.horizontal, 4).padding(.top, 6)
     }
 
     /// One row with the current language; tapping it opens a short menu.
@@ -107,10 +107,10 @@ struct SettingsView: View {
         } label: {
             HStack(spacing: 12) {
                 Image(systemName: "globe")
-                    .font(.system(size: 15, weight: .bold))
-                    .foregroundStyle(Theme.sky)
-                    .frame(width: 32, height: 32)
-                    .background(Theme.sky.opacity(0.16), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                    .font(.system(size: 15, weight: .medium))
+                    .foregroundStyle(Theme.mint)
+                    .frame(width: 30, height: 30)
+                    .background(Theme.mint.opacity(0.12), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
                 Text("Language").font(.subheadline.weight(.semibold))
                 Spacer(minLength: 8)
                 Text(verbatim: current.nativeName)
@@ -140,10 +140,10 @@ struct SettingsView: View {
         } label: {
             HStack(spacing: 12) {
                 Image(systemName: current.symbol)
-                    .font(.system(size: 15, weight: .bold))
-                    .foregroundStyle(Theme.violet)
-                    .frame(width: 32, height: 32)
-                    .background(Theme.violet.opacity(0.16), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                    .font(.system(size: 15, weight: .medium))
+                    .foregroundStyle(Theme.mint)
+                    .frame(width: 30, height: 30)
+                    .background(Theme.mint.opacity(0.12), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
                 Text("Appearance").font(.subheadline.weight(.semibold))
                 Spacer(minLength: 8)
                 Text(verbatim: current.title).font(.subheadline).foregroundStyle(Theme.secondary)

@@ -55,9 +55,7 @@ struct HistoryView: View {
                     NavigationLink(value: SpendingRoute()) { overviewCard(calc) }
                         .buttonStyle(.pressable)
                         .accessibilityHint("Shows where your money went")
-                    TrendCard(months: monthly,
-                              budget: { key in MonthKey.firstDay(of: key).map { calc.livingBudget(inMonthOf: $0) } ?? living },
-                              currentMonth: currentMonth)
+                    TrendCard(days: calc.daySummaries(inMonthOf: .now), month: .now)
                     monthsSection(monthly)
                     daysSection(calc).id("days")
                 }
@@ -110,41 +108,45 @@ struct HistoryView: View {
         return VStack(alignment: .leading, spacing: 14) {
             VStack(alignment: .leading, spacing: 2) {
                 HStack {
-                    Text("SPENT SO FAR").font(.caption.weight(.semibold)).foregroundStyle(Theme.secondary)
+                    Text("Spent so far").font(.subheadline).foregroundStyle(Theme.secondary)
                     Spacer()
                     HStack(spacing: 4) {
                         Text("Details")
                         Image(systemName: "chevron.right")
                     }
-                    .font(.caption.weight(.bold)).foregroundStyle(Theme.secondary)
+                    .font(.subheadline.weight(.medium)).foregroundStyle(Theme.mint)
                 }
-                Text(Money.format(spent, alwaysShowCents: true)).font(Theme.rounded(38))
+                Text(Money.format(spent, alwaysShowCents: true)).font(.system(size: 34, weight: .semibold)).monospacedDigit()
                 if finished.count >= 2 {
                     Text("About \(Money.format(finishedSpent / finished.count)) per finished month")
                         .font(.caption).foregroundStyle(Theme.secondary)
                 }
             }
-            HStack(spacing: 10) {
+            Divider().overlay(Theme.rule)
+            HStack(spacing: 0) {
                 overviewStat("Planned", Money.format(plannedSoFar), Theme.secondary)
+                Rectangle().fill(Theme.rule).frame(width: 1, height: 32)
                 overviewStat(diff >= 0 ? "Under plan" : "Over plan",
                              Money.format(abs(diff), alwaysShowCents: true), diff >= 0 ? Theme.mint : Theme.warn)
-                overviewStat("Saved", Money.format(saved, alwaysShowCents: true), Theme.sky)
+                    .padding(.leading, 12)
+                Rectangle().fill(Theme.rule).frame(width: 1, height: 32)
+                overviewStat("Saved", Money.format(saved, alwaysShowCents: true), Theme.ink)
+                    .padding(.leading, 12)
             }
         }
-        .padding(18)
+        .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .glassCard(radius: 28)
+        .glassCard()
     }
 
     private func overviewStat(_ title: LocalizedStringKey, _ value: String, _ color: Color) -> some View {
         VStack(alignment: .leading, spacing: 2) {
-            Text(title).font(.caption2.weight(.semibold)).foregroundStyle(Theme.secondary)
-            Text(value).font(Theme.rounded(16)).foregroundStyle(color == Theme.secondary ? Theme.ink : color)
+            Text(title).font(.caption).foregroundStyle(Theme.secondary)
+            Text(value).font(.system(size: 17, weight: .semibold)).monospacedDigit()
+                .foregroundStyle(color == Theme.secondary ? Theme.ink : color)
                 .lineLimit(1).minimumScaleFactor(0.7)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(10)
-        .background(Theme.ink.opacity(0.06), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
         .accessibilityElement(children: .combine)
     }
 
@@ -153,7 +155,7 @@ struct HistoryView: View {
     private func monthsSection(_ data: [BudgetCalculator.MonthSpending]) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(alignment: .firstTextBaseline) {
-                Text("Month by month").font(.title3.weight(.bold))
+                Text("Month by month").font(.headline)
                 Spacer()
                 HStack(spacing: 10) {
                     legendDot("Everyday", Theme.mint)
@@ -203,7 +205,7 @@ struct HistoryView: View {
         let incomeByDay = Dictionary(grouping: incomes) { Calendar.current.startOfDay(for: $0.date) }
         return VStack(alignment: .leading, spacing: 10) {
             HStack(alignment: .firstTextBaseline) {
-                Text("\(MonthKey.title(of: currentMonth)), day by day").font(.title3.weight(.bold))
+                Text("\(MonthKey.title(of: currentMonth)), day by day").font(.headline)
                 Spacer()
                 Text("everyday money").font(.caption2).foregroundStyle(Theme.secondary)
             }
@@ -218,7 +220,7 @@ struct HistoryView: View {
                                   isOpen: openDay == day.day) {
                         withAnimation(.snappy) { openDay = openDay == day.day ? nil : day.day }
                     }
-                    if day.id != list.last?.id { Divider().overlay(Theme.ink.opacity(0.12)) }
+                    if day.id != list.last?.id { Divider().overlay(Theme.rule) }
                 }
             }
             .padding(.horizontal, 14).padding(.vertical, 4)

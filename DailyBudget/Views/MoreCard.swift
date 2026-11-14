@@ -61,16 +61,16 @@ struct MoreCard: View {
         }
     }
 
-    private var divider: some View { Divider().overlay(Theme.ink.opacity(0.14)) }
+    private var divider: some View { Divider().overlay(Theme.rule) }
 
     private func row<Trailing: View>(_ symbol: String, _ color: Color, _ title: LocalizedStringKey, _ detail: LocalizedStringKey,
                                      @ViewBuilder trailing: () -> Trailing) -> some View {
         HStack(spacing: 12) {
             Image(systemName: symbol)
-                .font(.system(size: 15, weight: .bold))
-                .foregroundStyle(color)
-                .frame(width: 32, height: 32)
-                .background(color.opacity(0.16), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                .font(.system(size: 15, weight: .medium))
+                .foregroundStyle(Theme.mint)
+                .frame(width: 30, height: 30)
+                .background(Theme.mint.opacity(0.12), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
             VStack(alignment: .leading, spacing: 1) {
                 Text(title).font(.subheadline.weight(.semibold))
                 Text(detail).font(.caption).foregroundStyle(Theme.secondary)

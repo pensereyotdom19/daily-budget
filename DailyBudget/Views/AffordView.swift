@@ -86,7 +86,7 @@ struct AffordView: View {
 
             VStack(spacing: 0) {
                 change("Left today", from: leftNow, to: w.leftTodayAfter)
-                Divider().overlay(Theme.ink.opacity(0.14))
+                Divider().overlay(Theme.rule)
                 if w.tomorrowInSameMonth {
                     change("Tomorrow's limit", from: w.tomorrowLimitNow, to: w.tomorrowLimitAfter)
                 } else {
@@ -97,7 +97,7 @@ struct AffordView: View {
                     }
                     .padding(.vertical, 12)
                 }
-                Divider().overlay(Theme.ink.opacity(0.14))
+                Divider().overlay(Theme.rule)
                 change("Left this month", from: w.monthLeftAfter + cents, to: w.monthLeftAfter)
             }
             .padding(.horizontal, 16).padding(.vertical, 2)
